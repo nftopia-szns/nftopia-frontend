@@ -1,0 +1,20 @@
+#search-results [class~='ant-col'] {
+    background: transparent;
+    border: 0;
+}
+
+#search-results [class~='ant-col']>div {
+    height: 120px;
+    font-size: 14px;
+    line-height: 120px;
+    background: #0092ff;
+    border-radius: 4px;
+}
+
+.demo-code {
+    direction: ltr;
+}
+
+.ant-col {
+    padding: 0;
+}
