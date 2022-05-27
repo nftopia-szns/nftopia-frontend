@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios"
-import { SearchQueryDto, SearchResultDto } from "../../components/search/search.types"
-import { NEXT_SERVER_URI } from "../../constants"
+import { SearchQueryDto, SearchResultDto } from "../../../components/search/search.types"
+import { NEXT_SERVER_URI } from "../../../constants"
 
 export default async function search<T>(
     query: string,
