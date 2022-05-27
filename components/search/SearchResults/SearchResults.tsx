@@ -1,57 +1,42 @@
 import { Row, Col, Divider, Pagination } from "antd"
-import { FC, useCallback, useEffect, useState } from "react"
-import { DecentralandSearchHitDto, EmptySearchResultDto, SearchEvents, SearchHitBase, SearchHitDto, SearchResultDto } from "../search.types"
+import { useEffect, useState } from "react"
+import { DecentralandSearchHitDto, SearchHitDto } from "../search.types"
 import DecentralandSearchResult from "./DecentralandSearchResult/DecentralandSearchResult"
-import { SearchResultsProps } from "./SearchResults.types"
 import { Typography } from 'antd';
 const { Text } = Typography;
+import { useAppDispatch, useAppSelector } from "../../../redux/hook"
+import { searchStart, pageChange, pageSizeChange } from "../../../redux/features/search/search-slice"
 import "./SearchResults.module.css"
-import search from "../../../pages/api/search"
+import { useRouter } from "next/router";
 
-import { MetaversePlatform } from "../SearchBar/SearchBar.types"
-
-const SearchResults: FC<SearchResultsProps> = ({
-    searchEvent,
-    platform,
-    setLoading,
-}) => {
-    const [searchQuery, setSearchQuery] = useState<string>('')
-    const [searchResults, setSearchResults] = useState<SearchResultDto<SearchHitBase>>(EmptySearchResultDto)
-    const [page, setPage] = useState<number>(1)
-    const [pageSize, setPageSize] = useState<number>(10)
+const SearchResults = () => {
+    const router = useRouter()
+    const dispatch = useAppDispatch()
+    const searchState = useAppSelector((state) => state.search)
+    const searchResults = useAppSelector((state) => state.search.searchResult)
 
     useEffect(() => {
-        searchEvent.on(SearchEvents.SEARCH_ON_BAR, async (_query: string) => {
-            console.log('search on bar', _query, page, pageSize);
-            
-            setSearchQuery(_query)
-            await onSearch(_query, page, pageSize)
-        })
-
-        searchEvent.on(SearchEvents.SEARCH_ON_PAGING, async (_query, _page: number, _pageSize: number) => {
-            console.log('search on paging', _query, _page, _pageSize);
-            
-            await onSearch(_query, _page, _pageSize)
-        })
-    }, [])
-
-    const onSearch = useCallback(async (_query: string, _page: number, _pageSize: number) => {
-        setLoading(true)
-        let _searchResults: SearchResultDto<SearchHitBase> = EmptySearchResultDto
-        switch (platform) {
-            case MetaversePlatform.Decentraland:
-            default:
-                _searchResults = await search<DecentralandSearchHitDto>(_query, _page, _pageSize)
+        // below code is expected to execute only once when the query in url is ready
+        const _page = router.query.page
+        const _pageSize = router.query.pageSize
+        if (_page) {
+            const __page = Number(router.query.page.toString())
+            if (__page !== searchState.page) {
+                dispatch(pageChange(__page))
+            }
         }
-
-        setSearchResults(_searchResults)
-        setLoading(false)
-    }, [searchQuery, page, pageSize])
+        if (_pageSize) {
+            const __pageSize = Number(router.query.pageSize.toString())
+            if (__pageSize) {
+                dispatch(pageSizeChange(__pageSize))
+            }
+        }
+    }, [router])
 
     const onChange = (page: number, pageSize: number) => {
-        setPage(page)
-        setPageSize(pageSize)
-        searchEvent.emit(SearchEvents.SEARCH_ON_PAGING, searchQuery, page, pageSize)
+        dispatch(pageChange(page))
+        dispatch(pageSizeChange(pageSize))
+        dispatch(searchStart({ query: searchState.query, page, pageSize }))
     }
 
     return (<>
@@ -70,7 +55,7 @@ const SearchResults: FC<SearchResultsProps> = ({
         </Row>
         <Divider />
         <Pagination
-            defaultCurrent={pageSize}
+            defaultCurrent={searchState.pageSize}
             total={searchResults?.total}
             onChange={onChange}
         />
