@@ -16,3 +16,11 @@
     float: right;
     margin: 16px 0 16px 24px;
 }
+
+.dropdown-btn>.ant-dropdown-trigger {
+    border: none;
+}
+
+.dropdown-btn>.ant-dropdown-trigger>span {
+    background-color: white !important;
+}
