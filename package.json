@@ -19,6 +19,7 @@
     "@fontsource/roboto": "^4.5.7",
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.8.1",
+    "@reduxjs/toolkit": "^1.8.2",
     "@walletconnect/ethereum-provider": "^1.7.8",
     "@web3-react/coinbase-wallet": "8.0.31-beta.0",
     "@web3-react/core": "8.0.30-beta.0",
@@ -35,6 +36,7 @@
     "next": "12.1.6",
     "react": "18.1.0",
     "react-dom": "18.1.0",
+    "react-redux": "^8.0.2",
     "reflect-metadata": "^0.1.13",
     "truncate-eth-address": "^1.0.2"
   },
