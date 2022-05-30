@@ -18,10 +18,12 @@ const SearchBar = () => {
     useEffect(() => {
         // below code is expected to execute only once when the query in url is ready
         const _query = router.query.query
-        if (!parsedFromUrl && typeof _query === 'string' && _query !== '') {
-            dispatch(queryChange(_query))
+        if (!parsedFromUrl) {
             setParsedFromUrl(true)
-            handleSearch(_query)
+            if (typeof _query === 'string' && _query !== '') {
+                dispatch(queryChange(_query))
+                handleSearch(_query)
+            }
         }
     }, [parsedFromUrl, router])
 
@@ -30,7 +32,7 @@ const SearchBar = () => {
         setSearchString(_query)
         dispatch(queryChange(_query))
     }
-    
+
     useEffect(() => {
         if (searchString) {
             // update query params in url while typing in search box
