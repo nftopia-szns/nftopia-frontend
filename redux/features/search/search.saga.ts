@@ -1,7 +1,7 @@
 import { PayloadAction } from "@reduxjs/toolkit"
-import { DecentralandSearchHitDto, SearchResultDto } from '../../components/search/search.types';
-import { searchStart, searchSuccess } from '../features/search/search-slice';
-import searchApi from '../../pages/api/search'
+import { DecentralandSearchHitDto, SearchResultDto } from '../../../components/search/search.types';
+import { searchStart, searchSuccess } from './search-slice';
+import searchApi from '../../../pages/api/search'
 import { put, takeLatest } from 'redux-saga/effects';
 
 export function* search(action: PayloadAction<{ query: string, page: number, pageSize: number }>) {
