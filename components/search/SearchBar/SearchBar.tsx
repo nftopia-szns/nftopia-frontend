@@ -18,12 +18,15 @@ const SearchBar = () => {
     useEffect(() => {
         // below code is expected to execute only once when the query in url is ready
         const _query = router.query.query
-        if (!parsedFromUrl) {
-            setParsedFromUrl(true)
-            if (typeof _query === 'string' && _query !== '') {
+
+        if (typeof _query === 'string' && _query !== '') {
+            if (!parsedFromUrl) {
+                setParsedFromUrl(true)
                 dispatch(queryChange(_query))
                 handleSearch(_query)
             }
+        } else {
+            setParsedFromUrl(true)
         }
     }, [parsedFromUrl, router])
 
