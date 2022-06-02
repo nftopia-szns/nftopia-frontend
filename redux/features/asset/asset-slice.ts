@@ -5,7 +5,14 @@ interface AssetState {
     isLoading: boolean,
     contractAddress: string,
     tokenId: string,
-    assetDetail: NFT | object
+    assetDetail: AssetDetail | object
+}
+
+export interface AssetDetail {
+    data: {
+        nft: NFT
+    }[],
+    order: object
 }
 
 export const assetInitialState: AssetState = {
@@ -22,7 +29,7 @@ export const assetSlice = createSlice({
         fetchStart(state, action: PayloadAction<{ contractAddress: string, tokenId: string }>) {
             state.isLoading = true;
         },
-        fetchSuccess(state, action: PayloadAction<object>) {
+        fetchSuccess(state, action: PayloadAction<AssetDetail>) {
             state.isLoading = false
             state.assetDetail = action.payload
             console.log(action.payload);

@@ -1,12 +1,6 @@
-import { PageHeader, Image, Spin, Typography, Button } from 'antd'
+import { PageHeader, Image, Spin, Button } from 'antd'
 import Title from 'antd/lib/typography/Title'
-import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import {
-  ContractData,
-  ContractName,
-  getContract
-} from 'decentraland-transactions'
 import { useAppDispatch, useAppSelector } from '../../../redux/hook'
 import { fetchStart } from '../../../redux/features/asset/asset-slice'
 import './DecentralandAsset.module.css'
@@ -62,7 +56,9 @@ const DecentralandAsset = (props: Props) => {
         <Button onClick={onBidClicked}>Bid</Button>
       </>
       <>
-        <BidModal visible={showBidModal} setVisible={setShowBidModal}></BidModal>
+        <BidModal 
+          visible={showBidModal} 
+          setVisible={setShowBidModal}></BidModal>
       </>
     </div >
   )

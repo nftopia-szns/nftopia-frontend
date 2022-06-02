@@ -1,10 +1,4 @@
-import { PropertyDetailBase } from "../types";
-
-export interface DecentralandPropertyDetail extends PropertyDetailBase {
-
-}
-
-export declare enum NFTCategory {
+export enum NFTCategory {
     PARCEL = "parcel",
     ESTATE = "estate",
     WEARABLE = "wearable",
@@ -12,12 +6,12 @@ export declare enum NFTCategory {
     EMOTE = "emote"
 }
 
-export declare enum Network {
+export enum Network {
     ETHEREUM = "ETHEREUM",
     MATIC = "MATIC"
 }
 
-export declare enum ChainId {
+export enum ChainId {
     ETHEREUM_MAINNET = 1,
     ETHEREUM_ROPSTEN = 3,
     ETHEREUM_RINKEBY = 4,
@@ -27,7 +21,7 @@ export declare enum ChainId {
     MATIC_MUMBAI = 80001
 }
 
-export declare type NFT = {
+export type NFT = {
     id: string;
     contractAddress: string;
     tokenId: string;
