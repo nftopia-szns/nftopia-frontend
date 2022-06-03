@@ -96,7 +96,7 @@ const BidModal = (props: Props) => {
                         expiresIn,
                         fingerprint,
                         {
-                            gasLimit: 60000
+                            gasLimit: 8000000
                         }
                     )
                 } else {
@@ -106,7 +106,7 @@ const BidModal = (props: Props) => {
                         priceInWei,
                         expiresIn,
                         {
-                            gasLimit: 60000
+                            gasLimit: 8000000
                         }
                     )
                 }
