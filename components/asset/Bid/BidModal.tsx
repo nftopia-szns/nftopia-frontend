@@ -11,12 +11,12 @@ import {
 } from 'decentraland-transactions'
 import NoWalletConnected from "../../connect-wallet/NoWalletConnected"
 import { Network } from "../DecentralandAsset/DecentralandAsset.type"
-import { AssetDetail } from "../../../redux/features/asset/asset-slice"
 import { parseUnits } from "@ethersproject/units"
 import { ERC721Bid, ERC721Bid__factory, IERC20, IERC20__factory } from "../../../contracts/bid-contract/typechain-types"
 import { BigNumber } from "@ethersproject/bignumber"
 import { BN_ZERO } from "../../../constants/eth"
 import { useFingerprint } from "../../../redux/features/asset/asset-hook"
+import { DecentralandSearchHitDto } from "../../search/search.types"
 
 type Props = {
     visible: boolean
@@ -24,7 +24,7 @@ type Props = {
 }
 
 const BidModal = (props: Props) => {
-    const assetDetail = useAppSelector((state) => state.asset.assetDetail as AssetDetail)
+    const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
 
     const { account, provider } = useWeb3React()
     const { visible, setVisible } = props
@@ -34,19 +34,19 @@ const BidModal = (props: Props) => {
 
     const [contractBid, setContractBid] = useState<ERC721Bid>(undefined)
     // only for estate
-    const [fingerprint, isLoadingFingerprint] = useFingerprint(assetDetail?.data[0]?.nft)
+    const [fingerprint, isLoadingFingerprint] = useFingerprint(assetDetail)
 
     const [contractMana, setContractMana] = useState<IERC20>(undefined)
     const [balanceOfMana, setBalanceOfMana] = useState<BigNumber>(BN_ZERO)
 
     useEffect(() => {
         if (account && assetDetail) {
-            const nft = assetDetail.data[0].nft
+            const nft = assetDetail
             if (!contractMana) {
                 // get info
                 const contractManaData: ContractData = getContract(
                     ContractName.MANAToken,
-                    nft.chainId,
+                    nft.chain_id,
                 )
                 const _contractMana = IERC20__factory.connect(
                     contractManaData.address,
@@ -61,7 +61,7 @@ const BidModal = (props: Props) => {
                 // get info
                 const contractBidData: ContractData = getContract(
                     ContractName.Bid,
-                    nft.chainId,
+                    nft.chain_id,
                 )
                 setContractBid(
                     ERC721Bid__factory.connect(
@@ -73,35 +73,48 @@ const BidModal = (props: Props) => {
         }
     }, [assetDetail, account, contractMana])
 
-    const onBid = () => {
-        const nft = assetDetail.data[0].nft
-
+    const onBid = async() => {
+        console.log('on bid');
+        
+        const nft = assetDetail
         const priceInWei = parseUnits(bidAmount.toString(), 'ether')
         const expiresIn = Math.round((moment.utc().valueOf() - expirationDate.valueOf()) / 1000)
+        
+        const allowance = await contractMana.allowance(account, contractBid.address)
+        if (allowance.lt(priceInWei)) {
+            const tx = await contractMana.approve(contractBid.address, priceInWei)
+            await tx.wait()
+        }
 
         switch (nft.network) {
             case Network.ETHEREUM: {
                 if (fingerprint) {
                     return contractBid['placeBid(address,uint256,uint256,uint256,bytes)'](
-                        nft.contractAddress,
-                        nft.tokenId,
+                        nft.contract_address,
+                        BigNumber.from(nft.token_id),
                         priceInWei,
                         expiresIn,
-                        fingerprint
+                        fingerprint,
+                        {
+                            gasLimit: 60000
+                        }
                     )
                 } else {
                     return contractBid['placeBid(address,uint256,uint256,uint256)'](
-                        nft.contractAddress,
-                        nft.tokenId,
+                        nft.contract_address,
+                        nft.id,
                         priceInWei,
-                        expiresIn
+                        expiresIn,
+                        {
+                            gasLimit: 60000
+                        }
                     )
                 }
             }
             case Network.MATIC: {
                 contractBid['placeBid(address,uint256,uint256,uint256)'](
-                    nft.contractAddress,
-                    nft.tokenId,
+                    nft.contract_address,
+                    nft.id,
                     priceInWei,
                     expiresIn
                 )
@@ -127,13 +140,13 @@ const BidModal = (props: Props) => {
                             <Image
                                 preview={false}
                                 width={200}
-                                src={assetDetail?.data[0]?.nft.image}
+                                src={assetDetail?.image}
                                 placeholder={<Spin spinning={!assetDetail} />} />
                         </Col>
                         <Col span={12}>
                             <Row>
                                 <Title>Place a bid</Title>
-                                <Typography>Set a price and expiration date for your bid on <b>{assetDetail?.data[0]?.nft.name}</b>.</Typography>
+                                <Typography>Set a price and expiration date for your bid on <b>{assetDetail?.name}</b>.</Typography>
                             </Row>
                             <Row>
                                 <InputNumber
