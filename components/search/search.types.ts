@@ -29,6 +29,11 @@ export interface SearchHitBase { }
 
 export interface DecentralandSearchHitDto extends SearchHitBase {
     id: string
+    network: string
+    chain_id: number
+    contract_address: string
+    token_id: string
+    category: string
     name: string
     description: string
     image: string
@@ -36,6 +41,7 @@ export interface DecentralandSearchHitDto extends SearchHitBase {
     attributes: {
         x: number
         y: number
+        size?: number
         distance_to_plaza?: number
         distance_to_district?: number
         distance_to_road?: number

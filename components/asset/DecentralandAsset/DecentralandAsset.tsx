@@ -1,11 +1,10 @@
 import { PageHeader, Image, Spin, Button } from 'antd'
 import Title from 'antd/lib/typography/Title'
 import React, { useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../../../redux/hook'
-import { fetchStart } from '../../../redux/features/asset/asset-slice'
+import { useAppSelector } from '../../../redux/hook'
 import './DecentralandAsset.module.css'
-import { NFT } from './DecentralandAsset.type'
 import BidModal from '../Bid/BidModal'
+import { DecentralandSearchHitDto } from '../../search/search.types'
 
 type Props = {
   contractAddress: string
@@ -13,18 +12,10 @@ type Props = {
 }
 
 const DecentralandAsset = (props: Props) => {
-  const dispatch = useAppDispatch()
-  const isLoading = useAppSelector((state) => state.asset.isLoading)
-  const assetDetail = useAppSelector((state) => state.asset.assetDetail as NFT)
+  const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
   const { contractAddress, tokenId } = props
 
   const [showBidModal, setShowBidModal] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (contractAddress && tokenId) {
-      dispatch(fetchStart({ contractAddress, tokenId }))
-    }
-  }, [props])
 
   useEffect(() => {
     console.log(assetDetail);
@@ -37,7 +28,7 @@ const DecentralandAsset = (props: Props) => {
 
   return (
     <div className="decentraland-asset-c">
-      <Spin spinning={isLoading}/>
+      <Spin spinning={!assetDetail}/>
       <PageHeader
         className="site-page-header"
         onBack={() => null}
@@ -46,13 +37,13 @@ const DecentralandAsset = (props: Props) => {
       />
       <Image
         width={200}
-        src={assetDetail?.data[0]?.nft.image}
+        src={assetDetail?.image}
         placeholder={
           <Spin spinning={!assetDetail}/>
         }
       />
       <>
-        <Title>{assetDetail?.data[0]?.nft.name}</Title>
+        <Title>{assetDetail?.name}</Title>
         <Button onClick={onBidClicked}>Bid</Button>
       </>
       <>

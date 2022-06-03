@@ -7,8 +7,8 @@ export enum NFTCategory {
 }
 
 export enum Network {
-    ETHEREUM = "ETHEREUM",
-    MATIC = "MATIC"
+    ETHEREUM = "ethereum",
+    MATIC = "matic"
 }
 
 export enum ChainId {
