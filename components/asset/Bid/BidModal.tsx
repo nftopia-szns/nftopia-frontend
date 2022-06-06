@@ -10,14 +10,12 @@ import {
     getContract
 } from 'decentraland-transactions'
 import NoWalletConnected from "../../connect-wallet/NoWalletConnected"
-import { Network } from "../DecentralandAsset/DecentralandAsset.type"
 import { parseUnits } from "@ethersproject/units"
 import { ERC721Bid, ERC721Bid__factory, IERC20, IERC20__factory } from "../../../contracts/bid-contract/typechain-types"
 import { BigNumber } from "@ethersproject/bignumber"
 import { BN_ZERO } from "../../../constants/eth"
 import { useFingerprint } from "../../../modules/asset/asset-hook"
 import { DecentralandSearchHitDto } from "../../search/search.types"
-import { BidService } from "../../../modules/bid/bid.service"
 import { bidRequest } from "../../../modules/bid/bid-slice"
 
 type Props = {

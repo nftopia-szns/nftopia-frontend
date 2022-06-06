@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NFT } from '../../components/asset/DecentralandAsset/DecentralandAsset.type';
 import { DecentralandSearchHitDto } from '../../components/search/search.types';
+import { MetaversePlatform } from '../../components/search/SearchBar/SearchBar.types';
+
+export interface AssetBriefInfo {
+    metaversePlatform: MetaversePlatform
+    id: string
+}
 
 interface AssetState {
     isLoading: boolean,
@@ -16,12 +21,19 @@ export const assetSlice = createSlice({
     name: 'asset',
     initialState: assetInitialState,
     reducers: {
+        fetchAsset(state, action: PayloadAction<AssetBriefInfo>) {
+            state.isLoading = true
+        },
         setAssetDetail(state, action: PayloadAction<DecentralandSearchHitDto>) {
+            state.assetDetail = action.payload;
+        },
+        fetchAssetSuccess(state, action: PayloadAction<DecentralandSearchHitDto>) {
+            state.isLoading = false
             state.assetDetail = action.payload;
         },
     },
 });
 
-export const { setAssetDetail } = assetSlice.actions;
+export const { setAssetDetail, fetchAsset, fetchAssetSuccess } = assetSlice.actions;
 const assetReducer = assetSlice.reducer;
 export default assetReducer;

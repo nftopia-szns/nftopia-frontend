@@ -6,15 +6,8 @@ import './DecentralandAsset.module.css'
 import BidModal from '../Bid/BidModal'
 import { DecentralandSearchHitDto } from '../../search/search.types'
 
-type Props = {
-  contractAddress: string
-  tokenId: string
-}
-
-const DecentralandAsset = (props: Props) => {
+const DecentralandAsset = () => {
   const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
-  const { contractAddress, tokenId } = props
-
   const [showBidModal, setShowBidModal] = useState<boolean>(false)
 
   useEffect(() => {
@@ -28,7 +21,7 @@ const DecentralandAsset = (props: Props) => {
 
   return (
     <div className="decentraland-asset-c">
-      <Spin spinning={!assetDetail}/>
+      <Spin spinning={!assetDetail} />
       <PageHeader
         className="site-page-header"
         onBack={() => null}
@@ -39,7 +32,7 @@ const DecentralandAsset = (props: Props) => {
         width={200}
         src={assetDetail?.image}
         placeholder={
-          <Spin spinning={!assetDetail}/>
+          <Spin spinning={!assetDetail} />
         }
       />
       <>
@@ -47,8 +40,8 @@ const DecentralandAsset = (props: Props) => {
         <Button onClick={onBidClicked}>Bid</Button>
       </>
       <>
-        <BidModal 
-          visible={showBidModal} 
+        <BidModal
+          visible={showBidModal}
           setVisible={setShowBidModal}></BidModal>
       </>
     </div >

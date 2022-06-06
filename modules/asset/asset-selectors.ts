@@ -1,0 +1,1 @@
+export const assetSelectorIsLoading = (state) => state.asset.isLoading

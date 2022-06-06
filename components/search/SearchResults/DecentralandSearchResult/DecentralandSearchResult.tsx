@@ -20,7 +20,7 @@ const DecentralandSearchResult: FC<DecentralandSearchResultProps> = ({ searchHit
 
     const handleOnClick = () => {
         dispatch(setAssetDetail(searchHit._source))
-        const propertyDetailUrl = parameterizedRouter.asset.decentraland(contractAddress, tokenId)
+        const propertyDetailUrl = parameterizedRouter.asset.decentraland(searchHit._id)
         router.push(propertyDetailUrl)
     }
 

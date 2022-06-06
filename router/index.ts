@@ -1,7 +1,7 @@
 export const parameterizedRouter = {
     asset: {
-        decentraland: (contractAddress, tokenId) => {
-            return `/asset/decentraland/${contractAddress}/${tokenId}`
+        decentraland: (id) => {
+            return `/asset/decentraland/${id}`
         }
     }
 }

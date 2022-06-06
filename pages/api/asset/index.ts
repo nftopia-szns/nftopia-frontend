@@ -1,17 +1,14 @@
 import axios from "axios"
-import { NEXT_DCL_NFT_API } from "../../../constants"
+import { DecentralandSearchHitDto, SearchResultDto } from "../../../components/search/search.types"
+import { NEXT_NFTOPIA_BACKEND_BASE_URL } from "../../../constants"
 
-export default async function fetch(
-    contractAddress: string,
-    tokenId: string
-): Promise<object> {
+export default async function searchById(id: string): Promise<SearchResultDto<DecentralandSearchHitDto>> {
     try {
-        const URL = NEXT_DCL_NFT_API + `?contractAddress=${contractAddress}&tokenId=${tokenId}`
+        const URL = NEXT_NFTOPIA_BACKEND_BASE_URL + `/search/byId?id=${id}`
 
-        const resp = await axios.get(URL)
+        const resp = await axios.post(URL)
 
         console.log(resp.data);
-        
 
         return resp.data
     } catch (error) {

@@ -1,20 +1,22 @@
 import { PayloadAction } from "@reduxjs/toolkit"
-import fetchApi from '../../pages/api/asset'
 import { put, takeLatest } from 'redux-saga/effects';
+import { AssetBriefInfo, fetchAsset, fetchAssetSuccess } from "./asset-slice";
+import searchById from "../../pages/api/asset";
+import { DecentralandSearchHitDto, SearchResultDto } from "../../components/search/search.types";
 
-// export function* fetch(action: PayloadAction<{ contractAddress: string, tokenId: string }>) {
-//     try {
-//         const payload = action.payload
-//         const _searchResults = yield fetchApi(payload.contractAddress, payload.tokenId)
+export function* handleFetchAsset(action: PayloadAction<AssetBriefInfo>) {
+    try {
+        const _searchResults: SearchResultDto<DecentralandSearchHitDto> = yield searchById(action.payload.id)
 
-//         // dispatch action from saga
-//         yield put(fetchSuccess(_searchResults))
-//     } catch (e) {
-//         console.error(e)
-//     }
-// }
+        console.log(_searchResults);
+        // dispatch action from saga
+        yield put(fetchAssetSuccess(_searchResults.hits[0]._source))
+    } catch (e) {
+        console.error(e)
+    }
+}
 
 export default function* fetchSaga() {
     // only the take the latest fetch result
-    // yield takeLatest(fetchStart().type, fetch)
+    yield takeLatest(fetchAsset().type, handleFetchAsset)
 }
