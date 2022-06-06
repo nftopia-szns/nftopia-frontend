@@ -10,14 +10,21 @@ import { DownOutlined } from '@ant-design/icons';
 
 import "./NFTopiaLayout.module.css"
 import { MenuInfo } from "rc-menu/lib/interface"
+import { useAppDispatch } from "../../modules/hook"
+import { setWallet } from "../../modules/wallet/wallet-slice"
 
 const NFTopiaLayout = ({ children }: { children: ReactNode }) => {
-    const { account, connector } = useWeb3React()
+    const dispatch = useAppDispatch()
+    const { account, connector, provider } = useWeb3React()
     const [showConnectWalletModal, setShowConnectWalletModal] = useState(false)
 
     useEffect(() => {
         connector.connectEagerly()
     }, [])
+
+    useEffect(() => {
+        dispatch(setWallet({ account, provider }))
+    }, [account, provider])
 
     const onDisconnect = (info: MenuInfo) => {
         connector.deactivate()
