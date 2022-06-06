@@ -1,7 +1,7 @@
 import { Card, Tag } from "antd"
 import Meta from "antd/lib/card/Meta"
 import { useRouter } from "next/router"
-import { FC, useEffect } from "react"
+import { FC } from "react"
 import { setAssetDetail } from "../../../../modules/asset/asset-slice"
 import { useAppDispatch } from "../../../../modules/hook"
 import { parameterizedRouter } from "../../../../router"

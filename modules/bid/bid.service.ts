@@ -68,4 +68,7 @@ export class BidService {
             }
         }
     }
+
+    // TODO: add more bid functions: https://github.com/decentraland/bid-contract
+    
 }

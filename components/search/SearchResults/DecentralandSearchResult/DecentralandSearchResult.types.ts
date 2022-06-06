@@ -1,4 +1,4 @@
 export enum DecentralandPropertyType {
-    Parcel = 'parcel',
-    Estate = 'estate'
+    PARCEL = 'parcel',
+    ESTATE = 'estate'
 }

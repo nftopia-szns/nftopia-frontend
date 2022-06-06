@@ -4,6 +4,7 @@ import createSagaMiddleware from 'redux-saga'
 import rootSaga from './rootSaga';
 import assetReducer from './asset/asset-slice';
 import bidReducer from './bid/bid-slice';
+import buyReducer from './buy/buy-slice';
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -12,12 +13,16 @@ export const store = configureStore({
         search: searchReducer,
         asset: assetReducer,
         bid: bidReducer,
+        buy: buyReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware(
         {
             serializableCheck: {
                 // Ignore these action types
-                ignoredActions: ['bid/bidRequest'],
+                ignoredActions: [
+                    'bid/bidRequest',
+                    'buy/buyRequest',
+                ],
                 // Ignore these field paths in all actions
                 // ignoredActionPaths: ['meta.arg', 'payload.timestamp'],
                 // Ignore these paths in the state

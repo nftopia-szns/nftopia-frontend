@@ -1,3 +1,6 @@
+import { BigNumberish } from "ethers"
+import moment from "moment"
+
 export const retrieveFromExternalUrl = (externalUrl: string) => {
     if (!externalUrl) {
         return {
@@ -11,4 +14,8 @@ export const retrieveFromExternalUrl = (externalUrl: string) => {
     if (groups) {
         return groups
     } else return undefined
+}
+
+export const isExpiredFromNow = (expiresAt: number) => {
+    return moment.utc().isAfter(moment.unix(expiresAt))
 }
