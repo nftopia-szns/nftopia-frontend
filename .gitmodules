@@ -1,3 +1,6 @@
 [submodule "contracts/land-contract"]
 	path = contracts/land-contract
 	url = https://github.com/phatngluu/land-contract
+[submodule "contracts/bid-contract"]
+	path = contracts/bid-contract
+	url = https://github.com/phatngluu/bid-contract.git
