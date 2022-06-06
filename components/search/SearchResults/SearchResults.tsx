@@ -4,8 +4,8 @@ import { DecentralandSearchHitDto, SearchHitDto } from "../search.types"
 import DecentralandSearchResult from "./DecentralandSearchResult/DecentralandSearchResult"
 import { Typography } from 'antd';
 const { Text } = Typography;
-import { useAppDispatch, useAppSelector } from "../../../redux/hook"
-import { searchStart, pageChange, pageSizeChange } from "../../../redux/features/search/search-slice"
+import { useAppDispatch, useAppSelector } from "../../../modules/hook"
+import { searchStart, pageChange, pageSizeChange } from "../../../modules/search/search-slice"
 import "./SearchResults.module.css"
 import { useRouter } from "next/router";
 

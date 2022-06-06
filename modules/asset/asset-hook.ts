@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { NFTCategory } from '@dcl/schemas'
 import { useWeb3React } from '@web3-react/core'
-import { EstateRegistry__factory } from '../../../contracts/land-contract/typechain'
-import { DecentralandSearchHitDto } from '../../../components/search/search.types'
+import { EstateRegistry__factory } from '../../contracts/land-contract/typechain'
+import { DecentralandSearchHitDto } from '../../components/search/search.types'
 
 export const useFingerprint = (nft: DecentralandSearchHitDto | null) => {
   const { provider } = useWeb3React()

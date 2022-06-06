@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit"
-import fetchApi from '../../../pages/api/asset'
+import fetchApi from '../../pages/api/asset'
 import { put, takeLatest } from 'redux-saga/effects';
 
 // export function* fetch(action: PayloadAction<{ contractAddress: string, tokenId: string }>) {

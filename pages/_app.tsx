@@ -4,7 +4,7 @@ import NFTopiaLayout from '../components/layout/NFTopiaLayout'
 import { Web3ReactProvider } from '@web3-react/core'
 import { Provider as ReduxProvider } from 'react-redux'
 import connectors from '../connectors'
-import { store } from '../redux/store'
+import { store } from '../modules/store'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

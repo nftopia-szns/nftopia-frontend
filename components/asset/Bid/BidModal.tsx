@@ -3,7 +3,7 @@ import { Col, Modal, Row, Image, Spin, Typography, DatePicker, InputNumber, Aler
 import Title from "antd/lib/typography/Title"
 import moment, { Moment } from "moment"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { useAppSelector } from "../../../redux/hook"
+import { useAppDispatch, useAppSelector } from "../../../modules/hook"
 import {
     ContractData,
     ContractName,
@@ -15,8 +15,10 @@ import { parseUnits } from "@ethersproject/units"
 import { ERC721Bid, ERC721Bid__factory, IERC20, IERC20__factory } from "../../../contracts/bid-contract/typechain-types"
 import { BigNumber } from "@ethersproject/bignumber"
 import { BN_ZERO } from "../../../constants/eth"
-import { useFingerprint } from "../../../redux/features/asset/asset-hook"
+import { useFingerprint } from "../../../modules/asset/asset-hook"
 import { DecentralandSearchHitDto } from "../../search/search.types"
+import { BidService } from "../../../modules/bid/bid.service"
+import { bidRequest } from "../../../modules/bid/bid-slice"
 
 type Props = {
     visible: boolean
@@ -24,6 +26,8 @@ type Props = {
 }
 
 const BidModal = (props: Props) => {
+    const dispatch = useAppDispatch()
+
     const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
 
     const { account, provider } = useWeb3React()
@@ -73,53 +77,22 @@ const BidModal = (props: Props) => {
         }
     }, [assetDetail, account, contractMana])
 
-    const onBid = async() => {
-        console.log('on bid');
-        
-        const nft = assetDetail
+    const onBid = async () => {
         const priceInWei = parseUnits(bidAmount.toString(), 'ether')
-        const expiresIn = Math.round((moment.utc().valueOf() - expirationDate.valueOf()) / 1000)
-        
+
         const allowance = await contractMana.allowance(account, contractBid.address)
         if (allowance.lt(priceInWei)) {
             const tx = await contractMana.approve(contractBid.address, priceInWei)
             await tx.wait()
         }
 
-        switch (nft.network) {
-            case Network.ETHEREUM: {
-                if (fingerprint) {
-                    return contractBid['placeBid(address,uint256,uint256,uint256,bytes)'](
-                        nft.contract_address,
-                        BigNumber.from(nft.token_id),
-                        priceInWei,
-                        expiresIn,
-                        fingerprint,
-                        {
-                            gasLimit: 8000000
-                        }
-                    )
-                } else {
-                    return contractBid['placeBid(address,uint256,uint256,uint256)'](
-                        nft.contract_address,
-                        nft.id,
-                        priceInWei,
-                        expiresIn,
-                        {
-                            gasLimit: 8000000
-                        }
-                    )
-                }
-            }
-            case Network.MATIC: {
-                contractBid['placeBid(address,uint256,uint256,uint256)'](
-                    nft.contract_address,
-                    nft.id,
-                    priceInWei,
-                    expiresIn
-                )
-            }
-        }
+        dispatch(bidRequest({
+            provider,
+            asset: assetDetail,
+            price: bidAmount,
+            expiresAt: expirationDate.valueOf(),
+            fingerprint
+        }))
     }
 
     return (

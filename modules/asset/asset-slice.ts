@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NFT } from '../../../components/asset/DecentralandAsset/DecentralandAsset.type';
-import { DecentralandSearchHitDto } from '../../../components/search/search.types';
+import { NFT } from '../../components/asset/DecentralandAsset/DecentralandAsset.type';
+import { DecentralandSearchHitDto } from '../../components/search/search.types';
 
 interface AssetState {
     isLoading: boolean,

@@ -33,3 +33,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+components/asset/DecentralandAsset/Atlas
+
+contracts/contracts-from-marketplace

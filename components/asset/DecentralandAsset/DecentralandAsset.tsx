@@ -1,7 +1,7 @@
 import { PageHeader, Image, Spin, Button } from 'antd'
 import Title from 'antd/lib/typography/Title'
 import React, { useEffect, useState } from 'react'
-import { useAppSelector } from '../../../redux/hook'
+import { useAppSelector } from '../../../modules/hook'
 import './DecentralandAsset.module.css'
 import BidModal from '../Bid/BidModal'
 import { DecentralandSearchHitDto } from '../../search/search.types'

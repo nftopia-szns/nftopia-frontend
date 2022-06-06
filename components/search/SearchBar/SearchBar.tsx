@@ -1,8 +1,8 @@
 import Search from "antd/lib/input/Search"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { useAppDispatch, useAppSelector } from "../../../redux/hook"
-import { searchStart, queryChange } from "../../../redux/features/search/search-slice"
+import { useAppDispatch, useAppSelector } from "../../../modules/hook"
+import { searchStart, queryChange } from "../../../modules/search/search-slice"
 import { MetaversePlatform } from "./SearchBar.types"
 
 const SearchBar = () => {

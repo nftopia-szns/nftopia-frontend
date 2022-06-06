@@ -1,12 +1,14 @@
+import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NFT } from '../../../components/asset/DecentralandAsset/DecentralandAsset.type';
+import { DecentralandSearchHitDto } from '../../components/search/search.types';
 
 interface AssetState {
     isLoading: boolean,
 }
 
 export interface BidPayload {
-    nft: NFT,
+    provider: Web3Provider,
+    asset: DecentralandSearchHitDto,
     price: number,
     expiresAt: number,
     fingerprint?: string
@@ -20,18 +22,19 @@ export const bidSlice = createSlice({
     name: 'bid',
     initialState: assetInitialState,
     reducers: {
-        onPlaceBid(state, action: PayloadAction<BidPayload>) {
+        bidRequest(state, action: PayloadAction<BidPayload>) {
             state.isLoading = true
         },
-        onBidSentSuccess(state, action: PayloadAction<{}>) {
-
+        bidSuccess(state, action: PayloadAction<{}>) {
+            state.isLoading = false
         },
-        onBidSentFail(state, action: PayloadAction<{}>) {
+        bidFailure(state, action: PayloadAction<{}>) {
+            state.isLoading = false
 
         }
     },
 });
 
-export const { onPlaceBid, onBidSentSuccess, onBidSentFail } = bidSlice.actions;
+export const { bidRequest, bidSuccess, bidFailure } = bidSlice.actions;
 const bidReducer = bidSlice.reducer;
 export default bidReducer;

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EmptySearchResultDto, SearchHitBase, SearchResultDto } from '../../../components/search/search.types';
+import { EmptySearchResultDto, SearchHitBase, SearchResultDto } from '../../components/search/search.types';
 
 interface SearchState {
     isLoading: boolean;
