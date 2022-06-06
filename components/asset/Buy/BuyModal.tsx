@@ -27,10 +27,10 @@ const BuyModal = (props: Props) => {
     const { visible, setVisible } = props
     const { account, provider } = useWeb3React()
     const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
-    
+
     const [fingerprint] = useFingerprint(assetDetail) // only for estate
     const [order] = useAssetOrder(assetDetail)
-    
+
     const [balanceOfMana, setBalanceOfMana] = useState<BigNumber>()
 
     useEffect(() => {

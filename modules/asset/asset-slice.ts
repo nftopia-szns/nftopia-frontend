@@ -12,7 +12,7 @@ interface AssetState {
     assetDetail: DecentralandSearchHitDto | object
 }
 
-export const assetInitialState: AssetState = {
+const assetInitialState: AssetState = {
     isLoading: false,
     assetDetail: null,
 };

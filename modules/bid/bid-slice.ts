@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { DecentralandSearchHitDto } from '../../components/search/search.types';
 
-interface AssetState {
+interface BidState {
     isLoading: boolean,
 }
 
@@ -14,13 +14,13 @@ export interface BidPayload {
     fingerprint?: string
 }
 
-export const assetInitialState: AssetState = {
+const bidInitialState: BidState = {
     isLoading: false,
 };
 
 export const bidSlice = createSlice({
     name: 'bid',
-    initialState: assetInitialState,
+    initialState: bidInitialState,
     reducers: {
         bidRequest(state, action: PayloadAction<BidPayload>) {
             state.isLoading = true
