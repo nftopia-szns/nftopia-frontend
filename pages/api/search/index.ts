@@ -1,20 +1,13 @@
 import axios, { AxiosResponse } from "axios"
-import { SearchQueryDto, SearchResultDto } from "../../../components/search/search.types"
-import { NEXT_SERVER_URI } from "../../../constants"
+import { NEXT_NFTOPIA_BACKEND_BASE_URL } from "../../../constants"
+import { SearchDto, SearchResultDto } from "./search.types"
 
-export default async function search<T>(
-    query: string,
-    page: number,
-    pageSize: number,
-): Promise<SearchResultDto<T>> {
+export async function enhancedSearch<T>(searchDto: SearchDto): Promise<SearchResultDto<T>> {
     try {
-        const searchQueryDto: SearchQueryDto = {
-            query,
-            page,
-            pageSize
-        }
-
-        const resp = await axios.post<SearchQueryDto, AxiosResponse<SearchResultDto<T>>>(NEXT_SERVER_URI, searchQueryDto)
+        const resp = await axios.post<SearchDto, AxiosResponse<SearchResultDto<T>>>(
+            NEXT_NFTOPIA_BACKEND_BASE_URL + '/search', 
+            searchDto
+        )
 
         return resp.data
     } catch (error) {

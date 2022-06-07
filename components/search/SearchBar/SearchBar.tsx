@@ -3,7 +3,8 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../../modules/hook"
 import { searchStart, queryChange } from "../../../modules/search/search-slice"
-import { MetaversePlatform } from "./SearchBar.types"
+import { SearchDto } from "../../../pages/api/search/search.types"
+import { QueryBuilder } from "../../../pages/api/search/search.utils"
 
 const SearchBar = () => {
     const router = useRouter()
@@ -50,7 +51,20 @@ const SearchBar = () => {
 
     const handleSearch = async (_query: string) => {
         setSearchString(_query)
-        dispatch(searchStart({ query: _query, page, pageSize }))
+        const query = new QueryBuilder()
+            .multimatchQuery(
+                _query,
+                ["name", "description", "attributes.coordinate"]
+            )
+
+        const searchDto: SearchDto = {
+            // TODO: remove hardcoded
+            indices: ["decentraland-ethereum-3"],
+            query,
+            page,
+            pageSize,
+        }
+        dispatch(searchStart(searchDto))
     }
 
     return (

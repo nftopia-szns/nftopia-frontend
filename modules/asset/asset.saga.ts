@@ -1,14 +1,20 @@
 import { PayloadAction } from "@reduxjs/toolkit"
 import { put, takeLatest } from 'redux-saga/effects';
 import { AssetBriefInfo, fetchAsset, fetchAssetSuccess } from "./asset-slice";
-import searchById from "../../pages/api/asset";
-import { DecentralandSearchHitDto, SearchResultDto } from "../../components/search/search.types";
+import { enhancedSearch } from "../../pages/api/search";
+import { QueryBuilder } from "../../pages/api/search/search.utils";
+import { DecentralandSearchHitDto, SearchDto, SearchResultDto } from "../../pages/api/search/search.types";
 
 export function* handleFetchAsset(action: PayloadAction<AssetBriefInfo>) {
     try {
-        const _searchResults: SearchResultDto<DecentralandSearchHitDto> = yield searchById(action.payload.id)
+        const query = new QueryBuilder().matchQuery([{ field: "id", query: action.payload.id }])
+        const searchDto: SearchDto = {
+            indices: ["decentraland-ethereum-3"],
+            query,
+        } 
 
-        console.log(_searchResults);
+        const _searchResults: SearchResultDto<DecentralandSearchHitDto> = yield enhancedSearch(searchDto)
+
         // dispatch action from saga
         yield put(fetchAssetSuccess(_searchResults.hits[0]._source))
     } catch (e) {

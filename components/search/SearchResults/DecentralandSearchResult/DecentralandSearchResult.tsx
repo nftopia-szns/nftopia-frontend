@@ -4,9 +4,8 @@ import { useRouter } from "next/router"
 import { FC } from "react"
 import { setAssetDetail } from "../../../../modules/asset/asset-slice"
 import { useAppDispatch } from "../../../../modules/hook"
+import { SearchHitDto, DecentralandSearchHitDto } from "../../../../pages/api/search/search.types"
 import { parameterizedRouter } from "../../../../router"
-import { retrieveFromExternalUrl } from "../../../../utils"
-import { SearchHitDto, DecentralandSearchHitDto } from "../../search.types"
 import "./DecentralandSearchResult.module.css"
 
 interface DecentralandSearchResultProps {
@@ -16,7 +15,6 @@ interface DecentralandSearchResultProps {
 const DecentralandSearchResult: FC<DecentralandSearchResultProps> = ({ searchHit }) => {
     const dispatch = useAppDispatch()
     const router = useRouter()
-    const { contractAddress, tokenId } = retrieveFromExternalUrl(searchHit._source.external_url)
 
     const handleOnClick = () => {
         dispatch(setAssetDetail(searchHit._source))

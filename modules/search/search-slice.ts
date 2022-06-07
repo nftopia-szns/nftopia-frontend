@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EmptySearchResultDto, SearchHitBase, SearchResultDto } from '../../components/search/search.types';
+import { EmptySearchResultDto, SearchDto, SearchHitBase, SearchResultDto } from '../../pages/api/search/search.types';
 
 interface SearchState {
     isLoading: boolean;
@@ -30,7 +30,7 @@ export const searchSlice = createSlice({
         pageSizeChange(state, action: PayloadAction<number>) {
             state.pageSize = action.payload;
         },
-        searchStart(state, action: PayloadAction<{query: string, page: number, pageSize: number}>) {
+        searchStart(state, action: PayloadAction<SearchDto>) {
             state.isLoading = true
         },
         searchSuccess(state, action: PayloadAction<SearchResultDto<SearchHitBase>>) {

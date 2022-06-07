@@ -1,6 +1,5 @@
 import { Row, Col, Divider, Pagination } from "antd"
-import { useEffect, useState } from "react"
-import { DecentralandSearchHitDto, SearchHitDto } from "../search.types"
+import { useEffect } from "react"
 import DecentralandSearchResult from "./DecentralandSearchResult/DecentralandSearchResult"
 import { Typography } from 'antd';
 const { Text } = Typography;
@@ -8,6 +7,8 @@ import { useAppDispatch, useAppSelector } from "../../../modules/hook"
 import { searchStart, pageChange, pageSizeChange } from "../../../modules/search/search-slice"
 import "./SearchResults.module.css"
 import { useRouter } from "next/router";
+import { DecentralandSearchHitDto, SearchDto, SearchHitDto } from "../../../pages/api/search/search.types";
+import { QueryBuilder } from "../../../pages/api/search/search.utils";
 
 const SearchResults = () => {
     const router = useRouter()
@@ -36,7 +37,19 @@ const SearchResults = () => {
     const onChange = (page: number, pageSize: number) => {
         dispatch(pageChange(page))
         dispatch(pageSizeChange(pageSize))
-        dispatch(searchStart({ query: searchState.query, page, pageSize }))
+        const query = new QueryBuilder()
+            .multimatchQuery(
+                searchState.query,
+                ["name", "description", "attributes.coordinate"]
+            )
+        const searchDto: SearchDto = {
+            // TODO: remove hardcoded
+            indices: ["decentraland-ethereum-3"],
+            query,
+            page,
+            pageSize,
+        }
+        dispatch(searchStart(searchDto))
     }
 
     return (<>
