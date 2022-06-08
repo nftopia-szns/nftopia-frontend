@@ -54,7 +54,7 @@ const SearchBar = () => {
         const query = new QueryBuilder()
             .multimatchQuery(
                 _query,
-                ["name", "description", "attributes.coordinate"]
+                ["name", "description", "attributes.coordinate", "owner"]
             )
 
         const searchDto: SearchDto = {

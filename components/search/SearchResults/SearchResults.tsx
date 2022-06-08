@@ -40,7 +40,7 @@ const SearchResults = () => {
         const query = new QueryBuilder()
             .multimatchQuery(
                 searchState.query,
-                ["name", "description", "attributes.coordinate"]
+                ["name", "description", "attributes.coordinate", "owner"]
             )
         const searchDto: SearchDto = {
             // TODO: remove hardcoded

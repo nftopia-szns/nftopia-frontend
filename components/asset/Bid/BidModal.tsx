@@ -15,8 +15,8 @@ import { ERC721Bid, ERC721Bid__factory, IERC20, IERC20__factory } from "../../..
 import { BigNumber } from "@ethersproject/bignumber"
 import { BN_ZERO } from "../../../constants/eth"
 import { useFingerprint } from "../../../modules/asset/asset-hook"
-import { DecentralandSearchHitDto } from "../../search/search.types"
 import { bidRequest } from "../../../modules/bid/bid-slice"
+import { DecentralandSearchHitDto } from "../../../pages/api/search/search.types"
 
 type Props = {
     visible: boolean

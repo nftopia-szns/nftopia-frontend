@@ -50,6 +50,7 @@ export interface SearchHitBase { }
 
 export interface DecentralandSearchHitDto extends SearchHitBase {
     id: string
+    owner: string
     network: string
     chain_id: number
     contract_address: string

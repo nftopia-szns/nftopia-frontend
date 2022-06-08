@@ -1,20 +1,20 @@
-import { PageHeader, Image, Spin, Button } from 'antd'
+import { PageHeader, Image, Spin, Button, Typography } from 'antd'
 import Title from 'antd/lib/typography/Title'
 import React, { useState } from 'react'
 import { useAppSelector } from '../../../modules/hook'
 import './DecentralandAsset.module.css'
 import BidModal from '../Bid/BidModal'
-import { DecentralandSearchHitDto } from '../../search/search.types'
 import { useWeb3React } from '@web3-react/core'
-import { useAssetOrder, useAssetOwner } from '../../../modules/asset/asset-hook'
+import { useAssetBuyable } from '../../../modules/asset/asset-hook'
 import BuyModal from '../Buy/BuyModal'
+import { DecentralandSearchHitDto } from '../../../pages/api/search/search.types'
 
 const DecentralandAsset = () => {
   const { account, provider } = useWeb3React()
-  const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
-  const [owner, isOwnerLoading] = useAssetOwner(assetDetail)
-  const [order, isExpired, isOrderLoading] = useAssetOrder(assetDetail)
-  
+  const assetDetail = useAppSelector<DecentralandSearchHitDto>((state) => state.asset.assetDetail)
+  // const [order, isExpired, isOrderLoading] = useAssetOrder(assetDetail)
+  const { buyable, unbuyableReason, owner, order, isOrderExpired, isLoading } = useAssetBuyable(assetDetail)
+  // const buyable = useAssetBuyable()
   const [showBidModal, setShowBidModal] = useState<boolean>(false)
   const [showBuyModal, setShowBuyModal] = useState<boolean>(false)
 
@@ -46,7 +46,10 @@ const DecentralandAsset = () => {
       </>
       <>
         <Title>{assetDetail?.name}</Title>
-        {owner && account && (owner !== account) && (order && !isExpired) &&
+        <Typography>{buyable ? 'buyable' : 'unbuyable'}</Typography>
+        <Typography>{unbuyableReason ? unbuyableReason : ''}</Typography>
+        <Typography>{owner ? owner : ''}</Typography>
+        {!isLoading && buyable &&
           <Button onClick={onBuyClicked}>Buy</Button>
         }
         <Button onClick={onBidClicked}>Bid</Button>
@@ -55,9 +58,11 @@ const DecentralandAsset = () => {
         <BidModal
           visible={showBidModal}
           setVisible={setShowBidModal}></BidModal>
-        <BuyModal
-          visible={showBuyModal}
-          setVisible={setShowBuyModal}></BuyModal>
+        {/* {!isLoading && buyable &&
+          <BuyModal
+            visible={showBuyModal}
+            setVisible={setShowBuyModal}></BuyModal>
+        } */}
       </>
     </div >
   )

@@ -10,12 +10,11 @@ import {
 } from 'decentraland-transactions'
 import NoWalletConnected from "../../connect-wallet/NoWalletConnected"
 import { formatEther } from "@ethersproject/units"
-import { ERC721Bid, IERC20, IERC20__factory } from "../../../contracts/bid-contract/typechain-types"
+import { IERC20__factory } from "../../../contracts/bid-contract/typechain-types"
 import { BigNumber } from "@ethersproject/bignumber"
-import { BN_ZERO } from "../../../constants/eth"
 import { useAssetOrder, useFingerprint } from "../../../modules/asset/asset-hook"
-import { DecentralandSearchHitDto } from "../../search/search.types"
 import { buyRequest } from "../../../modules/buy/buy-slice"
+import { DecentralandSearchHitDto } from "../../../pages/api/search/search.types"
 
 type Props = {
     visible: boolean

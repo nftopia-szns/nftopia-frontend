@@ -1,12 +1,12 @@
-import { DecentralandAsset } from "../../../components/asset";
+import { DecentralandAsset } from "../../../../components/asset";
 
 import React, { useEffect } from 'react'
 import { useRouter } from "next/router";
-import { useAppDispatch, useAppSelector } from "../../../modules/hook";
-import { assetSelectorIsLoading } from "../../../modules/asset/asset-selectors";
+import { useAppDispatch, useAppSelector } from "../../../../modules/hook";
+import { assetSelectorIsLoading } from "../../../../modules/asset/asset-selectors";
 import { Spin } from "antd";
-import { fetchAsset } from "../../../modules/asset/asset-slice";
-import { MetaversePlatform } from "../../../components/search/SearchBar/SearchBar.types";
+import { fetchAsset } from "../../../../modules/asset/asset-slice";
+import { MetaversePlatform } from "../../../../components/search/SearchBar/SearchBar.types";
 
 type Props = {}
 
