@@ -8,6 +8,8 @@ import { useWeb3React } from '@web3-react/core'
 import { useAssetBuyable } from '../../../modules/asset/asset-hook'
 import BuyModal from '../Buy/BuyModal'
 import { DecentralandSearchHitDto } from '../../../pages/api/search/search.types'
+import { parameterizedRouter } from '../../../router'
+import router from 'next/router'
 
 const DecentralandAsset = () => {
   const { account, provider } = useWeb3React()
@@ -23,7 +25,8 @@ const DecentralandAsset = () => {
   }
 
   const onBuyClicked = () => {
-    setShowBuyModal(true)
+    const propertyDetailUrl = parameterizedRouter.asset.decentraland.buy(assetDetail.id)
+    router.push(propertyDetailUrl)
   }
 
   return (

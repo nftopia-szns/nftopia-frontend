@@ -1,7 +1,12 @@
 export const parameterizedRouter = {
     asset: {
-        decentraland: (id) => {
-            return `/asset/decentraland/${id}`
+        decentraland: {
+            detail: (id) => {
+                return `/asset/decentraland/${id}`
+            },
+            buy: (id) => {
+                return `/asset/decentraland/${id}/buy`
+            }
         }
     }
 }
