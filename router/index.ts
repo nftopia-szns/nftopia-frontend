@@ -6,7 +6,10 @@ export const parameterizedRouter = {
             },
             buy: (id) => {
                 return `/asset/decentraland/${id}/buy`
-            }
+            },
+            bid: (id) => {
+                return `/asset/decentraland/${id}/bid`
+            },
         }
     }
 }

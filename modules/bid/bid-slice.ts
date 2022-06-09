@@ -1,16 +1,18 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { DecentralandSearchHitDto } from '../../components/search/search.types';
+import { BigNumber } from 'ethers';
+import { DecentralandSearchHitDto } from '../../pages/api/search/search.types';
 
 interface BidState {
     isLoading: boolean,
 }
 
 export interface BidPayload {
+    caller: string,
     provider: Web3Provider,
     asset: DecentralandSearchHitDto,
-    price: number,
-    expiresAt: number,
+    price: BigNumber,
+    duration: number,
     fingerprint?: string
 }
 

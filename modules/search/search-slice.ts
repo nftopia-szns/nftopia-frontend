@@ -36,7 +36,6 @@ export const searchSlice = createSlice({
         searchSuccess(state, action: PayloadAction<SearchResultDto<SearchHitBase>>) {
             state.isLoading = false
             state.searchResult = action.payload
-            console.log(action.payload);
         },
     },
 });

@@ -9,10 +9,11 @@ export function* handleBidRequest(action: PayloadAction<BidPayload>) {
 
         const bidService = new BidService()
         yield bidService.place(
+            payload.caller,
             payload.provider,
             payload.asset,
             payload.price,
-            payload.expiresAt,
+            payload.duration,
             payload.fingerprint);
 
         //     // dispatch action from saga
