@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NFTCategory } from '@dcl/schemas'
 import { useWeb3React } from '@web3-react/core'
 import { DecentralandPropertyType } from '../../components/search/SearchResults/DecentralandSearchResult/DecentralandSearchResult.types'
@@ -94,7 +94,7 @@ export interface Order {
   id: string
   seller: string
   nftAddress: string
-  price: BigNumberish
+  price: BigNumber
   expiresAt: BigNumberish
 }
 

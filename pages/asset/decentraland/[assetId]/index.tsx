@@ -13,17 +13,17 @@ type Props = {}
 const DecentralandAssetPage = (props: Props) => {
     const dispatch = useAppDispatch()
     const router = useRouter()
-    const { id } = router.query;
+    const { assetId } = router.query;
     const isLoading = useAppSelector(assetSelectorIsLoading)
 
     useEffect(() => {
-        if (id) {
+        if (assetId) {
             dispatch(fetchAsset({
                 metaversePlatform: MetaversePlatform.Decentraland,
-                id: id.toString()
+                id: assetId.toString()
             }))
         }
-    }, [id])
+    }, [assetId])
 
     return (
         <Spin spinning={isLoading as boolean}>

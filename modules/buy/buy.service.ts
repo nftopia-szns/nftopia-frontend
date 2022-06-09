@@ -1,13 +1,13 @@
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { Web3Provider } from "@ethersproject/providers";
-import { parseUnits } from "@ethersproject/units";
 import { ContractData, ContractName, getContract } from "decentraland-transactions";
-import moment from "moment";
 import { Network } from "../../components/asset/DecentralandAsset/DecentralandAsset.type";
-import { DecentralandSearchHitDto } from "../../components/search/search.types";
-import { ERC721Bid__factory, IERC20__factory } from "../../contracts/bid-contract/typechain-types";
+import { FakeERC20__factory, IERC20__factory } from "../../contracts/bid-contract/typechain-types";
 import type { ContractTransaction } from "ethers";
 import { Marketplace__factory } from "../../contracts/land-contract/typechain";
+import { DecentralandSearchHitDto } from "../../pages/api/search/search.types";
+import { formatEther } from "@ethersproject/units";
+import { BN_ZERO } from "../../constants/eth";
 
 export class BuyService {
     /**
@@ -31,7 +31,7 @@ export class BuyService {
         caller: string,
         provider: Web3Provider,
         asset: DecentralandSearchHitDto,
-        price: BigNumberish,
+        price: BigNumber,
         fingerprint?: string
     ) {
         let tx: ContractTransaction;
@@ -46,7 +46,7 @@ export class BuyService {
                     ContractName.Marketplace,
                     asset.chain_id,
                 )
-                const contractMana = IERC20__factory.connect(
+                const contractMana = FakeERC20__factory.connect(
                     contractManaData.address,
                     provider.getSigner(),
                 )
@@ -56,9 +56,30 @@ export class BuyService {
                 )
 
                 const allowance = await contractMana.allowance(caller, contractMarketplaceData.address)
+                console.log('allw', formatEther(allowance), 'pr', formatEther(price));
+
                 // ask for more allowance if it's lower than the price
                 if (allowance.lt(price)) {
-                    const tx = await contractMana.approve(contractMarketplaceData.address, price)
+                    console.log('contract mana approve', contractMarketplaceData.address);
+
+                    // reset approve allowance to zero
+                    let tx = await contractMana.approve(
+                        contractMarketplaceData.address,
+                        BN_ZERO,
+                        {
+                            gasLimit: 300000
+                        }
+                    )
+                    await tx.wait()
+
+                    // approve the price
+                    tx = await contractMana.approve(
+                        contractMarketplaceData.address,
+                        price,
+                        {
+                            gasLimit: 300000
+                        }
+                    )
                     await tx.wait()
                 }
 

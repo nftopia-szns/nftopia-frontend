@@ -4,9 +4,9 @@ import { parseUnits } from "@ethersproject/units";
 import { ContractData, ContractName, getContract } from "decentraland-transactions";
 import moment from "moment";
 import { Network } from "../../components/asset/DecentralandAsset/DecentralandAsset.type";
-import { DecentralandSearchHitDto } from "../../components/search/search.types";
 import { ERC721Bid__factory } from "../../contracts/bid-contract/typechain-types";
 import type { ContractTransaction } from "ethers";
+import { DecentralandSearchHitDto } from "../../pages/api/search/search.types";
 
 export class BidService {
     async place(

@@ -13,6 +13,7 @@ import { ERC20, ERC20__factory, ERC721Bid, IERC20 } from '../../../../../contrac
 import { useAssetBuyable, useFingerprint } from '../../../../../modules/asset/asset-hook'
 import { assetSelectorIsLoading } from '../../../../../modules/asset/asset-selectors'
 import { fetchAsset } from '../../../../../modules/asset/asset-slice'
+import { buyRequest } from '../../../../../modules/buy/buy-slice'
 import { useAppDispatch, useAppSelector } from '../../../../../modules/hook'
 import { DecentralandSearchHitDto } from '../../../../api/search/search.types'
 
@@ -21,9 +22,10 @@ type Props = {}
 function DecentralandAssetBuyPage({ }: Props) {
     const dispatch = useAppDispatch()
     const router = useRouter()
-    const { id } = router.query;
+    const { assetId } = router.query;
     const isLoading = useAppSelector(assetSelectorIsLoading)
     const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
+    const isBuyLoading = useAppSelector((state) => state.buy.isLoading)
     const { account, provider } = useWeb3React()
 
     const { order } = useAssetBuyable(assetDetail)
@@ -37,13 +39,13 @@ function DecentralandAssetBuyPage({ }: Props) {
 
 
     useEffect(() => {
-        if (id) {
+        if (assetId) {
             dispatch(fetchAsset({
                 metaversePlatform: MetaversePlatform.Decentraland,
-                id: id.toString()
+                id: assetId.toString()
             }))
         }
-    }, [id])
+    }, [assetId])
 
     useEffect(() => {
         if (account && assetDetail && order) {
@@ -60,6 +62,16 @@ function DecentralandAssetBuyPage({ }: Props) {
             })
         }
     }, [account, assetDetail, order])
+
+    const onBuy = () => {
+        dispatch(buyRequest({
+            caller: account,
+            provider,
+            asset: assetDetail,
+            price: order.price,
+            fingerprint,
+        }))
+    }
 
     return (
         <Row>
@@ -86,11 +98,14 @@ function DecentralandAssetBuyPage({ }: Props) {
                         onChange={(v) => setExpirationDate(v)} />
                 </Row>
                 <Row>
-                    <Button
-                        disabled={
-                            !account &&
-                            !isEnoughBalance
-                        }>BUY</Button>
+                    <Spin spinning={isBuyLoading}>
+                        <Button
+                            disabled={
+                                !account &&
+                                !isEnoughBalance
+                            }
+                            onClick={onBuy}>BUY</Button>
+                    </Spin>
                 </Row>
 
                 {account ?
