@@ -12,6 +12,7 @@ import { assetSelectorIsLoading } from '../../../../../modules/asset/asset-selec
 import { fetchAsset } from '../../../../../modules/asset/asset-slice'
 import { buyRequest } from '../../../../../modules/buy/buy-slice'
 import { useAppDispatch, useAppSelector } from '../../../../../modules/hook'
+import { isValidOrder } from '../../../../../utils'
 import { DecentralandSearchHitDto } from '../../../../api/search/search.types'
 
 type Props = {}
@@ -30,7 +31,6 @@ function DecentralandAssetBuyPage({ }: Props) {
         fingerprint,
         owner,
         order,
-        orderExpired,
         isLoading
     } = useAssetHook(assetDetail)
     const [isEnoughBalance, setIsEnoughBalance] = useState<boolean>(true)
@@ -94,8 +94,7 @@ function DecentralandAssetBuyPage({ }: Props) {
                                     !account ||
                                     account === owner ||
                                     !isEnoughBalance ||
-                                    !order ||
-                                    orderExpired
+                                    !isValidOrder(order)
                                 }
                                 onClick={onBuy}>BUY</Button>
                         </Spin>

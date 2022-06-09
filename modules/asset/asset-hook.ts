@@ -36,7 +36,6 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
   const [fingerprint, setFingerprint] = useState<string>(undefined)
   const [owner, setOwner] = useState<string>(undefined)
   const [order, setOrder] = useState<Order>(undefined)
-  const [orderExpired, setOrderExpired] = useState<boolean>(false)
 
   const [buyable, setBuyable] = useState(false)
   const [errors, setErrors] = useState<Set<ASSET_ERRORS>>(new Set())
@@ -81,19 +80,16 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
       const _order = await marketplaceContract.orderByAssetId(asset.contract_address, asset.token_id)
       if (isValidOrder(_order)) {
         setOrder(_order)
-        setOrderExpired(false)
         errors.delete(ASSET_ERRORS.ORDER)
         errors.delete(ASSET_ERRORS.INVALID_ORDER)
         setErrors(new Set(errors))
       } else {
         setOrder(undefined)
-        setOrderExpired(true)
         setErrors(new Set(errors.add(ASSET_ERRORS.INVALID_ORDER)))
       }
     } catch (error) {
       setOrder(undefined)
       // if order doesn't exist, consider it is expired
-      setOrderExpired(true)
       setErrors(new Set(errors.add(ASSET_ERRORS.ORDER)))
     }
   }, [provider, asset])
@@ -116,14 +112,13 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
   useEffect(() => {
     setBuyable(
       owner &&
-      order && true)
+      isValidOrder(order) && true)
   }, [owner, order])
 
   return {
     fingerprint,
     owner,
     order,
-    orderExpired,
     buyable,
     errors,
     isLoading

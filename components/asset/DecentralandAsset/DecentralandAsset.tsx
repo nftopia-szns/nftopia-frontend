@@ -11,9 +11,10 @@ import { isValidOrder } from '../../../utils'
 import { useWeb3React } from '@web3-react/core'
 
 const DecentralandAsset = () => {
-  const assetDetail = useAppSelector<DecentralandSearchHitDto>((state) => state.asset.assetDetail)
+  const isAssetLoading = useAppSelector<boolean>((state) => state.asset.isLoading)
+  const assetDetail = useAppSelector<DecentralandSearchHitDto>((state) => state.asset.assetDetail as DecentralandSearchHitDto)
   const { account } = useWeb3React()
-  const { owner, order, orderExpired, isLoading } = useAssetHook(assetDetail)
+  const { owner, order, isLoading } = useAssetHook(assetDetail)
 
   const onBidClicked = () => {
     const propertyDetailUrl = parameterizedRouter.asset.decentraland.bid(assetDetail.id)
@@ -25,9 +26,14 @@ const DecentralandAsset = () => {
     router.push(propertyDetailUrl)
   }
 
+  const onSellClicked = () => {
+    const propertyDetailUrl = parameterizedRouter.asset.decentraland.sell(assetDetail.id)
+    router.push(propertyDetailUrl)
+  }
+
   return (
     <div className="decentraland-asset-c">
-      <Spin spinning={!assetDetail} />
+      <Spin spinning={isAssetLoading || isLoading } />
       <PageHeader
         className="site-page-header"
         onBack={() => null}
@@ -50,7 +56,7 @@ const DecentralandAsset = () => {
             {isValidOrder(order) ?
               <Button>Unlist</Button>
               :
-              <Button>List</Button>
+              <Button onClick={onSellClicked}>List</Button>
             }
           </>
           :
