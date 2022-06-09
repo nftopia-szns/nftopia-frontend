@@ -7,11 +7,13 @@ import { DecentralandSearchHitDto } from '../../../pages/api/search/search.types
 import { parameterizedRouter } from '../../../router'
 import router from 'next/router'
 import { useAssetHook } from '../../../modules/asset/asset-hook'
-import { isExpiredFromNow } from '../../../utils'
+import { isValidOrder } from '../../../utils'
+import { useWeb3React } from '@web3-react/core'
 
 const DecentralandAsset = () => {
   const assetDetail = useAppSelector<DecentralandSearchHitDto>((state) => state.asset.assetDetail)
-  const { owner, order, isLoading } = useAssetHook(assetDetail)
+  const { account } = useWeb3React()
+  const { owner, order, orderExpired, isLoading } = useAssetHook(assetDetail)
 
   const onBidClicked = () => {
     const propertyDetailUrl = parameterizedRouter.asset.decentraland.bid(assetDetail.id)
@@ -40,14 +42,25 @@ const DecentralandAsset = () => {
         }
       />
       <>
-      </>
-      <>
         <Title>{assetDetail?.name}</Title>
         <Typography>{owner ? owner : ''}</Typography>
-        {!isLoading && order &&
-          isExpiredFromNow(order.expiresAt.valueOf() as number) &&
-          <Button onClick={onBuyClicked}>Buy</Button>
+
+        {account === owner ?
+          <>
+            {isValidOrder(order) ?
+              <Button>Unlist</Button>
+              :
+              <Button>List</Button>
+            }
+          </>
+          :
+          <>
+            {isValidOrder(order) &&
+              <Button onClick={onBuyClicked}>Buy</Button>
+            }
+          </>
         }
+
         <Button onClick={onBidClicked}>Bid</Button>
       </>
     </div >

@@ -4,10 +4,9 @@ import { useWeb3React } from '@web3-react/core'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { BigNumber, BigNumberish } from 'ethers'
 import { DecentralandSearchHitDto } from '../../pages/api/search/search.types'
-import { ERC721__factory, EstateRegistry__factory, LANDRegistry__factory } from '../../contracts/land-contract/typechain-new'
+import { EstateRegistry__factory, IERC721Base__factory } from '../../contracts/land-contract/typechain-new'
 import { Marketplace__factory } from '../../contracts/land-contract/typechain'
-import { isExpiredFromNow } from '../../utils'
-import { IERC721__factory } from '../../contracts/bid-contract/typechain-types'
+import { isValidOrder } from '../../utils'
 
 export interface Order {
   id: string
@@ -20,6 +19,7 @@ export interface Order {
 export enum ASSET_ERRORS {
   OWNER = "Cannot get asset owner!",
   ORDER = "Cannot get asset order!",
+  INVALID_ORDER = "Asset order is invalid!",
 }
 
 export enum LOADING_TASKS {
@@ -56,32 +56,16 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
   }, [provider, asset])
 
   const getOwner = useCallback(async () => {
-    if (asset.category === NFTCategory.ESTATE) {
-      const estateRegistry = EstateRegistry__factory.connect(asset.contract_address, provider)
-      try {
-        const _owner = await estateRegistry.ownerOf(asset.token_id)
-
-        setOwner(_owner)
-        errors.delete(ASSET_ERRORS.OWNER)
-        setErrors(new Set(errors))
-      } catch (error) {
-        console.error(error);
-        setOwner(undefined)
-        setErrors(new Set(errors.add(ASSET_ERRORS.OWNER)))
-      }
-    } else {
-      const landRegistry = LANDRegistry__factory.connect(asset.contract_address, provider)
-      try {
-        const _owner = await landRegistry.ownerOf(asset.token_id)
-
-        setOwner(_owner)
-        errors.delete(ASSET_ERRORS.OWNER)
-        setErrors(new Set(errors))
-      } catch (error) {
-        console.error(error);
-        setOwner(undefined)
-        setErrors(new Set(errors.add(ASSET_ERRORS.OWNER)))
-      }
+    const assetRegistry = IERC721Base__factory.connect(asset.contract_address, provider)
+    try {
+      const _owner = await assetRegistry.ownerOf(asset.token_id)
+      setOwner(_owner)
+      errors.delete(ASSET_ERRORS.OWNER)
+      setErrors(new Set(errors))
+    } catch (error) {
+      console.error(error);
+      setOwner(undefined)
+      setErrors(new Set(errors.add(ASSET_ERRORS.OWNER)))
     }
   }, [provider, asset])
 
@@ -95,10 +79,17 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
     // check token's order existence in marketplace
     try {
       const _order = await marketplaceContract.orderByAssetId(asset.contract_address, asset.token_id)
-      setOrder(_order)
-      setOrderExpired(isExpiredFromNow(_order.expiresAt.valueOf() as number || 0))
-      errors.delete(ASSET_ERRORS.ORDER)
-      setErrors(new Set(errors))
+      if (isValidOrder(_order)) {
+        setOrder(_order)
+        setOrderExpired(false)
+        errors.delete(ASSET_ERRORS.ORDER)
+        errors.delete(ASSET_ERRORS.INVALID_ORDER)
+        setErrors(new Set(errors))
+      } else {
+        setOrder(undefined)
+        setOrderExpired(true)
+        setErrors(new Set(errors.add(ASSET_ERRORS.INVALID_ORDER)))
+      }
     } catch (error) {
       setOrder(undefined)
       // if order doesn't exist, consider it is expired
