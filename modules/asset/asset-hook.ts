@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { NFTCategory } from '@dcl/schemas'
 import { useWeb3React } from '@web3-react/core'
-import { ContractName, getContract } from 'decentraland-transactions'
+import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { BigNumber, BigNumberish } from 'ethers'
 import { DecentralandSearchHitDto } from '../../pages/api/search/search.types'
 import { EstateRegistry__factory, IERC721Base__factory } from '../../contracts/land-contract/typechain-new'
 import { Marketplace__factory } from '../../contracts/land-contract/typechain'
 import { isValidOrder } from '../../utils'
+import { ERC721Bid__factory } from '../../contracts/bid-contract/typechain-types/factories/contracts/bid'
 
 export interface Order {
   id: string
@@ -14,6 +15,10 @@ export interface Order {
   nftAddress: string
   price: BigNumber
   expiresAt: BigNumberish
+}
+
+export interface Bid {
+  id: BigNumber,
 }
 
 export enum ASSET_ERRORS {
@@ -29,7 +34,7 @@ export enum LOADING_TASKS {
 }
 
 export const useAssetHook = (asset: DecentralandSearchHitDto) => {
-  const { provider } = useWeb3React()
+  const { account, provider } = useWeb3React()
   const [isLoading, setIsLoading] = useState(false)
 
   // exposed states
@@ -46,29 +51,41 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
       const pOwner = getOwner();
       const pOrder = getOrder();
       const pFingerprint = getFingerprint();
+      const pBids = getBids();
       Promise.all([
         pOwner,
         pOrder,
         pFingerprint,
-      ]).finally(() => setIsLoading(false))
+        pBids,
+      ]).then((value) => {
+        setErrors(new Set<ASSET_ERRORS>([
+          ...Array.from(value[0]),
+          ...Array.from(value[1])
+        ]))
+      }).finally(() => {
+        setIsLoading(false)
+      })
     }
   }, [provider, asset])
 
   const getOwner = useCallback(async () => {
+    const errors = new Set<ASSET_ERRORS>()
     const assetRegistry = IERC721Base__factory.connect(asset.contract_address, provider)
+
     try {
       const _owner = await assetRegistry.ownerOf(asset.token_id)
       setOwner(_owner)
-      errors.delete(ASSET_ERRORS.OWNER)
-      setErrors(new Set(errors))
     } catch (error) {
       console.error(error);
       setOwner(undefined)
-      setErrors(new Set(errors.add(ASSET_ERRORS.OWNER)))
+      errors.add(ASSET_ERRORS.OWNER)
     }
+
+    return errors
   }, [provider, asset])
 
   const getOrder = useCallback(async () => {
+    const errors = new Set<ASSET_ERRORS>()
     const marketplaceContractData = getContract(
       ContractName.Marketplace,
       asset.chain_id
@@ -80,18 +97,17 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
       const _order = await marketplaceContract.orderByAssetId(asset.contract_address, asset.token_id)
       if (isValidOrder(_order)) {
         setOrder(_order)
-        errors.delete(ASSET_ERRORS.ORDER)
-        errors.delete(ASSET_ERRORS.INVALID_ORDER)
-        setErrors(new Set(errors))
       } else {
         setOrder(undefined)
-        setErrors(new Set(errors.add(ASSET_ERRORS.INVALID_ORDER)))
+        errors.add(ASSET_ERRORS.INVALID_ORDER)
       }
     } catch (error) {
       setOrder(undefined)
       // if order doesn't exist, consider it is expired
-      setErrors(new Set(errors.add(ASSET_ERRORS.ORDER)))
+      errors.add(ASSET_ERRORS.ORDER)
     }
+
+    return errors
   }, [provider, asset])
 
   const getFingerprint = useCallback(async () => {
