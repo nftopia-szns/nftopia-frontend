@@ -22,7 +22,7 @@ export const isExpiredFromNow = (expiresAt: number) => {
 }
 
 export const isValidOrder = (_order: Order) => {
-    if (!_order || isNilOrder(_order) || isExpiredOrder(_order)) {
+    if (isNilOrder(_order) || isExpiredOrder(_order)) {
         return false
     }
 

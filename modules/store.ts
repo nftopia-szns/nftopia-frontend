@@ -4,7 +4,7 @@ import createSagaMiddleware from 'redux-saga'
 import rootSaga from './rootSaga';
 import assetReducer from './asset/asset-slice';
 import bidReducer from './bid/bid-slice';
-import buyReducer from './buy/buy-slice';
+import saleReducer from './sale/sale-slice';
 import walletReducer from './wallet/wallet-slice';
 
 const sagaMiddleware = createSagaMiddleware()
@@ -15,7 +15,7 @@ export const store = configureStore({
         search: searchReducer,
         asset: assetReducer,
         bid: bidReducer,
-        buy: buyReducer,
+        sale: saleReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware(
         {
@@ -24,8 +24,9 @@ export const store = configureStore({
                 ignoredActions: [
                     'wallet/setWallet',
                     'bid/bidRequest',
-                    'buy/buyRequest',
-                    'buy/setWeb3',
+                    'sale/buyRequest',
+                    'sale/sellRequest',
+                    'sale/stopSellingRequest',
                     'search/searchStart',
                 ],
                 // Ignore these field paths in all actions

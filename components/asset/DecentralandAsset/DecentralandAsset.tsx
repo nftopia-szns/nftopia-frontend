@@ -53,11 +53,7 @@ const DecentralandAsset = () => {
 
         {account === owner ?
           <>
-            {isValidOrder(order) ?
-              <Button>Unlist</Button>
-              :
-              <Button onClick={onSellClicked}>List</Button>
-            }
+            <Button onClick={onSellClicked}>Sell</Button>
           </>
           :
           <>

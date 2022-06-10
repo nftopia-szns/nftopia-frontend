@@ -10,7 +10,7 @@ import { ERC20__factory } from '../../../../../contracts/bid-contract/typechain-
 import { useAssetHook } from '../../../../../modules/asset/asset-hook'
 import { assetSelectorIsLoading } from '../../../../../modules/asset/asset-selectors'
 import { fetchAsset } from '../../../../../modules/asset/asset-slice'
-import { buyRequest } from '../../../../../modules/buy/buy-slice'
+import { buyRequest } from '../../../../../modules/sale/sale-slice'
 import { useAppDispatch, useAppSelector } from '../../../../../modules/hook'
 import { isValidOrder } from '../../../../../utils'
 import { DecentralandSearchHitDto } from '../../../../api/search/search.types'

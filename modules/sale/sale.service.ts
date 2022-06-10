@@ -2,24 +2,65 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { Web3Provider } from "@ethersproject/providers";
 import { ContractData, ContractName, getContract } from "decentraland-transactions";
 import { Network } from "../../components/asset/DecentralandAsset/DecentralandAsset.type";
-import { FakeERC20__factory } from "../../contracts/bid-contract/typechain-types";
+import { ERC721__factory, FakeERC20__factory } from "../../contracts/bid-contract/typechain-types";
 import type { ContractTransaction } from "ethers";
 import { Marketplace__factory } from "../../contracts/land-contract/typechain";
 import { DecentralandSearchHitDto } from "../../pages/api/search/search.types";
 import { BN_ZERO } from "../../constants/eth";
 
-export class BuyService {
+export class SaleService {
     /**
      * Listing an asset with a desired price and expiration (Unix time).
      */
     async createOrder(
         provider: Web3Provider,
         asset: DecentralandSearchHitDto,
-        price: number,
+        price: BigNumber,
         expiresAt: number,
-        fingerprint?: string
     ) {
+        let tx: ContractTransaction;
+        switch (asset.network) {
+            case Network.ETHEREUM: {
+                // get info
+                const contractMarketplaceData: ContractData = getContract(
+                    ContractName.Marketplace,
+                    asset.chain_id,
+                )
+                const contractMarketplace = Marketplace__factory.connect(
+                    contractMarketplaceData.address,
+                    provider.getSigner(),
+                )
 
+                // approve contract marketplace to manage the asset
+                const assetRegistry = ERC721__factory.connect(asset.contract_address, provider.getSigner())
+                const isApprovedForAll = await assetRegistry.isApprovedForAll(asset.owner, contractMarketplaceData.address)
+                
+                // if (approver !== contractMarketplaceData.address) {
+                if (!isApprovedForAll) {
+                    tx = await assetRegistry.setApprovalForAll(contractMarketplaceData.address, true);
+                    await tx.wait()
+                }
+
+                tx = await contractMarketplace["createOrder(address,uint256,uint256,uint256)"](
+                    asset.contract_address,
+                    asset.token_id,
+                    price,
+                    expiresAt,
+                    {
+                        gasLimit: 300000
+                    }
+                )
+                await tx.wait()
+            }
+            case Network.MATIC: {
+                // return contractBid['placeBid(address,uint256,uint256,uint256)'](
+                //     asset.contract_address,
+                // BigNumber.from(asset.token_id),
+                //     priceInWei,
+                //     expiresIn
+                // )
+            }
+        }
     }
 
     /**
@@ -121,6 +162,36 @@ export class BuyService {
         provider: Web3Provider,
         asset: DecentralandSearchHitDto,
     ) {
+        let tx: ContractTransaction;
+        switch (asset.network) {
+            case Network.ETHEREUM: {
+                // get info
+                const contractMarketplaceData: ContractData = getContract(
+                    ContractName.Marketplace,
+                    asset.chain_id,
+                )
+                const contractMarketplace = Marketplace__factory.connect(
+                    contractMarketplaceData.address,
+                    provider.getSigner(),
+                )
 
+                tx = await contractMarketplace["cancelOrder(address,uint256)"](
+                    asset.contract_address,
+                    asset.token_id,
+                    {
+                        gasLimit: 300000
+                    }
+                )
+                await tx.wait()
+            }
+            case Network.MATIC: {
+                // return contractBid['placeBid(address,uint256,uint256,uint256)'](
+                //     asset.contract_address,
+                // BigNumber.from(asset.token_id),
+                //     priceInWei,
+                //     expiresIn
+                // )
+            }
+        }
     }
 }
