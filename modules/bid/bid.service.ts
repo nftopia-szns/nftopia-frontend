@@ -2,7 +2,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { Web3Provider } from "@ethersproject/providers";
 import { ContractData, ContractName, getContract } from "decentraland-transactions";
 import { Network } from "../../components/asset/DecentralandAsset/DecentralandAsset.type";
-import { ERC721Bid__factory, FakeERC20__factory } from "../../contracts/bid-contract/typechain-types";
+import { ERC721Bid__factory, ERC721__factory, FakeERC20__factory } from "../../contracts/bid-contract/typechain-types";
 import type { ContractTransaction } from "ethers";
 import { DecentralandSearchHitDto } from "../../pages/api/search/search.types";
 import { BN_ZERO } from "../../constants/eth";
@@ -99,5 +99,74 @@ export class BidService {
     }
 
     // TODO: add more bid functions: https://github.com/decentraland/bid-contract
+    async cancel(
+        provider: Web3Provider,
+        asset: DecentralandSearchHitDto,
+    ) {
+        let tx: ContractTransaction;
+        switch (asset.network) {
+            case Network.ETHEREUM: {
+                // get info
+                const contractBidData: ContractData = getContract(
+                    ContractName.Bid,
+                    asset.chain_id,
+                )
+                const contractBid = ERC721Bid__factory.connect(
+                    contractBidData.address,
+                    provider.getSigner(),
+                )
+                tx = await contractBid.cancelBid(
+                    asset.contract_address,
+                    BigNumber.from(asset.token_id),
+                    {
+                        gasLimit: 300000
+                    }
+                )
+                await tx.wait()
+            }
+            case Network.MATIC: {
+                // return contractBid['placeBid(address,uint256,uint256,uint256)'](
+                //     asset.contract_address,
+                // BigNumber.from(asset.token_id),
+                //     priceInWei,
+                //     expiresIn
+                // )
+            }
+        }
+    }
 
+    async accept(
+        sender: string,
+        recipient: string,
+        provider: Web3Provider,
+        asset: DecentralandSearchHitDto,
+    ) {
+        let tx: ContractTransaction;
+        switch (asset.network) {
+            case Network.ETHEREUM: {
+                // get info
+                const contractAsset = ERC721__factory.connect(
+                    asset.contract_address,
+                    provider.getSigner(),
+                )
+                tx = await contractAsset["safeTransferFrom(address,address,uint256)"](
+                    sender,
+                    recipient,
+                    BigNumber.from(asset.token_id),
+                    {
+                        gasLimit: 300000
+                    }
+                )
+                await tx.wait()
+            }
+            case Network.MATIC: {
+                // return contractBid['placeBid(address,uint256,uint256,uint256)'](
+                //     asset.contract_address,
+                // BigNumber.from(asset.token_id),
+                //     priceInWei,
+                //     expiresIn
+                // )
+            }
+        }
+    }
 }

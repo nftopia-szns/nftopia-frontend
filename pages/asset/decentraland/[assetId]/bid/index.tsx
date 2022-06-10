@@ -7,6 +7,7 @@ import { BigNumber } from 'ethers'
 import moment from "moment"
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+import BidList from '../../../../../components/asset/BidList/BidList'
 import { MetaversePlatform } from '../../../../../components/search/SearchBar/SearchBar.types'
 import { BN_ZERO } from '../../../../../constants/eth'
 import { IERC20__factory } from '../../../../../contracts/bid-contract/typechain-types'
@@ -29,6 +30,8 @@ const DecentralandAssetBidPage = (props: Props) => {
   const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
 
   const {
+    owner,
+    bids,
     fingerprint,
     isLoading
   } = useAssetHook(assetDetail)
@@ -72,7 +75,7 @@ const DecentralandAssetBidPage = (props: Props) => {
       )
       const _contractMana = IERC20__factory.connect(
         contractManaData.address,
-        provider.getSigner(),
+        provider,
       )
       _contractMana.balanceOf(account).then((v) => {
         setBalanceOfMana(v)
@@ -103,51 +106,60 @@ const DecentralandAssetBidPage = (props: Props) => {
             placeholder={<Spin spinning={!assetDetail} />} />
         </Col>
         <Col span={12}>
-          <Row>
-            <Title>Place a bid</Title>
-          </Row>
-          <Row>
-            <Typography>Set a price and expiration date for your bid on <b>{assetDetail?.name}</b>.</Typography>
-          </Row>
-          <Row>
-            <InputNumber
-              size="large"
-              min={0}
-              max={Number(formatEther(balanceOfMana))}
-              controls={false}
-              value={bidAmount}
-              onChange={(v) => { setBidAmount(v) }}
-              width={'400px'} />
-          </Row>
-          <Row>
-            <DatePicker
-              size="large"
-              defaultValue={moment.utc()}
-              format={'DD/MM/YYYY'}
-              onChange={onExpirationDateChange} />
-          </Row>
-          <Row>
-            <Button
-              disabled={
-                !account ||
-                !isValidBidAmount ||
-                !isValidDuration
+          {
+            account !== owner &&
+            <>
+              <Row>
+                <Title>Place a bid</Title>
+              </Row>
+              <Row>
+                <Typography>Set a price and expiration date for your bid on <b>{assetDetail?.name}</b>.</Typography>
+              </Row>
+              <Row>
+                <InputNumber
+                  size="large"
+                  min={0}
+                  max={Number(formatEther(balanceOfMana))}
+                  controls={false}
+                  value={bidAmount}
+                  onChange={(v) => { setBidAmount(v) }}
+                  width={'400px'} />
+              </Row>
+              <Row>
+                <DatePicker
+                  size="large"
+                  defaultValue={moment.utc()}
+                  format={'DD/MM/YYYY'}
+                  onChange={onExpirationDateChange} />
+              </Row>
+              <Row>
+                <Button
+                  disabled={
+                    !account ||
+                    !isValidBidAmount ||
+                    !isValidDuration
+                  }
+                  onClick={onBid}>Bid</Button>
+              </Row>
+              {!isValidBidAmount &&
+                <Row>
+                  <Alert message="Your balance is not enough" type="error" />
+                </Row>
               }
-              onClick={onBid}>Bid</Button>
-          </Row>
-          {!isValidBidAmount &&
-            <Row>
-              <Alert message="Your balance is not enough" type="error" />
-            </Row>
-          }
-          {!isValidDuration &&
-            <Row>
-              <Alert message="Duration is invalid" type="error" />
-            </Row>
+              {!isValidDuration &&
+                <Row>
+                  <Alert message="Duration is invalid" type="error" />
+                </Row>
+              }
+
+            </>
           }
         </Col>
       </Row>
-    </Spin>
+      <Row>
+        <BidList bids={bids} />
+      </Row>
+    </Spin >
   )
 }
 

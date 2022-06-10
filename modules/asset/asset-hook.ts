@@ -8,6 +8,7 @@ import { EstateRegistry__factory, IERC721Base__factory } from '../../contracts/l
 import { Marketplace__factory } from '../../contracts/land-contract/typechain'
 import { isValidOrder } from '../../utils'
 import { ERC721Bid__factory } from '../../contracts/bid-contract/typechain-types/factories/contracts/bid'
+import { formatEther } from '@ethersproject/units'
 
 export interface Order {
   id: string
@@ -18,7 +19,10 @@ export interface Order {
 }
 
 export interface Bid {
-  id: BigNumber,
+  id: string,
+  bidder: string,
+  price: string,
+  expiresAt: number,
 }
 
 export enum ASSET_ERRORS {
@@ -41,6 +45,7 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
   const [fingerprint, setFingerprint] = useState<string>(undefined)
   const [owner, setOwner] = useState<string>(undefined)
   const [order, setOrder] = useState<Order>(undefined)
+  const [bids, setBids] = useState<Bid[]>([])
 
   const [buyable, setBuyable] = useState(false)
   const [errors, setErrors] = useState<Set<ASSET_ERRORS>>(new Set())
@@ -125,6 +130,33 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
     }
   }, [provider, asset])
 
+  const getBids = useCallback(async () => {
+    const contractBidData: ContractData = getContract(
+      ContractName.Bid,
+      asset.chain_id,
+    )
+    const contractBid = ERC721Bid__factory.connect(
+      contractBidData.address,
+      provider,
+    )
+
+    let bids: Bid[] = []
+
+    const bidCounter = await contractBid.bidCounterByToken(asset.contract_address, asset.token_id)
+    for (let i = 0; i < bidCounter.toNumber(); i++) {
+      const _bid = await contractBid.getBidByToken(asset.contract_address, asset.token_id, i)
+      bids.push({
+        id: _bid[0],
+        bidder: _bid[1],
+        price: formatEther(_bid[2]),
+        expiresAt: _bid[3].toNumber()
+      })
+    }
+    setBids(bids)
+    console.log(bids);
+
+  }, [provider, asset])
+
   useEffect(() => {
     setBuyable(
       owner &&
@@ -135,6 +167,7 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
     fingerprint,
     owner,
     order,
+    bids,
     buyable,
     errors,
     isLoading
