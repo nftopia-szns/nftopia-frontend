@@ -20,8 +20,8 @@ const SearchBar = () => {
         // below code is expected to execute only once when the query in url is ready
         const _query = router.query.query
 
-        if (typeof _query === 'string' && _query !== '') {
-            if (!parsedFromUrl) {
+        if (!parsedFromUrl) {
+            if (typeof _query === 'string' && _query !== '') {
                 setParsedFromUrl(true)
                 dispatch(queryChange(_query))
                 handleSearch(_query)
