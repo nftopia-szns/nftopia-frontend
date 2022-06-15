@@ -25,7 +25,7 @@ function DecentralandAssetBuyPage({ }: Props) {
 
     const isAssetDetailLoading = useAppSelector(assetSelectorIsLoading)
     const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
-    const isBuyLoading = useAppSelector((state) => state.buy.isLoading)
+    const isBuyLoading = useAppSelector((state) => state.sale.isLoading)
 
     const {
         fingerprint,
