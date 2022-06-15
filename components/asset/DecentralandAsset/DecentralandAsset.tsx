@@ -33,7 +33,7 @@ const DecentralandAsset = () => {
 
   return (
     <div className="decentraland-asset-c">
-      <Spin spinning={isAssetLoading || isLoading } />
+      <Spin spinning={isAssetLoading || isLoading} />
       <PageHeader
         className="site-page-header"
         onBack={() => null}
@@ -60,10 +60,9 @@ const DecentralandAsset = () => {
             {isValidOrder(order) &&
               <Button onClick={onBuyClicked}>Buy</Button>
             }
+            <Button onClick={onBidClicked}>Bid</Button>
           </>
         }
-
-        <Button onClick={onBidClicked}>Bid</Button>
       </>
     </div >
   )
