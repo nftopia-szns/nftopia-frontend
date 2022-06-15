@@ -1,12 +1,15 @@
+import { DownOutlined } from "@ant-design/icons"
+import { Button, Col, Dropdown, Menu, Row, Space } from "antd"
 import Search from "antd/lib/input/Search"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../../modules/hook"
 import { searchStart, queryChange } from "../../../modules/search/search-slice"
 import { SearchDto } from "../../../pages/api/search/search.types"
 import { QueryBuilder } from "../../../pages/api/search/search.utils"
+import "./SearchBar.module.css"
 
-const SearchBar = () => {
+const SearchBar: FC = () => {
     const router = useRouter()
     const dispatch = useAppDispatch()
     const isLoading = useAppSelector((state) => state.search.isLoading)
@@ -67,18 +70,58 @@ const SearchBar = () => {
         dispatch(searchStart(searchDto))
     }
 
+    const menu = (
+        <Menu
+            items={[
+                {
+                    label: "Price",
+                    key: '0',
+                },
+                {
+                    label: "Recently listed",
+                    key: '1',
+                },
+                {
+                    label: 'Recently bought',
+                    key: '2',
+                },
+                {
+                    label: 'Total sales',
+                    key: '3',
+                },
+            ]}
+        />
+    );
+
     return (
         <>
-            <Search
-                placeholder="search for coordinate, name, description..."
-                allowClear
-                enterButton="Search"
-                size="large"
-                onSearch={handleSearch}
-                loading={isLoading}
-                onChange={onChangingQuery}
-                value={searchString}
-            />
+            <Col span={6}>
+                <Button>Show/Hide Filter</Button>
+            </Col>
+
+            <Col span={12}>
+                <Search
+                    placeholder="search for coordinate, name, description..."
+                    allowClear
+                    enterButton="Search"
+                    size="large"
+                    onSearch={handleSearch}
+                    loading={isLoading}
+                    onChange={onChangingQuery}
+                    value={searchString}
+                />
+            </Col>
+
+            <Col span={6}>
+                <Dropdown overlay={menu} trigger={['click']}>
+                    <a onClick={e => e.preventDefault()}>
+                        <Space>
+                            Sorting criteria
+                            <DownOutlined />
+                        </Space>
+                    </a>
+                </Dropdown>
+            </Col>
         </>
     )
 }
