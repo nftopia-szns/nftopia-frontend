@@ -68,7 +68,7 @@ const DecentralandAssetSellPage = (props: Props) => {
       provider,
       asset: assetDetail,
       price: parseEther(price.toString()),
-      expiresAt,
+      expiresAt: expiresAt * 1000, // converts to miliseconds
     }))
   }
 

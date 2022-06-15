@@ -11,6 +11,10 @@ import { BN_ZERO } from "../../constants/eth";
 export class SaleService {
     /**
      * Listing an asset with a desired price and expiration (Unix time).
+     * @param provider web3 provider
+     * @param asset the whole asset from search hit
+     * @param price in wei
+     * @param expiresAt epoch in miliseconds
      */
     async createOrder(
         provider: Web3Provider,
@@ -34,8 +38,7 @@ export class SaleService {
                 // approve contract marketplace to manage the asset
                 const assetRegistry = ERC721__factory.connect(asset.contract_address, provider.getSigner())
                 const isApprovedForAll = await assetRegistry.isApprovedForAll(asset.owner, contractMarketplaceData.address)
-                
-                // if (approver !== contractMarketplaceData.address) {
+
                 if (!isApprovedForAll) {
                     tx = await assetRegistry.setApprovalForAll(contractMarketplaceData.address, true);
                     await tx.wait()
@@ -66,6 +69,12 @@ export class SaleService {
     /**
      * Buy a listing for an asset. 
      * The price should match with the listed price and also the buyer should have at least that balance in MANA.
+     * 
+     * @param caller the account that makes operation
+     * @param provider web3 provider
+     * @param asset  the whole asset from search hit
+     * @param price in wei
+     * @param fingerprint to make sure that estate does not change (add, remove parcels) while user makes buy action.
      */
     async executeOrder(
         caller: string,
