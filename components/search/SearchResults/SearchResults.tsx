@@ -4,7 +4,7 @@ import DecentralandSearchResult from "./DecentralandSearchResult/DecentralandSea
 import { Typography } from 'antd';
 const { Text } = Typography;
 import { useAppDispatch, useAppSelector } from "../../../modules/hook"
-import { searchStart, pageChange, pageSizeChange } from "../../../modules/search/search-slice"
+import { searchStart, rPage, rPageSize } from "../../../modules/search/search-slice"
 import "./SearchResults.module.css"
 import { useRouter } from "next/router";
 import { DecentralandSearchHitDto, SearchDto, SearchHitDto } from "../../../pages/api/search/search.types";
@@ -23,20 +23,20 @@ const SearchResults = () => {
         if (_page) {
             const __page = Number(router.query.page.toString())
             if (__page !== searchState.page) {
-                dispatch(pageChange(__page))
+                dispatch(rPage(__page))
             }
         }
         if (_pageSize) {
             const __pageSize = Number(router.query.pageSize.toString())
             if (__pageSize) {
-                dispatch(pageSizeChange(__pageSize))
+                dispatch(rPageSize(__pageSize))
             }
         }
     }, [router])
 
     const onChange = (page: number, pageSize: number) => {
-        dispatch(pageChange(page))
-        dispatch(pageSizeChange(pageSize))
+        dispatch(rPage(page))
+        dispatch(rPageSize(pageSize))
         const query = new QueryBuilder()
             .multimatchQuery(
                 searchState.query,

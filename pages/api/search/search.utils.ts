@@ -9,7 +9,7 @@ export class QueryBuilder implements IQueryBuilder {
 
         return this
     }
-    matchQuery(this: any, fieldQueries: FieldQuery[]): IQuery {
+    matchQuery(this: IQueryBuilder, fieldQueries: FieldQuery[]): IQuery {
         this.match = {}
         for (const fieldQuery of fieldQueries) {
             this.match[fieldQuery.field] = fieldQuery.query

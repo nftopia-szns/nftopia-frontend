@@ -1,5 +1,5 @@
 import { Col, Row } from "antd"
-import { SearchBar, SearchResults } from "../../components/search"
+import { SearchBar, SearchFilter, SearchResults } from "../../components/search"
 
 const SearchPage = () => {
     return <>
@@ -12,7 +12,9 @@ const SearchPage = () => {
             <SearchBar />
         </Row>
         <Row>
-            <Col span={6}>filter</Col>
+            <Col span={6}>
+                <SearchFilter />
+            </Col>
             <Col span={18}>
                 <SearchResults />
             </Col>

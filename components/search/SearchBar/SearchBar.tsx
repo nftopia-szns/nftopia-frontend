@@ -4,7 +4,7 @@ import Search from "antd/lib/input/Search"
 import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../../modules/hook"
-import { searchStart, queryChange } from "../../../modules/search/search-slice"
+import { searchStart, rQuery } from "../../../modules/search/search-slice"
 import { SearchDto } from "../../../pages/api/search/search.types"
 import { QueryBuilder } from "../../../pages/api/search/search.utils"
 import "./SearchBar.module.css"
@@ -26,7 +26,7 @@ const SearchBar: FC = () => {
         if (!parsedFromUrl) {
             if (typeof _query === 'string' && _query !== '') {
                 setParsedFromUrl(true)
-                dispatch(queryChange(_query))
+                dispatch(rQuery(_query))
                 handleSearch(_query)
             }
         } else {
@@ -37,7 +37,7 @@ const SearchBar: FC = () => {
     const onChangingQuery = (e) => {
         const _query = e.target.value
         setSearchString(_query)
-        dispatch(queryChange(_query))
+        dispatch(rQuery(_query))
     }
 
     useEffect(() => {
