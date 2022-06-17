@@ -62,8 +62,6 @@ const SearchFilter = (props: Props) => {
                         <Col>
                             <InputNumber
                                 min={1}
-                                max={10}
-                                defaultValue={3}
                                 controls={false}
                                 placeholder={'Min'}
                                 onChange={(v) => setPriceMin(v)} />
@@ -72,8 +70,6 @@ const SearchFilter = (props: Props) => {
                         <Col>
                             <InputNumber
                                 min={1}
-                                max={10}
-                                defaultValue={3}
                                 controls={false}
                                 placeholder={'Max'}
                                 onChange={(v) => setPriceMax(v)} />

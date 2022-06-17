@@ -68,7 +68,8 @@ GET /decentraland-ethereum-3/_search
                 "match": {
                   "category": "estate"
                 }
-              }
+              },
+              { name}
             ],
             "must": [
                 // {
@@ -84,7 +85,9 @@ GET /decentraland-ethereum-3/_search
                 // },
                 // {
                 //     "range": {
-                //         "active_order.price": {}
+                //         "active_order.price": {
+                //             gte: ""
+                //         }
                 //     }
                 // },
                 // {
@@ -100,19 +103,22 @@ GET /decentraland-ethereum-3/_search
                 //         ]
                 //     }
                 // }
-                // {
-                //   "exists": {
-                //         "field": "active_order"
-                //   }
-                // }
-            ],
-            "must_not": [
+                {
+
+                },
                 {
                   "exists": {
                         "field": "active_order"
                   }
                 }
             ]
+            // "must_not": [
+            //     {
+            //       "exists": {
+            //             "field": "active_order"
+            //       }
+            //     }
+            // ]
         }
     }
 }

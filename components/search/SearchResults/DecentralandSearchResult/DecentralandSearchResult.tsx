@@ -1,5 +1,6 @@
 import { Card, Tag } from "antd"
 import Meta from "antd/lib/card/Meta"
+import Typography from "antd/lib/typography/Typography"
 import { useRouter } from "next/router"
 import { FC } from "react"
 import { setAssetDetail } from "../../../../modules/asset/asset-slice"
@@ -32,6 +33,9 @@ const DecentralandSearchResult: FC<DecentralandSearchResultProps> = ({ searchHit
             <Tag color="cyan">{searchHit._index}</Tag>
             <Tag color="volcano">{searchHit._source.category}</Tag>
             <Meta title={searchHit._source.name} description={searchHit._source.description} />
+            {searchHit._source.active_order &&
+                <Typography>{searchHit._source.active_order.price}</Typography>
+            }
         </Card>
     )
 }

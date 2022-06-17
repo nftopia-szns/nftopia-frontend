@@ -60,6 +60,11 @@ export interface DecentralandSearchHitDto extends SearchHitBase {
     description: string
     image: string
     external_url: string
+    active_order: {
+        price: number
+        expires_at: number
+        updated_at: number
+    },
     attributes: {
         x: number
         y: number
