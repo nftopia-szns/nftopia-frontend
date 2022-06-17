@@ -1,37 +1,39 @@
-import { Button, Checkbox, Col, Collapse, InputNumber, Row } from 'antd'
+import { Button, Checkbox, Col, Collapse, InputNumber, Radio, RadioChangeEvent, Row } from 'antd'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import React, { useState } from 'react'
-import { text } from 'stream/consumers'
 import { useAppDispatch } from '../../../modules/hook';
 import { rCategoryFilter, rPriceMaxFilter, rPriceMinFilter, rSaleFilter, searchStart } from '../../../modules/search/search-slice';
-import { AssetCategory as CategoryFilter, SaleFilter } from '../search.types';
+import { CategoryFilter, SaleFilter } from '../search.types';
 
 const { Panel } = Collapse;
 const CheckboxGroup = Checkbox.Group;
 
-const CategoryFilterOptions = [CategoryFilter.Estate, CategoryFilter.Parcel]
-const SaleFilterOptions = [SaleFilter.OnSale, SaleFilter.NotOnSale]
-
 type Props = {}
 const SearchFilter = (props: Props) => {
     const dispatch = useAppDispatch()
+
+    const CategoryFilterOptions = Object.values(CategoryFilter)
+    const SaleFilterOptions: SaleFilter[] = Object.values(SaleFilter)
+    const CategoryFilterDefault = CategoryFilterOptions
+    const SaleFilterDefault = SaleFilter.All
+
     const [categoryFilter, setCategoryFilter] =
-        useState<CheckboxValueType[]>(CategoryFilterOptions);
+        useState<CheckboxValueType[]>(CategoryFilterDefault);
     const [saleFilter, setSaleFilter] =
-        useState<CheckboxValueType[]>(SaleFilterOptions);
+        useState<SaleFilter>(SaleFilterDefault);
 
     const [priceMin, setPriceMin] = useState<number>()
     const [priceMax, setPriceMax] = useState<number>()
 
     const onAssetCategoryChange = (opts: CheckboxValueType[]) => {
         setCategoryFilter(opts);
-        dispatch(rCategoryFilter(opts as string[]))
+        dispatch(rCategoryFilter(opts as CategoryFilter[]))
         dispatch(searchStart())
     }
 
-    const onSaleFilterChange = (opts: CheckboxValueType[]) => {
-        setSaleFilter(opts);
-        dispatch(rSaleFilter(opts as string[]))
+    const onSaleFilterChange = ({ target: { value } }: RadioChangeEvent) => {
+        setSaleFilter(value);
+        dispatch(rSaleFilter(value))
     }
 
     const onApplyPriceFilter = () => {
@@ -49,10 +51,11 @@ const SearchFilter = (props: Props) => {
                         onChange={onAssetCategoryChange} />
                 </Panel>
                 <Panel header="Sale" key="2">
-                    <CheckboxGroup
-                        options={SaleFilterOptions}
+                    <Radio.Group
+                        onChange={onSaleFilterChange}
                         value={saleFilter}
-                        onChange={onSaleFilterChange} />
+                        options={SaleFilterOptions}>
+                    </Radio.Group>
                 </Panel>
                 <Panel header="Price" key="3">
                     <Row>

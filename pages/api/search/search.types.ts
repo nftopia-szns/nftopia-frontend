@@ -4,7 +4,7 @@
 
 export interface SearchDto {
     indices: string[]
-    query: IQuery
+    query: IQuery | object
     page?: number
     pageSize?: number
 }

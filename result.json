@@ -1,0 +1,249 @@
+{
+    "took": 1,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 9,
+            "relation": "eq"
+        },
+        "max_score": 12.62414,
+        "hits": [
+            {
+                "_index": "decentraland-ethereum-3",
+                "_id": "parcel-0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b-115792089237316195423570985008687907818901465606625779229656748657304540282803",
+                "_score": 12.62414,
+                "_source": {
+                    "id": "parcel-0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b-115792089237316195423570985008687907818901465606625779229656748657304540282803",
+                    "owner": "0x87956abc4078a0cc3b89b419928b857b8af826ed",
+                    "network": "ethereum",
+                    "chain_id": 3,
+                    "contract_address": "0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b",
+                    "token_id": "115792089237316195423570985008687907818901465606625779229656748657304540282803",
+                    "category": "parcel",
+                    "name": "a",
+                    "description": "2",
+                    "image": "https://api.decentraland.org/v1/parcels/-102/-77/map.png",
+                    "external_url": "",
+                    "attributes": {
+                        "x": -102,
+                        "y": -77,
+                        "distance_to_road": 7
+                    },
+                    "active_order": null,
+                    "sales": 0,
+                    "sold_at": 0
+                }
+            },
+            {
+                "_index": "decentraland-ethereum-3",
+                "_id": "parcel-0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b-28924001188279769394386841631700297973618",
+                "_score": 12.62414,
+                "_source": {
+                    "id": "parcel-0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b-28924001188279769394386841631700297973618",
+                    "owner": "0x747c6f502272129bf1ba872a1903045b837ee86c",
+                    "network": "ethereum",
+                    "chain_id": 3,
+                    "contract_address": "0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b",
+                    "token_id": "28924001188279769394386841631700297973618",
+                    "category": "parcel",
+                    "name": "A",
+                    "description": "",
+                    "image": "https://api.decentraland.org/v1/parcels/84/-142/map.png",
+                    "external_url": "",
+                    "attributes": {
+                        "x": 84,
+                        "y": -142,
+                        "distance_to_district": 3,
+                        "distance_to_road": 7
+                    },
+                    "active_order": null,
+                    "sales": 1,
+                    "sold_at": 1653313875
+                }
+            },
+            {
+                "_index": "decentraland-ethereum-3",
+                "_id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-11",
+                "_score": 12.62414,
+                "_source": {
+                    "id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-11",
+                    "owner": "0x87956abc4078a0cc3b89b419928b857b8af826ed",
+                    "network": "ethereum",
+                    "chain_id": 3,
+                    "contract_address": "0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95",
+                    "token_id": "11",
+                    "category": "estate",
+                    "name": "a",
+                    "description": "s",
+                    "image": "https://api.decentraland.org/v1/estates/11/map.png",
+                    "external_url": "",
+                    "attributes": {
+                        "size": 0,
+                        "distance_to_road": 0
+                    },
+                    "active_order": null,
+                    "sales": 0,
+                    "sold_at": 0
+                }
+            },
+            {
+                "_index": "decentraland-ethereum-3",
+                "_id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-12",
+                "_score": 12.62414,
+                "_source": {
+                    "id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-12",
+                    "owner": "0x87956abc4078a0cc3b89b419928b857b8af826ed",
+                    "network": "ethereum",
+                    "chain_id": 3,
+                    "contract_address": "0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95",
+                    "token_id": "12",
+                    "category": "estate",
+                    "name": "a",
+                    "description": "s",
+                    "image": "https://api.decentraland.org/v1/estates/12/map.png",
+                    "external_url": "",
+                    "attributes": {
+                        "size": 0,
+                        "distance_to_road": 0
+                    },
+                    "active_order": null,
+                    "sales": 0,
+                    "sold_at": 0
+                }
+            },
+            {
+                "_index": "decentraland-ethereum-3",
+                "_id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-44",
+                "_score": 12.62414,
+                "_source": {
+                    "id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-44",
+                    "owner": "0x87956abc4078a0cc3b89b419928b857b8af826ed",
+                    "network": "ethereum",
+                    "chain_id": 3,
+                    "contract_address": "0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95",
+                    "token_id": "44",
+                    "category": "estate",
+                    "name": "a",
+                    "description": "v",
+                    "image": "https://api.decentraland.org/v1/estates/44/map.png",
+                    "external_url": "",
+                    "attributes": {
+                        "size": 0,
+                        "distance_to_road": 0
+                    },
+                    "active_order": null,
+                    "sales": 0,
+                    "sold_at": 0
+                }
+            },
+            {
+                "_index": "decentraland-ethereum-3",
+                "_id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-78",
+                "_score": 12.62414,
+                "_source": {
+                    "id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-78",
+                    "owner": "0x0de1ec708665b93478bd0ed264e60b68a8663bb4",
+                    "network": "ethereum",
+                    "chain_id": 3,
+                    "contract_address": "0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95",
+                    "token_id": "78",
+                    "category": "estate",
+                    "name": "A",
+                    "description": "",
+                    "image": "https://api.decentraland.org/v1/estates/78/map.png",
+                    "external_url": "",
+                    "attributes": {
+                        "size": 9,
+                        "distance_to_road": 3,
+                        "distance_to_district": 4
+                    },
+                    "active_order": null,
+                    "sales": 1,
+                    "sold_at": 1581527553
+                }
+            },
+            {
+                "_index": "decentraland-ethereum-3",
+                "_id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-46",
+                "_score": 5.6181707,
+                "_source": {
+                    "id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-46",
+                    "owner": "0x87956abc4078a0cc3b89b419928b857b8af826ed",
+                    "network": "ethereum",
+                    "chain_id": 3,
+                    "contract_address": "0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95",
+                    "token_id": "46",
+                    "category": "estate",
+                    "name": "1",
+                    "description": "a",
+                    "image": "https://api.decentraland.org/v1/estates/46/map.png",
+                    "external_url": "",
+                    "attributes": {
+                        "size": 0,
+                        "distance_to_road": 0
+                    },
+                    "active_order": null,
+                    "sales": 0,
+                    "sold_at": 0
+                }
+            },
+            {
+                "_index": "decentraland-ethereum-3",
+                "_id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-3",
+                "_score": 3.4155164,
+                "_source": {
+                    "id": "estate-0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95-3",
+                    "owner": "0x0de1ec708665b93478bd0ed264e60b68a8663bb4",
+                    "network": "ethereum",
+                    "chain_id": 3,
+                    "contract_address": "0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95",
+                    "token_id": "3",
+                    "category": "estate",
+                    "name": "Tetris Estate",
+                    "description": "Looks like a Tetris block",
+                    "image": "https://api.decentraland.org/v1/estates/3/map.png",
+                    "external_url": "",
+                    "attributes": {
+                        "size": 0,
+                        "distance_to_road": 0
+                    },
+                    "active_order": null,
+                    "sales": 0,
+                    "sold_at": 0
+                }
+            },
+            {
+                "_index": "decentraland-ethereum-3",
+                "_id": "parcel-0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b-115792089237316195423570985008687907842040666557249594745166221962664778661757",
+                "_score": 3.1581783,
+                "_source": {
+                    "id": "parcel-0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b-115792089237316195423570985008687907842040666557249594745166221962664778661757",
+                    "owner": "0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95",
+                    "network": "ethereum",
+                    "chain_id": 3,
+                    "contract_address": "0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b",
+                    "token_id": "115792089237316195423570985008687907842040666557249594745166221962664778661757",
+                    "category": "parcel",
+                    "name": "Delta City",
+                    "description": "The future has a silver lining",
+                    "image": "https://api.decentraland.org/v1/parcels/-34/-131/map.png",
+                    "external_url": "",
+                    "attributes": {
+                        "x": -34,
+                        "y": -131,
+                        "distance_to_road": 6
+                    },
+                    "active_order": null,
+                    "sales": 0,
+                    "sold_at": 0
+                }
+            }
+        ]
+    }
+}

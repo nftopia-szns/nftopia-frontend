@@ -1,18 +1,18 @@
 import { DownOutlined } from "@ant-design/icons"
-import { Button, Col, Dropdown, Menu, Row, Space } from "antd"
+import { Button, Col, Dropdown, Menu, Space } from "antd"
 import Search from "antd/lib/input/Search"
 import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../../modules/hook"
 import { searchStart, rQuery } from "../../../modules/search/search-slice"
-import { SearchDto } from "../../../pages/api/search/search.types"
-import { QueryBuilder } from "../../../pages/api/search/search.utils"
+import { buildSearchDtoFromState } from "../../../modules/search/search.utils"
 import "./SearchBar.module.css"
 
 const SearchBar: FC = () => {
     const router = useRouter()
     const dispatch = useAppDispatch()
     const isLoading = useAppSelector((state) => state.search.isLoading)
+    const searchState = useAppSelector((state) => state.search)
     const page = useAppSelector((state) => state.search.page)
     const pageSize = useAppSelector((state) => state.search.pageSize)
 
@@ -54,19 +54,7 @@ const SearchBar: FC = () => {
 
     const handleSearch = async (_query: string) => {
         setSearchString(_query)
-        const query = new QueryBuilder()
-            .multimatchQuery(
-                _query,
-                ["name", "description", "attributes.coordinate", "owner"]
-            )
-
-        const searchDto: SearchDto = {
-            // TODO: remove hardcoded
-            indices: ["decentraland-ethereum-3"],
-            query,
-            page,
-            pageSize,
-        }
+        const searchDto = buildSearchDtoFromState(searchState)
         dispatch(searchStart(searchDto))
     }
 

@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SortByCriterias } from '../../components/search/search.types';
+import { CategoryFilter, SaleFilter, SortByCriterias } from '../../components/search/search.types';
 import { EmptySearchResultDto, SearchDto, SearchHitBase, SearchResultDto } from '../../pages/api/search/search.types';
 import { QueryBuilder } from '../../pages/api/search/search.utils';
+import { buildSearchDtoFromState } from './search.utils';
 
-interface SearchState {
+export interface SearchState {
     isLoading: boolean;
     /**
      * This field is built incrementally over search state changes.
@@ -23,8 +24,8 @@ interface SearchState {
     pageSize: number;
 
     // filters
-    categoryFilter?: string[]; // estate, parcel
-    saleFilter?: string[]; // on sale, not on sale, expired...
+    categoryFilter: CategoryFilter[]; // estate, parcel
+    saleFilter: SaleFilter; // on sale, not on sale, expired...
     priceMinFilter?: number;
     priceMaxFilter?: number;
 
@@ -44,9 +45,14 @@ export const searchInitialState: SearchState = {
     },
     // TODO: remove this hardcode
     indices: ['decentraland-ethereum-3'],
+
     query: '',
     page: 1,
     pageSize: 10,
+    
+    categoryFilter: Object.values(CategoryFilter),
+    saleFilter: SaleFilter.All,
+    
     searchResult: EmptySearchResultDto,
 };
 
@@ -63,10 +69,10 @@ export const searchSlice = createSlice({
         rPageSize(state, action: PayloadAction<number>) {
             state.pageSize = action.payload;
         },
-        rCategoryFilter(state, action: PayloadAction<string[]>) {
+        rCategoryFilter(state, action: PayloadAction<CategoryFilter[]>) {
             state.categoryFilter = action.payload
         },
-        rSaleFilter(state, action: PayloadAction<string[]>) {
+        rSaleFilter(state, action: PayloadAction<SaleFilter>) {
             state.saleFilter = action.payload;
         },
         rPriceMinFilter(state, action: PayloadAction<number>) {
@@ -78,26 +84,8 @@ export const searchSlice = createSlice({
         rSortBy(state, action: PayloadAction<SortByCriterias>) {
             state.sortBy = action.payload;
         },
-        searchStart(state, action: PayloadAction) {
+        searchStart(state, action: PayloadAction<SearchDto>) {
             state.isLoading = true
-
-            // build query
-            const query = new QueryBuilder()
-                .multimatchQuery(
-                    state.query,
-                    ["name", "description", "attributes.coordinate", "owner"]
-                )
-                .match
-
-            // build searchDto
-            state.searchDto = {
-                indices: state.indices,
-                query: {
-
-                },
-                page: state.page,
-                pageSize: state.pageSize
-            }
         },
         searchSuccess(state, action: PayloadAction<SearchResultDto<SearchHitBase>>) {
             state.isLoading = false

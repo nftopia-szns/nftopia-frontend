@@ -3,12 +3,13 @@ export enum SearchEvents {
     SEARCH_ON_PAGING = 'search_on_paging',
 }
 
-export enum AssetCategory {
+export enum CategoryFilter {
     Estate = "Estate",
     Parcel = "Parcel",
 }
 
 export enum SaleFilter {
+    All = "All",
     OnSale = "On Sale",
     NotOnSale = "Not On Sale",
 }
