@@ -77,23 +77,6 @@ export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
         must.push({ range: range })
     }
 
-    // if (state.priceMinFilter || state.priceMaxFilter) {
-    //     const minCond = state.priceMinFilter ? "doc['active_order.price'].value >= params.min" : ""
-    //     const maxCond = state.priceMaxFilter ? "doc['active_order.price'].value <= params.max" : ""
-    //     const cond = minCond + (state.priceMinFilter && state.priceMaxFilter ? " && " : "") + maxCond
-    //     filter = {
-    //         script: {
-    //             script: {
-    //                 source: cond,
-    //                 params: {
-    //                     min: state.priceMinFilter,
-    //                     max: state.priceMaxFilter
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
     // build query
     const query = {
         bool: {
