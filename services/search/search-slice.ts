@@ -31,6 +31,7 @@ export interface SearchState {
     saleFilter: SaleFilter; // on sale, not on sale, expired...
     priceMinFilter?: number;
     priceMaxFilter?: number;
+    ownerFilter?: string;
 
     searchResult: SearchResultDto<SearchHitBase>;
 }
@@ -84,6 +85,9 @@ export const searchSlice = createSlice({
         rPriceMaxFilter(state, action: PayloadAction<number>) {
             state.priceMaxFilter = action.payload;
         },
+        rOwnerFilter(state, action: PayloadAction<string>) {
+            state.ownerFilter = action.payload;
+        },
         rSortBy(state, action: PayloadAction<SortByCriterias>) {
             state.sortBy = action.payload;
         },
@@ -106,6 +110,7 @@ export const {
     rSaleFilter,
     rPriceMinFilter,
     rPriceMaxFilter,
+    rOwnerFilter,
 
     rSortBy,
 

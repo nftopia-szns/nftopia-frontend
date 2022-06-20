@@ -1,8 +1,8 @@
-import { Button, Checkbox, Col, Collapse, InputNumber, Radio, RadioChangeEvent, Row } from 'antd'
+import { Button, Checkbox, Col, Collapse, Input, InputNumber, Radio, RadioChangeEvent, Row } from 'antd'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import React, { useState } from 'react'
 import { useAppDispatch } from '../../../services/hook';
-import { rCategoryFilter, rPriceMaxFilter, rPriceMinFilter, rSaleFilter, searchStart } from '../../../services/search/search-slice';
+import { rCategoryFilter, rOwnerFilter, rPriceMaxFilter, rPriceMinFilter, rSaleFilter, searchStart } from '../../../services/search/search-slice';
 import { CategoryFilter, SaleFilter } from '../search.types';
 
 const { Panel } = Collapse;
@@ -22,6 +22,8 @@ const SearchFilter = (props: Props) => {
     const [saleFilter, setSaleFilter] =
         useState<SaleFilter>(SaleFilterDefault);
 
+    const [ownerFilter, setOwnerFilter] = useState<string>()
+
     const [priceMin, setPriceMin] = useState<number>()
     const [priceMax, setPriceMax] = useState<number>()
 
@@ -34,6 +36,12 @@ const SearchFilter = (props: Props) => {
     const onSaleFilterChange = ({ target: { value } }: RadioChangeEvent) => {
         setSaleFilter(value);
         dispatch(rSaleFilter(value))
+    }
+
+    const onApplyOwnerFilter = () => {
+        if (ownerFilter && ownerFilter !== '') {
+            dispatch(rOwnerFilter(ownerFilter.toLowerCase()))
+        }
     }
 
     const onApplyPriceFilter = () => {
@@ -77,6 +85,19 @@ const SearchFilter = (props: Props) => {
                     </Row>
                     <Row>
                         <Button onClick={onApplyPriceFilter}>Apply</Button>
+                    </Row>
+                </Panel>
+                <Panel header="Owner" key="4">
+                    <Row>
+                        <Input
+                            placeholder="Filter owner..."
+                            value={ownerFilter}
+                            onChange={(v) => setOwnerFilter(v.target.value)} />
+                    </Row>
+                    <Row>
+                        <Button
+                            onClick={onApplyOwnerFilter}
+                            disabled={!ownerFilter || ownerFilter === ''}>Apply</Button>
                     </Row>
                 </Panel>
             </Collapse>

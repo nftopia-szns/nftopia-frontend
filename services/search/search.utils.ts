@@ -55,6 +55,15 @@ export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
         })))
     }
 
+    if (state.ownerFilter) {
+        must.push({
+            "match": {
+                "owner": state.ownerFilter
+            }
+        })
+    }
+
+
     if (state.priceMinFilter || state.priceMaxFilter) {
         const range = {
             "active_order.price": {
