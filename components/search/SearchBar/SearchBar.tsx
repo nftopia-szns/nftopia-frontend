@@ -1,11 +1,12 @@
 import { DownOutlined } from "@ant-design/icons"
-import { Button, Col, Dropdown, Menu, Space } from "antd"
+import { Button, Col, Dropdown, Menu, MenuProps, Space } from "antd"
 import Search from "antd/lib/input/Search"
 import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../../modules/hook"
-import { searchStart, rQuery } from "../../../modules/search/search-slice"
+import { searchStart, rQuery, rSortBy } from "../../../modules/search/search-slice"
 import { buildSearchDtoFromState } from "../../../modules/search/search.utils"
+import { SortByCriterias } from "../search.types"
 import "./SearchBar.module.css"
 
 const SearchBar: FC = () => {
@@ -15,6 +16,8 @@ const SearchBar: FC = () => {
     const searchState = useAppSelector((state) => state.search)
     const page = useAppSelector((state) => state.search.page)
     const pageSize = useAppSelector((state) => state.search.pageSize)
+
+    const [sortingCriteria, setSortingCriteria] = useState<SortByCriterias>(SortByCriterias.Price)
 
     const [searchString, setSearchString] = useState<string>()
     const [parsedFromUrl, setParsedFromUrl] = useState<boolean>(false)
@@ -58,24 +61,31 @@ const SearchBar: FC = () => {
         dispatch(searchStart(searchDto))
     }
 
-    const menu = (
+    const onSortingChange: MenuProps['onClick'] = ({ key }) => {
+        setSortingCriteria(key as SortByCriterias)
+        dispatch(rSortBy(key as SortByCriterias))
+    }
+
+    const sortingMenu = (
         <Menu
+            onClick={onSortingChange}
+            defaultSelectedKeys={[SortByCriterias.Price]}
             items={[
                 {
                     label: "Price",
-                    key: '0',
+                    key: SortByCriterias.Price,
                 },
                 {
                     label: "Recently listed",
-                    key: '1',
+                    key: SortByCriterias.RecentlyListed,
                 },
                 {
                     label: 'Recently bought',
-                    key: '2',
+                    key: SortByCriterias.RecentlyBought,
                 },
                 {
                     label: 'Total sales',
-                    key: '3',
+                    key: SortByCriterias.TotalSales,
                 },
             ]}
         />
@@ -101,10 +111,10 @@ const SearchBar: FC = () => {
             </Col>
 
             <Col span={6}>
-                <Dropdown overlay={menu} trigger={['click']}>
+                <Dropdown overlay={sortingMenu} trigger={['click']}>
                     <a onClick={e => e.preventDefault()}>
                         <Space>
-                            Sorting criteria
+                            {sortingCriteria}
                             <DownOutlined />
                         </Space>
                     </a>

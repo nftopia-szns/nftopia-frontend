@@ -1,4 +1,4 @@
-import { CategoryFilter, SaleFilter } from "../../components/search/search.types";
+import { CategoryFilter, SaleFilter, SortByCriterias } from "../../components/search/search.types";
 import { SearchDto } from "../../pages/api/search/search.types";
 import { SearchState } from "./search-slice";
 
@@ -103,10 +103,37 @@ export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
         }
     }
 
+    // build sort
+    const sort = {}
+    switch (state.sortBy) {
+        case SortByCriterias.RecentlyBought:
+            sort["sold_at"] = {
+                order: "desc"
+            }
+            break;
+        case SortByCriterias.TotalSales:
+            sort["sales"] = {
+                order: "desc"
+            }
+            break;
+        case SortByCriterias.RecentlyListed:
+            sort["active_order.updated_at"] = {
+                order: "desc"
+            }
+            break;
+        case SortByCriterias.Price:
+        default:
+            sort["active_order.price"] = {
+                order: "desc"
+            }
+            break;
+    }
+
     // build searchDto
     const searchDto = {
         indices: state.indices,
         query: query,
+        sort: sort,
         page: state.page,
         pageSize: state.pageSize
     }

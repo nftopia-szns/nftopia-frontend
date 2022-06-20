@@ -15,5 +15,8 @@ export enum SaleFilter {
 }
 
 export enum SortByCriterias {
-    price = 'price',
+    Price = 'price',
+    RecentlyListed = 'recently-listed',
+    RecentlyBought = 'recently-bought',
+    TotalSales = 'total-sales'
 }

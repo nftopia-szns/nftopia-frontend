@@ -23,14 +23,15 @@ export interface SearchState {
     page: number;
     pageSize: number;
 
+    // sorts
+    sortBy: SortByCriterias
+
     // filters
     categoryFilter: CategoryFilter[]; // estate, parcel
     saleFilter: SaleFilter; // on sale, not on sale, expired...
     priceMinFilter?: number;
     priceMaxFilter?: number;
 
-    // sorts
-    sortBy?: SortByCriterias
     searchResult: SearchResultDto<SearchHitBase>;
 }
 
@@ -49,10 +50,12 @@ export const searchInitialState: SearchState = {
     query: '',
     page: 1,
     pageSize: 10,
-    
+
+    sortBy: SortByCriterias.Price,
+
     categoryFilter: Object.values(CategoryFilter),
     saleFilter: SaleFilter.All,
-    
+
     searchResult: EmptySearchResultDto,
 };
 
