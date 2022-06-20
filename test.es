@@ -54,6 +54,69 @@ GET /decentraland-ethereum-3/_search
 
 DELETE /decentraland-ethereum-3
 
+
+GET /decentraland-ethereum-3/_search
+{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "match": {
+                        "category": "estate"
+                    }
+                },
+                {
+                    "match": {
+                        "category": "parcel"
+                    }
+                }
+            ],
+            "must": [
+                {
+                    "exists": {
+                        "field": "active_order"
+                    }
+                }
+            ],
+            "must_not": []
+        }
+    },
+    "sort": {
+        "sales": {
+            "order": "desc"
+        }
+    }
+}
+
+GET /_search
+{
+    "indices": [
+        "decentraland-ethereum-3"
+    ],
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "category": "estate"
+          }
+        },
+        {
+          "match": {
+            "category": "parcel"
+          }
+        }
+      ],
+      "must": [],
+      "must_not": []
+    }
+  },
+  "sort": [
+    "active_order.price"
+  ]
+}
+
+
 GET /decentraland-ethereum-3/_search
 {
     "query": {

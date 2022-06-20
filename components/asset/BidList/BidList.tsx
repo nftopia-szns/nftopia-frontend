@@ -2,7 +2,7 @@ import { Table } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import moment from 'moment'
 import React from 'react'
-import { Bid } from '../../../modules/asset/asset-hook'
+import { Bid } from '../../../services/asset/asset-hook'
 import BidAction from '../BidAction/BidAction'
 
 type Props = {

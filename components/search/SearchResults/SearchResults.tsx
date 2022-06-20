@@ -3,8 +3,8 @@ import { useEffect } from "react"
 import DecentralandSearchResult from "./DecentralandSearchResult/DecentralandSearchResult"
 import { Typography } from 'antd';
 const { Text } = Typography;
-import { useAppDispatch, useAppSelector } from "../../../modules/hook"
-import { searchStart, rPage, rPageSize } from "../../../modules/search/search-slice"
+import { useAppDispatch, useAppSelector } from "../../../services/hook"
+import { searchStart, rPage, rPageSize } from "../../../services/search/search-slice"
 import "./SearchResults.module.css"
 import { useRouter } from "next/router";
 import { DecentralandSearchHitDto, SearchDto, SearchHitDto } from "../../../pages/api/search/search.types";

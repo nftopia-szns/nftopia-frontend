@@ -1,9 +1,9 @@
 import { useWeb3React } from '@web3-react/core'
 import { Button } from 'antd'
 import React from 'react'
-import { Bid, useAssetHook } from '../../../modules/asset/asset-hook'
-import { acceptBidRequest, cancelBidRequest } from '../../../modules/bid/bid-slice'
-import { useAppDispatch, useAppSelector } from '../../../modules/hook'
+import { Bid, useAssetHook } from '../../../services/asset/asset-hook'
+import { acceptBidRequest, cancelBidRequest } from '../../../services/bid/bid-slice'
+import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import { DecentralandSearchHitDto } from '../../../pages/api/search/search.types'
 
 type Props = {

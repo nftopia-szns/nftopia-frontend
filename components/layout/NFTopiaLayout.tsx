@@ -10,8 +10,8 @@ import { DownOutlined } from '@ant-design/icons';
 
 import "./NFTopiaLayout.module.css"
 import { MenuInfo } from "rc-menu/lib/interface"
-import { useAppDispatch } from "../../modules/hook"
-import { setWallet } from "../../modules/wallet/wallet-slice"
+import { useAppDispatch } from "../../services/hook"
+import { setWallet } from "../../services/wallet/wallet-slice"
 
 const NFTopiaLayout = ({ children }: { children: ReactNode }) => {
     const dispatch = useAppDispatch()

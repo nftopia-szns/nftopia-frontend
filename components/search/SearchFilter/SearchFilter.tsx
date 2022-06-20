@@ -1,8 +1,8 @@
 import { Button, Checkbox, Col, Collapse, InputNumber, Radio, RadioChangeEvent, Row } from 'antd'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import React, { useState } from 'react'
-import { useAppDispatch } from '../../../modules/hook';
-import { rCategoryFilter, rPriceMaxFilter, rPriceMinFilter, rSaleFilter, searchStart } from '../../../modules/search/search-slice';
+import { useAppDispatch } from '../../../services/hook';
+import { rCategoryFilter, rPriceMaxFilter, rPriceMinFilter, rSaleFilter, searchStart } from '../../../services/search/search-slice';
 import { CategoryFilter, SaleFilter } from '../search.types';
 
 const { Panel } = Collapse;

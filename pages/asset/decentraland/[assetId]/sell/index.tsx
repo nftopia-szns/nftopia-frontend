@@ -6,11 +6,11 @@ import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import { MetaversePlatform } from '../../../../../components/search/SearchBar/SearchBar.types';
-import { useAssetHook } from '../../../../../modules/asset/asset-hook';
-import { assetSelectorIsLoading } from '../../../../../modules/asset/asset-selectors';
-import { fetchAsset } from '../../../../../modules/asset/asset-slice';
-import { useAppDispatch, useAppSelector } from '../../../../../modules/hook';
-import { sellRequest, stopSellingRequest } from '../../../../../modules/sale/sale-slice';
+import { useAssetHook } from '../../../../../services/asset/asset-hook';
+import { assetSelectorIsLoading } from '../../../../../services/asset/asset-selectors';
+import { fetchAsset } from '../../../../../services/asset/asset-slice';
+import { useAppDispatch, useAppSelector } from '../../../../../services/hook';
+import { sellRequest, stopSellingRequest } from '../../../../../services/sale/sale-slice';
 import { isValidOrder } from '../../../../../utils';
 import { DecentralandSearchHitDto } from '../../../../api/search/search.types';
 

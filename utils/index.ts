@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers"
 import moment from "moment"
-import { Order } from "../modules/asset/asset-hook"
+import { Order } from "../services/asset/asset-hook"
 
 export const retrieveFromExternalUrl = (externalUrl: string) => {
     if (!externalUrl) {
