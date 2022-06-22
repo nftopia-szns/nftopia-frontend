@@ -1,8 +1,20 @@
-import { CategoryFilter, SaleFilter, SortByCriterias } from "../../components/search/search.types";
+import { DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSortByCriterias, MetaversePlatform } from "../../components/search/search.types";
 import { SearchDto } from "../../pages/api/search/search.types";
 import { SearchState } from "./search-slice";
 
 export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
+    switch (state.platform) {
+        case MetaversePlatform.Decentraland:
+            return _buildDecentralandSearchDtoFromState(state)
+        case MetaversePlatform.SandBox:
+            // TODO:
+            return null;
+        default:
+            throw new Error(`${state.platform} is not supported`)
+    }
+}
+
+export const _buildDecentralandSearchDtoFromState = (state: SearchState): SearchDto => {
     let should = []
     let must = []
     let must_not = []
@@ -21,65 +33,67 @@ export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
         })
     }
 
-    switch (state.saleFilter) {
-        case SaleFilter.OnSale:
+    const platformSearchState = state.platformSearchState
+
+    switch (platformSearchState.saleFilter) {
+        case DecentralandSaleFilter.OnSale:
             must.push({
                 "exists": {
                     "field": "active_order"
                 }
             })
             break;
-        case SaleFilter.NotOnSale:
+        case DecentralandSaleFilter.NotOnSale:
             must_not.push({
                 "exists": {
                     "field": "active_order"
                 }
             })
             break;
-        case SaleFilter.All:
+        case DecentralandSaleFilter.All:
         default:
             break;
     }
 
-    if (state.categoryFilter) {
-        should = should.concat(state.categoryFilter.map((item) => ({
+    if (platformSearchState.categoryFilter) {
+        should = should.concat(platformSearchState.categoryFilter.map((item) => ({
             match: {
                 category: getKeyCategoryFilter(item)
             }
         })))
     } else {
-        should = should.concat(Object.values(CategoryFilter).map((item) => ({
+        should = should.concat(Object.values(DecentralandCategoryFilter).map((item) => ({
             match: {
                 category: getKeyCategoryFilter(item)
             }
         })))
     }
 
-    if (state.ownerFilter) {
+    if (platformSearchState.ownerFilter) {
         must.push({
             "match": {
-                "owner": state.ownerFilter
+                "owner": platformSearchState.ownerFilter
             }
         })
     }
 
 
-    if (state.priceMinFilter || state.priceMaxFilter) {
+    if (platformSearchState.priceMinFilter || platformSearchState.priceMaxFilter) {
         const range = {
             "active_order.price": {
             }
         }
 
-        if (state.priceMinFilter) {
+        if (platformSearchState.priceMinFilter) {
             range["active_order.price"] = {
-                gte: state.priceMinFilter
+                gte: platformSearchState.priceMinFilter
             }
         }
 
-        if (state.priceMaxFilter) {
+        if (platformSearchState.priceMaxFilter) {
             range["active_order.price"] = {
                 ...range["active_order.price"],
-                lte: state.priceMaxFilter
+                lte: platformSearchState.priceMaxFilter
             }
         }
 
@@ -97,23 +111,23 @@ export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
 
     // build sort
     const sort = {}
-    switch (state.sortBy) {
-        case SortByCriterias.RecentlyBought:
+    switch (platformSearchState.sortBy) {
+        case DecentralandSortByCriterias.RecentlyBought:
             sort["sold_at"] = {
                 order: "desc"
             }
             break;
-        case SortByCriterias.TotalSales:
+        case DecentralandSortByCriterias.TotalSales:
             sort["sales"] = {
                 order: "desc"
             }
             break;
-        case SortByCriterias.RecentlyListed:
+        case DecentralandSortByCriterias.RecentlyListed:
             sort["active_order.updated_at"] = {
                 order: "desc"
             }
             break;
-        case SortByCriterias.Price:
+        case DecentralandSortByCriterias.Price:
         default:
             sort["active_order.price"] = {
                 order: "desc"
@@ -123,7 +137,8 @@ export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
 
     // build searchDto
     const searchDto = {
-        indices: state.indices,
+        // TODO: remove this hardcode
+        indices: ['decentraland-ethereum-3'],
         query: query,
         sort: sort,
         page: state.page,
@@ -133,11 +148,11 @@ export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
     return searchDto;
 }
 
-const getKeyCategoryFilter = (cat: CategoryFilter) => {
+const getKeyCategoryFilter = (cat: DecentralandCategoryFilter) => {
     switch (cat) {
-        case CategoryFilter.Estate:
+        case DecentralandCategoryFilter.Estate:
             return 'estate';
-        case CategoryFilter.Parcel:
+        case DecentralandCategoryFilter.Parcel:
             return 'parcel';
         default:
             throw new Error(`${cat} does not exist!`);

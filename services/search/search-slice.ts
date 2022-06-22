@@ -1,61 +1,48 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CategoryFilter, SaleFilter, SortByCriterias } from '../../components/search/search.types';
+import { DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSortByCriterias, MetaversePlatform } from '../../components/search/search.types';
 import { EmptySearchResultDto, SearchDto, SearchHitBase, SearchResultDto } from '../../pages/api/search/search.types';
 import { QueryBuilder } from '../../pages/api/search/search.utils';
 import { buildSearchDtoFromState } from './search.utils';
 
+export interface DecentralandSearchState {
+    // sorts
+    sortBy: DecentralandSortByCriterias
+
+    // filters
+    categoryFilter: DecentralandCategoryFilter[]; // estate, parcel
+    saleFilter: DecentralandSaleFilter; // on sale, not on sale, expired...
+    priceMinFilter?: number;
+    priceMaxFilter?: number;
+    ownerFilter?: string;
+}
+
 export interface SearchState {
     isLoading: boolean;
-    /**
-     * This field is built incrementally over search state changes.
-     * Whenever a user issues a `searchStart` action, this field is used to as search payload.
-     */
-    searchDto: SearchDto
 
-    /**
-     * Specifies the Elasticsearch indices to search.
-     */
-    indices: string[];
     /**
      * Specifies this field to search in name, description, owner...
      */
     query: string;
     page: number;
     pageSize: number;
-
-    // sorts
-    sortBy: SortByCriterias
-
-    // filters
-    categoryFilter: CategoryFilter[]; // estate, parcel
-    saleFilter: SaleFilter; // on sale, not on sale, expired...
-    priceMinFilter?: number;
-    priceMaxFilter?: number;
-    ownerFilter?: string;
+    platform: MetaversePlatform;
+    platformSearchState: DecentralandSearchState;
 
     searchResult: SearchResultDto<SearchHitBase>;
 }
 
 export const searchInitialState: SearchState = {
     isLoading: false,
-    searchDto: {
-        // TODO: remove this hardcode
-        indices: ['decentraland-ethereum-3'],
-        query: undefined,
-        page: 1,
-        pageSize: 10,
-    },
-    // TODO: remove this hardcode
-    indices: ['decentraland-ethereum-3'],
 
     query: '',
     page: 1,
     pageSize: 10,
-
-    sortBy: SortByCriterias.Price,
-
-    categoryFilter: Object.values(CategoryFilter),
-    saleFilter: SaleFilter.All,
+    platform: MetaversePlatform.Decentraland,
+    platformSearchState: {
+        categoryFilter: [DecentralandCategoryFilter.Estate, DecentralandCategoryFilter.Parcel],
+        saleFilter: DecentralandSaleFilter.All,
+        sortBy: DecentralandSortByCriterias.Price,
+    },
 
     searchResult: EmptySearchResultDto,
 };
@@ -73,24 +60,30 @@ export const searchSlice = createSlice({
         rPageSize(state, action: PayloadAction<number>) {
             state.pageSize = action.payload;
         },
-        rCategoryFilter(state, action: PayloadAction<CategoryFilter[]>) {
-            state.categoryFilter = action.payload
+        rPlatform(state, action: PayloadAction<MetaversePlatform>) {
+            state.platform = action.payload;
         },
-        rSaleFilter(state, action: PayloadAction<SaleFilter>) {
-            state.saleFilter = action.payload;
+        rDecentralandSearchState(state, action: PayloadAction<DecentralandSearchState>) {
+            state.platformSearchState = action.payload;
         },
-        rPriceMinFilter(state, action: PayloadAction<number>) {
-            state.priceMinFilter = action.payload;
-        },
-        rPriceMaxFilter(state, action: PayloadAction<number>) {
-            state.priceMaxFilter = action.payload;
-        },
-        rOwnerFilter(state, action: PayloadAction<string>) {
-            state.ownerFilter = action.payload;
-        },
-        rSortBy(state, action: PayloadAction<SortByCriterias>) {
-            state.sortBy = action.payload;
-        },
+        // rCategoryFilter(state, action: PayloadAction<DecentralandCategoryFilter[]>) {
+        //     state.categoryFilter = action.payload
+        // },
+        // rSaleFilter(state, action: PayloadAction<DecentralandSaleFilter>) {
+        //     state.saleFilter = action.payload;
+        // },
+        // rPriceMinFilter(state, action: PayloadAction<number>) {
+        //     state.priceMinFilter = action.payload;
+        // },
+        // rPriceMaxFilter(state, action: PayloadAction<number>) {
+        //     state.priceMaxFilter = action.payload;
+        // },
+        // rOwnerFilter(state, action: PayloadAction<string>) {
+        //     state.ownerFilter = action.payload;
+        // },
+        // rSortBy(state, action: PayloadAction<DecentralandSortByCriterias>) {
+        //     state.sortBy = action.payload;
+        // },
         searchStart(state, action: PayloadAction<SearchDto>) {
             state.isLoading = true
         },
@@ -105,14 +98,8 @@ export const {
     rQuery,
     rPage,
     rPageSize,
-
-    rCategoryFilter,
-    rSaleFilter,
-    rPriceMinFilter,
-    rPriceMaxFilter,
-    rOwnerFilter,
-
-    rSortBy,
+    rPlatform,
+    rDecentralandSearchState,
 
     searchSuccess,
     searchStart,

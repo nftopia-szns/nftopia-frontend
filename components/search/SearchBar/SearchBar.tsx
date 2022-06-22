@@ -4,23 +4,31 @@ import Search from "antd/lib/input/Search"
 import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../../services/hook"
-import { searchStart, rQuery, rSortBy } from "../../../services/search/search-slice"
+import { searchStart, rQuery, rPlatform, rDecentralandSearchState } from "../../../services/search/search-slice"
 import { buildSearchDtoFromState } from "../../../services/search/search.utils"
-import { SortByCriterias } from "../search.types"
+import { DecentralandSortByCriterias, MetaversePlatform } from "../search.types"
 import "./SearchBar.module.css"
+
+const DefaultMetaversePlatform = MetaversePlatform.Decentraland
 
 const SearchBar: FC = () => {
     const router = useRouter()
     const dispatch = useAppDispatch()
     const isLoading = useAppSelector((state) => state.search.isLoading)
     const searchState = useAppSelector((state) => state.search)
+    const platformSearchState = useAppSelector((state) => state.search.platformSearchState)
     const page = useAppSelector((state) => state.search.page)
     const pageSize = useAppSelector((state) => state.search.pageSize)
 
-    const [sortingCriteria, setSortingCriteria] = useState<SortByCriterias>(SortByCriterias.Price)
+    const [metaversePlatform, setMetaversePlatform] = useState<MetaversePlatform>(searchState.platform)
+    const [decentralandSortingCriteria, setDecentralandSortingCriteria] = useState<DecentralandSortByCriterias>(DecentralandSortByCriterias.Price)
 
     const [searchString, setSearchString] = useState<string>()
     const [parsedFromUrl, setParsedFromUrl] = useState<boolean>(false)
+
+    useEffect(() => {
+        dispatch(rPlatform(DefaultMetaversePlatform))
+    }, [])
 
     useEffect(() => {
         // below code is expected to execute only once when the query in url is ready
@@ -50,51 +58,100 @@ const SearchBar: FC = () => {
         }
     }, [searchString, page, pageSize])
 
-    const onSelectPlatform = () => {
-        // change the platform
-        // setPlatform(???)
-    }
-
     const handleSearch = async (_query: string) => {
         setSearchString(_query)
         const searchDto = buildSearchDtoFromState(searchState)
         dispatch(searchStart(searchDto))
     }
 
-    const onSortingChange: MenuProps['onClick'] = ({ key }) => {
-        setSortingCriteria(key as SortByCriterias)
-        dispatch(rSortBy(key as SortByCriterias))
+    const onDecentralandSortingChange: MenuProps['onClick'] = ({ key }) => {
+        setDecentralandSortingCriteria(key as DecentralandSortByCriterias)
+        dispatch(rDecentralandSearchState({
+            ...platformSearchState,
+            sortBy: key as DecentralandSortByCriterias
+        }))
     }
 
-    const sortingMenu = (
+    const onMetaversePlatformChange: MenuProps['onClick'] = ({ key }) => {
+        setMetaversePlatform(key as MetaversePlatform)
+        dispatch(rPlatform(key as MetaversePlatform))
+    }
+
+    const decentralandSortingMenu = (
         <Menu
-            onClick={onSortingChange}
-            defaultSelectedKeys={[SortByCriterias.Price]}
+            onClick={onDecentralandSortingChange}
+            defaultSelectedKeys={[DecentralandSortByCriterias.Price]}
             items={[
                 {
                     label: "Price",
-                    key: SortByCriterias.Price,
+                    key: DecentralandSortByCriterias.Price,
                 },
                 {
                     label: "Recently listed",
-                    key: SortByCriterias.RecentlyListed,
+                    key: DecentralandSortByCriterias.RecentlyListed,
                 },
                 {
                     label: 'Recently bought',
-                    key: SortByCriterias.RecentlyBought,
+                    key: DecentralandSortByCriterias.RecentlyBought,
                 },
                 {
                     label: 'Total sales',
-                    key: SortByCriterias.TotalSales,
+                    key: DecentralandSortByCriterias.TotalSales,
                 },
             ]}
         />
     );
 
+    const metaversePlatformMenu = (
+        <Menu
+            onClick={onMetaversePlatformChange}
+            defaultSelectedKeys={[DefaultMetaversePlatform]}
+            items={[
+                {
+                    label: "Decentraland",
+                    key: MetaversePlatform.Decentraland,
+                },
+                {
+                    label: "The Sandbox",
+                    key: MetaversePlatform.SandBox,
+                },
+            ]}
+        />
+    );
+
+    const getSortingComponent = (p: MetaversePlatform) => {
+        switch (p) {
+            case MetaversePlatform.SandBox:
+                return null
+            case MetaversePlatform.Decentraland:
+            default:
+                return <Dropdown overlay={decentralandSortingMenu} trigger={['click']}>
+                    <a onClick={e => e.preventDefault()}>
+                        <Space>
+                            {decentralandSortingCriteria}
+                            <DownOutlined />
+                        </Space>
+                    </a>
+                </Dropdown>
+        }
+    }
+
     return (
         <>
             <Col span={6}>
-                <Button>Show/Hide Filter</Button>
+                <Col span={3}>
+                    <Dropdown overlay={metaversePlatformMenu} trigger={['click']}>
+                        <a onClick={e => e.preventDefault()}>
+                            <Space>
+                                {metaversePlatform}
+                                <DownOutlined />
+                            </Space>
+                        </a>
+                    </Dropdown>
+                </Col>
+                <Col span={3}>
+                    <Button>Show/Hide Filter</Button>
+                </Col>
             </Col>
 
             <Col span={12}>
@@ -111,14 +168,7 @@ const SearchBar: FC = () => {
             </Col>
 
             <Col span={6}>
-                <Dropdown overlay={sortingMenu} trigger={['click']}>
-                    <a onClick={e => e.preventDefault()}>
-                        <Space>
-                            {sortingCriteria}
-                            <DownOutlined />
-                        </Space>
-                    </a>
-                </Dropdown>
+                {getSortingComponent(metaversePlatform)}
             </Col>
         </>
     )

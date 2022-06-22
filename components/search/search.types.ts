@@ -3,18 +3,23 @@ export enum SearchEvents {
     SEARCH_ON_PAGING = 'search_on_paging',
 }
 
-export enum CategoryFilter {
+export enum MetaversePlatform {
+    Decentraland = 'decentraland',
+    SandBox = 'sandbox',
+}
+
+export enum DecentralandCategoryFilter {
     Estate = "Estate",
     Parcel = "Parcel",
 }
 
-export enum SaleFilter {
+export enum DecentralandSaleFilter {
     All = "All",
     OnSale = "On Sale",
     NotOnSale = "Not On Sale",
 }
 
-export enum SortByCriterias {
+export enum DecentralandSortByCriterias {
     Price = 'price',
     RecentlyListed = 'recently-listed',
     RecentlyBought = 'recently-bought',

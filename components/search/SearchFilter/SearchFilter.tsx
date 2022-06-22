@@ -1,9 +1,9 @@
 import { Button, Checkbox, Col, Collapse, Input, InputNumber, Radio, RadioChangeEvent, Row } from 'antd'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import React, { useState } from 'react'
-import { useAppDispatch } from '../../../services/hook';
-import { rCategoryFilter, rOwnerFilter, rPriceMaxFilter, rPriceMinFilter, rSaleFilter, searchStart } from '../../../services/search/search-slice';
-import { CategoryFilter, SaleFilter } from '../search.types';
+import { useAppDispatch, useAppSelector } from '../../../services/hook';
+import { rDecentralandSearchState } from '../../../services/search/search-slice';
+import { DecentralandCategoryFilter, DecentralandSaleFilter } from '../search.types';
 
 const { Panel } = Collapse;
 const CheckboxGroup = Checkbox.Group;
@@ -11,16 +11,17 @@ const CheckboxGroup = Checkbox.Group;
 type Props = {}
 const SearchFilter = (props: Props) => {
     const dispatch = useAppDispatch()
+    const platformSearchState = useAppSelector((state) => state.search.platformSearchState)
 
-    const CategoryFilterOptions = Object.values(CategoryFilter)
-    const SaleFilterOptions: SaleFilter[] = Object.values(SaleFilter)
+    const CategoryFilterOptions = Object.values(DecentralandCategoryFilter)
+    const SaleFilterOptions: DecentralandSaleFilter[] = Object.values(DecentralandSaleFilter)
     const CategoryFilterDefault = CategoryFilterOptions
-    const SaleFilterDefault = SaleFilter.All
+    const SaleFilterDefault = DecentralandSaleFilter.All
 
     const [categoryFilter, setCategoryFilter] =
         useState<CheckboxValueType[]>(CategoryFilterDefault);
     const [saleFilter, setSaleFilter] =
-        useState<SaleFilter>(SaleFilterDefault);
+        useState<DecentralandSaleFilter>(SaleFilterDefault);
 
     const [ownerFilter, setOwnerFilter] = useState<string>()
 
@@ -29,24 +30,35 @@ const SearchFilter = (props: Props) => {
 
     const onAssetCategoryChange = (opts: CheckboxValueType[]) => {
         setCategoryFilter(opts);
-        dispatch(rCategoryFilter(opts as CategoryFilter[]))
-        dispatch(searchStart())
+        dispatch(rDecentralandSearchState({
+            ...platformSearchState,
+            categoryFilter: opts as DecentralandCategoryFilter[]
+        }))
     }
 
     const onSaleFilterChange = ({ target: { value } }: RadioChangeEvent) => {
         setSaleFilter(value);
-        dispatch(rSaleFilter(value))
+        dispatch(rDecentralandSearchState({
+            ...platformSearchState,
+            saleFilter: value as DecentralandSaleFilter
+        }))
     }
 
     const onApplyOwnerFilter = () => {
         if (ownerFilter && ownerFilter !== '') {
-            dispatch(rOwnerFilter(ownerFilter.toLowerCase()))
+            dispatch(rDecentralandSearchState({
+                ...platformSearchState,
+                ownerFilter: ownerFilter.toLowerCase()
+            }))
         }
     }
 
     const onApplyPriceFilter = () => {
-        dispatch(rPriceMinFilter(priceMin))
-        dispatch(rPriceMaxFilter(priceMax))
+        dispatch(rDecentralandSearchState({
+            ...platformSearchState,
+            priceMinFilter: priceMin,
+            priceMaxFilter: priceMax,
+        }))
     }
 
     return (
