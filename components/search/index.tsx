@@ -5,5 +5,5 @@ import SearchResults from "./SearchResults/SearchResults";
 export {
     SearchBar,
     SearchResults,
-    SearchFilter,
+    SearchFilter
 }
