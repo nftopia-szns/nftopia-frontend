@@ -54,19 +54,11 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
             break;
     }
 
-    if (platformSearchState.categoryFilter) {
-        should = should.concat(platformSearchState.categoryFilter.map((item) => ({
-            match: {
-                category: getDecentralandKeyCategoryFilter(item)
-            }
-        })))
-    } else {
-        should = should.concat(Object.values(DecentralandCategoryFilter).map((item) => ({
-            match: {
-                category: getDecentralandKeyCategoryFilter(item)
-            }
-        })))
-    }
+    must.push({
+        terms: {
+            category: platformSearchState.categoryFilter.map((item) => getDecentralandKeyCategoryFilter(item))
+        }
+    })
 
     if (platformSearchState.ownerFilter) {
         must.push({
@@ -75,7 +67,6 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
             }
         })
     }
-
 
     if (platformSearchState.priceMinFilter || platformSearchState.priceMaxFilter) {
         const range = {
