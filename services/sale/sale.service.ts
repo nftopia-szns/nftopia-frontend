@@ -2,9 +2,8 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { Web3Provider } from "@ethersproject/providers";
 import { ContractData, ContractName, getContract } from "decentraland-transactions";
 import { Network } from "../../components/asset/DecentralandAsset/DecentralandAsset.type";
-import { ERC721__factory, FakeERC20__factory } from "../../contracts/bid-contract/typechain-types";
 import type { ContractTransaction } from "ethers";
-import { Marketplace__factory } from "../../contracts/land-contract/typechain";
+import { ERC20__factory, ERC721__factory, Marketplace__factory } from "../../contracts/land-contract/typechain";
 import { DecentralandSearchHitDto } from "../../pages/api/search/search.types";
 import { BN_ZERO } from "../../constants/eth";
 
@@ -95,7 +94,7 @@ export class SaleService {
                     ContractName.Marketplace,
                     asset.chain_id,
                 )
-                const contractMana = FakeERC20__factory.connect(
+                const contractMana = ERC20__factory.connect(
                     contractManaData.address,
                     provider.getSigner(),
                 )
