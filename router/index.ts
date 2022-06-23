@@ -1,17 +1,17 @@
 export const parameterizedRouter = {
     asset: {
         decentraland: {
-            detail: (id) => {
-                return `/asset/decentraland/${id}`
+            detail: (index, id) => {
+                return `/asset/decentraland/${index}/${id}`
             },
-            buy: (id) => {
-                return `/asset/decentraland/${id}/buy`
+            buy: (index, id) => {
+                return `/asset/decentraland/${index}/${id}/buy`
             },
-            bid: (id) => {
-                return `/asset/decentraland/${id}/bid`
+            bid: (index, id) => {
+                return `/asset/decentraland/${index}/${id}/bid`
             },
-            sell: (id) => {
-                return `/asset/decentraland/${id}/sell`
+            sell: (index, id) => {
+                return `/asset/decentraland/${index}/${id}/sell`
             },
             // bid: (id) => {
             //     return `/asset/decentraland/${id}/bid`

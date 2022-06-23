@@ -9,9 +9,9 @@ export function* handleFetchAsset(action: PayloadAction<AssetBriefInfo>) {
     try {
         const query = new QueryBuilder().matchQuery([{ field: "id", query: action.payload.id }])
         const searchDto: SearchDto = {
-            indices: ["decentraland-ethereum-3"],
+            indices: [action.payload.index],
             query,
-        } 
+        }
 
         const _searchResults: SearchResultDto<DecentralandSearchHitDto> = yield enhancedSearch(searchDto)
 

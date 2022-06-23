@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { MetaversePlatform } from '../../components/search/SearchBar/SearchBar.types';
 import { DecentralandSearchHitDto } from '../../pages/api/search/search.types';
 
 export interface AssetBriefInfo {
-    metaversePlatform: MetaversePlatform
+    index: string
     id: string
 }
 

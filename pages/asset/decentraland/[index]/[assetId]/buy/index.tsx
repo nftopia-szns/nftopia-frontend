@@ -5,21 +5,20 @@ import Title from "antd/lib/typography/Title"
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { MetaversePlatform } from '../../../../../components/search/SearchBar/SearchBar.types'
-import { ERC20__factory } from '../../../../../contracts/bid-contract/typechain-types'
-import { useAssetHook } from '../../../../../services/asset/asset-hook'
-import { assetSelectorIsLoading } from '../../../../../services/asset/asset-selectors'
-import { fetchAsset } from '../../../../../services/asset/asset-slice'
-import { buyRequest } from '../../../../../services/sale/sale-slice'
-import { useAppDispatch, useAppSelector } from '../../../../../services/hook'
-import { isValidOrder } from '../../../../../utils'
-import { DecentralandSearchHitDto } from '../../../../api/search/search.types'
+import { ERC20__factory } from '../../../../../../contracts/bid-contract/typechain-types'
+import { useAssetHook } from '../../../../../../services/asset/asset-hook'
+import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors'
+import { fetchAsset } from '../../../../../../services/asset/asset-slice'
+import { buyRequest } from '../../../../../../services/sale/sale-slice'
+import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
+import { isValidOrder } from '../../../../../../utils'
+import { DecentralandSearchHitDto } from '../../../../../api/search/search.types'
 
 type Props = {}
 
 function DecentralandAssetBuyPage({ }: Props) {
     const router = useRouter()
-    const { assetId } = router.query;
+    const { index, assetId } = router.query;
     const dispatch = useAppDispatch()
     const { account, provider } = useWeb3React()
 
@@ -38,7 +37,7 @@ function DecentralandAssetBuyPage({ }: Props) {
     useEffect(() => {
         if (assetId) {
             dispatch(fetchAsset({
-                metaversePlatform: MetaversePlatform.Decentraland,
+                index: index.toString(),
                 id: assetId.toString()
             }))
         }

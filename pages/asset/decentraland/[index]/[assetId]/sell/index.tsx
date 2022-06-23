@@ -5,20 +5,19 @@ import Title from 'antd/lib/typography/Title';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
-import { MetaversePlatform } from '../../../../../components/search/SearchBar/SearchBar.types';
-import { useAssetHook } from '../../../../../services/asset/asset-hook';
-import { assetSelectorIsLoading } from '../../../../../services/asset/asset-selectors';
-import { fetchAsset } from '../../../../../services/asset/asset-slice';
-import { useAppDispatch, useAppSelector } from '../../../../../services/hook';
-import { sellRequest, stopSellingRequest } from '../../../../../services/sale/sale-slice';
-import { isValidOrder } from '../../../../../utils';
-import { DecentralandSearchHitDto } from '../../../../api/search/search.types';
+import { useAssetHook } from '../../../../../../services/asset/asset-hook';
+import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors';
+import { fetchAsset } from '../../../../../../services/asset/asset-slice';
+import { useAppDispatch, useAppSelector } from '../../../../../../services/hook';
+import { sellRequest, stopSellingRequest } from '../../../../../../services/sale/sale-slice';
+import { isValidOrder } from '../../../../../../utils';
+import { DecentralandSearchHitDto } from '../../../../../api/search/search.types';
 
 type Props = {}
 
 const DecentralandAssetSellPage = (props: Props) => {
   const router = useRouter()
-  const { assetId } = router.query;
+  const { index, assetId } = router.query;
   const dispatch = useAppDispatch()
   const { account, provider } = useWeb3React()
 
@@ -38,7 +37,7 @@ const DecentralandAssetSellPage = (props: Props) => {
   useEffect(() => {
     if (assetId) {
       dispatch(fetchAsset({
-        metaversePlatform: MetaversePlatform.Decentraland,
+        index: index.toString(),
         id: assetId.toString()
       }))
     }

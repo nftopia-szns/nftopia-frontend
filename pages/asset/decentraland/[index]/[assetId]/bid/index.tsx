@@ -7,22 +7,21 @@ import { BigNumber } from 'ethers'
 import moment from "moment"
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import BidList from '../../../../../components/asset/BidList/BidList'
-import { MetaversePlatform } from '../../../../../components/search/SearchBar/SearchBar.types'
-import { BN_ZERO } from '../../../../../constants/eth'
-import { IERC20__factory } from '../../../../../contracts/bid-contract/typechain-types'
-import { useAssetHook } from '../../../../../services/asset/asset-hook'
-import { assetSelectorIsLoading } from '../../../../../services/asset/asset-selectors'
-import { fetchAsset } from '../../../../../services/asset/asset-slice'
-import { bidRequest } from '../../../../../services/bid/bid-slice'
-import { useAppDispatch, useAppSelector } from '../../../../../services/hook'
-import { DecentralandSearchHitDto } from '../../../../api/search/search.types'
+import BidList from '../../../../../../components/asset/BidList/BidList'
+import { BN_ZERO } from '../../../../../../constants/eth'
+import { IERC20__factory } from '../../../../../../contracts/bid-contract/typechain-types'
+import { useAssetHook } from '../../../../../../services/asset/asset-hook'
+import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors'
+import { fetchAsset } from '../../../../../../services/asset/asset-slice'
+import { bidRequest } from '../../../../../../services/bid/bid-slice'
+import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
+import { DecentralandSearchHitDto } from '../../../../../api/search/search.types'
 
 type Props = {}
 
 const DecentralandAssetBidPage = (props: Props) => {
   const router = useRouter()
-  const { assetId } = router.query;
+  const { index, assetId } = router.query;
   const dispatch = useAppDispatch()
   const { account, provider } = useWeb3React()
 
@@ -45,7 +44,7 @@ const DecentralandAssetBidPage = (props: Props) => {
   useEffect(() => {
     if (assetId) {
       dispatch(fetchAsset({
-        metaversePlatform: MetaversePlatform.Decentraland,
+        index: index.toString(),
         id: assetId.toString()
       }))
     }
