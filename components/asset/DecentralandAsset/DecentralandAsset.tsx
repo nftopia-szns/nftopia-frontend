@@ -8,24 +8,29 @@ import { useAssetHook } from '../../../services/asset/asset-hook'
 import { isValidOrder } from '../../../utils'
 import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'next/router'
+import { parameterizedRouter } from '../../../router'
 
 const DecentralandAsset = () => {
   const router = useRouter()
+  const { index, assetId } = router.query
   const isAssetLoading = useAppSelector<boolean>((state) => state.asset.isLoading)
   const assetDetail = useAppSelector<DecentralandSearchHitDto>((state) => state.asset.assetDetail as DecentralandSearchHitDto)
   const { account } = useWeb3React()
   const { owner, order, isLoading } = useAssetHook(assetDetail)
 
   const onBidClicked = () => {
-    router.push(router.locale + '/bid')
+    const url = parameterizedRouter.asset.decentraland.bid(index.toString(), assetId.toString())
+    router.push(url)
   }
 
   const onBuyClicked = () => {
-    router.push(router.locale + '/buy')
+    const url = parameterizedRouter.asset.decentraland.buy(index.toString(), assetId.toString())
+    router.push(url)
   }
 
   const onSellClicked = () => {
-    router.push(router.locale + '/sell')
+    const url = parameterizedRouter.asset.decentraland.sell(index.toString(), assetId.toString())
+    router.push(url)
   }
 
   return (
