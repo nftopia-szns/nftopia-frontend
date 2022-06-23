@@ -1,14 +1,13 @@
-import { DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSortByCriterias, MetaversePlatform } from "../../components/search/search.types";
 import { SearchDto } from "../../pages/api/search/search.types";
 import { SearchState } from "./search-slice";
+import { DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSearchState, DecentralandSortByCriterias, MetaversePlatform, SandBoxCategoryFilter, SandBoxLandTypeFilter, SandBoxSearchState } from "./search.types";
 
 export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
     switch (state.platform) {
         case MetaversePlatform.Decentraland:
             return _buildDecentralandSearchDtoFromState(state)
         case MetaversePlatform.SandBox:
-            // TODO:
-            return null;
+            return _buildSandBoxSearchDtoFromState(state);
         default:
             throw new Error(`${state.platform} is not supported`)
     }
@@ -33,7 +32,7 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
         })
     }
 
-    const platformSearchState = state.platformSearchState
+    const platformSearchState = state.platformSearchState as DecentralandSearchState
 
     switch (platformSearchState.saleFilter) {
         case DecentralandSaleFilter.OnSale:
@@ -58,13 +57,13 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
     if (platformSearchState.categoryFilter) {
         should = should.concat(platformSearchState.categoryFilter.map((item) => ({
             match: {
-                category: getKeyCategoryFilter(item)
+                category: getDecentralandKeyCategoryFilter(item)
             }
         })))
     } else {
         should = should.concat(Object.values(DecentralandCategoryFilter).map((item) => ({
             match: {
-                category: getKeyCategoryFilter(item)
+                category: getDecentralandKeyCategoryFilter(item)
             }
         })))
     }
@@ -148,12 +147,101 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
     return searchDto;
 }
 
-const getKeyCategoryFilter = (cat: DecentralandCategoryFilter) => {
+export const _buildSandBoxSearchDtoFromState = (state: SearchState): SearchDto => {
+    let should = []
+    let must = []
+    let must_not = []
+
+    if (state.query && state.query !== '') {
+        must.push({
+            "multi_match": {
+                "query": state.query,
+                "fields": [
+                    "name",
+                    "description",
+                    "attributes.coordinate",
+                    "owner"
+                ]
+            }
+        })
+    }
+
+    const platformSearchState = state.platformSearchState as SandBoxSearchState
+
+    must = must.concat(
+        {
+            terms: {
+                category: platformSearchState.categoryFilter.map((item) => getSandBoxKeyCategoryFilter(item))
+            }
+        },
+        {
+            terms: {
+                land_type: platformSearchState.landTypeFilter.map((item) => getSandBoxKeyLandTypeFilter(item))
+            }
+        }
+    )
+
+    if (platformSearchState.ownerFilter) {
+        must.push({
+            "match": {
+                "owner": platformSearchState.ownerFilter
+            }
+        })
+    }
+
+    // build query
+    const query = {
+        bool: {
+            should: should,
+            must: must,
+            must_not: must_not,
+        }
+    }
+
+    // build sort
+    const sort = {}
+
+    // build searchDto
+    const searchDto = {
+        // TODO: remove this hardcode
+        indices: ['sandbox-ethereum-1'],
+        query: query,
+        sort: sort,
+        page: state.page,
+        pageSize: state.pageSize
+    }
+
+    return searchDto;
+}
+
+const getDecentralandKeyCategoryFilter = (cat: DecentralandCategoryFilter) => {
     switch (cat) {
         case DecentralandCategoryFilter.Estate:
             return 'estate';
         case DecentralandCategoryFilter.Parcel:
             return 'parcel';
+        default:
+            throw new Error(`${cat} does not exist!`);
+    }
+}
+
+const getSandBoxKeyCategoryFilter = (cat: SandBoxCategoryFilter) => {
+    switch (cat) {
+        case SandBoxCategoryFilter.Estate:
+            return 'estate';
+        case SandBoxCategoryFilter.Land:
+            return 'land';
+        default:
+            throw new Error(`${cat} does not exist!`);
+    }
+}
+
+const getSandBoxKeyLandTypeFilter = (cat: SandBoxLandTypeFilter) => {
+    switch (cat) {
+        case SandBoxLandTypeFilter.Regular:
+            return 'regular';
+        case SandBoxLandTypeFilter.Premium:
+            return 'premium';
         default:
             throw new Error(`${cat} does not exist!`);
     }

@@ -1,6 +1,7 @@
 import { useAppSelector } from '../../../services/hook'
-import { MetaversePlatform } from '../search.types'
+import { MetaversePlatform } from '../../../services/search/search.types'
 import DecentralandSearchFilter from './DecentralandSearchFilter'
+import SandBoxSearchFilter from './SandBoxSearchFilter'
 
 type Props = {}
 
@@ -12,7 +13,7 @@ const SearchFilter = (props: Props) => {
             return <DecentralandSearchFilter/>
 
         case MetaversePlatform.SandBox:
-            return null
+            return <SandBoxSearchFilter/>
 
         default:
             return null

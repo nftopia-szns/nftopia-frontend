@@ -2,8 +2,8 @@ import { Button, Checkbox, Col, Collapse, Input, InputNumber, Radio, RadioChange
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../services/hook';
-import { rDecentralandSearchState } from '../../../services/search/search-slice';
-import { DecentralandCategoryFilter, DecentralandSaleFilter } from '../search.types';
+import { rPlatformSearchState } from '../../../services/search/search-slice';
+import { DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSearchState } from '../../../services/search/search.types';
 
 const { Panel } = Collapse;
 const CheckboxGroup = Checkbox.Group;
@@ -31,15 +31,15 @@ const DecentralandSearchFilter = (props: Props) => {
 
     const onAssetCategoryChange = (opts: CheckboxValueType[]) => {
         setCategoryFilter(opts);
-        dispatch(rDecentralandSearchState({
-            ...platformSearchState,
+        dispatch(rPlatformSearchState({
+            ...(platformSearchState as DecentralandSearchState),
             categoryFilter: opts as DecentralandCategoryFilter[]
         }))
     }
 
     const onSaleFilterChange = ({ target: { value } }: RadioChangeEvent) => {
         setSaleFilter(value);
-        dispatch(rDecentralandSearchState({
+        dispatch(rPlatformSearchState({
             ...platformSearchState,
             saleFilter: value as DecentralandSaleFilter
         }))
@@ -47,7 +47,7 @@ const DecentralandSearchFilter = (props: Props) => {
 
     const onApplyOwnerFilter = () => {
         if (ownerFilter && ownerFilter !== '') {
-            dispatch(rDecentralandSearchState({
+            dispatch(rPlatformSearchState({
                 ...platformSearchState,
                 ownerFilter: ownerFilter.toLowerCase()
             }))
@@ -55,7 +55,7 @@ const DecentralandSearchFilter = (props: Props) => {
     }
 
     const onApplyPriceFilter = () => {
-        dispatch(rDecentralandSearchState({
+        dispatch(rPlatformSearchState({
             ...platformSearchState,
             priceMinFilter: priceMin,
             priceMaxFilter: priceMax,

@@ -2,8 +2,8 @@ import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Menu, MenuProps, Space } from 'antd'
 import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
-import { rDecentralandSearchState } from '../../../services/search/search-slice'
-import { DecentralandSortByCriterias, MetaversePlatform } from '../search.types'
+import { rPlatformSearchState } from '../../../services/search/search-slice'
+import { MetaversePlatform, DecentralandSortByCriterias } from '../../../services/search/search.types'
 
 type Props = {
     platform: MetaversePlatform
@@ -20,7 +20,7 @@ const SearchSorting = (props: Props) => {
 
     const onDecentralandSortingChange: MenuProps['onClick'] = ({ key }) => {
         setDecentralandSortingCriteria(key as DecentralandSortByCriterias)
-        dispatch(rDecentralandSearchState({
+        dispatch(rPlatformSearchState({
             ...platformSearchState,
             sortBy: key as DecentralandSortByCriterias
         }))

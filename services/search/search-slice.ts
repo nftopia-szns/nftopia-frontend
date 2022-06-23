@@ -1,20 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSortByCriterias, MetaversePlatform } from '../../components/search/search.types';
-import { EmptySearchResultDto, SearchDto, SearchHitBase, SearchResultDto } from '../../pages/api/search/search.types';
-import { QueryBuilder } from '../../pages/api/search/search.utils';
-import { buildSearchDtoFromState } from './search.utils';
-
-export interface DecentralandSearchState {
-    // sorts
-    sortBy: DecentralandSortByCriterias
-
-    // filters
-    categoryFilter: DecentralandCategoryFilter[]; // estate, parcel
-    saleFilter: DecentralandSaleFilter; // on sale, not on sale, expired...
-    priceMinFilter?: number;
-    priceMaxFilter?: number;
-    ownerFilter?: string;
-}
+import {
+    EmptySearchResultDto,
+    SearchDto,
+    SearchHitBase,
+    SearchResultDto
+} from '../../pages/api/search/search.types';
+import {
+    DecentralandCategoryFilter,
+    DecentralandSaleFilter,
+    DecentralandSearchState,
+    DecentralandSortByCriterias,
+    MetaversePlatform,
+    SandBoxSearchState
+} from './search.types';
 
 export interface SearchState {
     isLoading: boolean;
@@ -26,7 +24,9 @@ export interface SearchState {
     page: number;
     pageSize: number;
     platform: MetaversePlatform;
-    platformSearchState: DecentralandSearchState;
+    platformSearchState: 
+        DecentralandSearchState |
+        SandBoxSearchState;
 
     searchResult: SearchResultDto<SearchHitBase>;
 }
@@ -63,7 +63,7 @@ export const searchSlice = createSlice({
         rPlatform(state, action: PayloadAction<MetaversePlatform>) {
             state.platform = action.payload;
         },
-        rDecentralandSearchState(state, action: PayloadAction<DecentralandSearchState>) {
+        rPlatformSearchState(state, action: PayloadAction<DecentralandSearchState | SandBoxSearchState>) {
             state.platformSearchState = action.payload;
         },
         // rCategoryFilter(state, action: PayloadAction<DecentralandCategoryFilter[]>) {
@@ -99,7 +99,7 @@ export const {
     rPage,
     rPageSize,
     rPlatform,
-    rDecentralandSearchState,
+    rPlatformSearchState,
 
     searchSuccess,
     searchStart,
