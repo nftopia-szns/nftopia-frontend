@@ -10,6 +10,8 @@ import {
     DecentralandSaleFilter,
     DecentralandSearchState,
     DecentralandSortByCriterias,
+    InitialDecentralandSearchState,
+    InitialSandBoxSearchState,
     MetaversePlatform,
     SandBoxSearchState
 } from './search.types';
@@ -62,6 +64,17 @@ export const searchSlice = createSlice({
         },
         rPlatform(state, action: PayloadAction<MetaversePlatform>) {
             state.platform = action.payload;
+            switch (state.platform) {
+                case MetaversePlatform.Decentraland:
+                    state.platformSearchState = InitialDecentralandSearchState
+                    break;
+                case MetaversePlatform.SandBox:
+                    state.platformSearchState = InitialSandBoxSearchState
+                    break;
+                default:
+                    state.platformSearchState = InitialDecentralandSearchState
+                    break;
+            }
         },
         rPlatformSearchState(state, action: PayloadAction<DecentralandSearchState | SandBoxSearchState>) {
             state.platformSearchState = action.payload;

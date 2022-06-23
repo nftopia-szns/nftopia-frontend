@@ -7,12 +7,14 @@ export enum DecentralandCategoryFilter {
     Estate = "Estate",
     Parcel = "Parcel",
 }
+export const DecentralandCategoryFilterOptions = Object.values(DecentralandCategoryFilter)
 
 export enum DecentralandSaleFilter {
     All = "All",
     OnSale = "On Sale",
     NotOnSale = "Not On Sale",
 }
+export const DecentralandSaleFilterOptions: DecentralandSaleFilter[] = Object.values(DecentralandSaleFilter)
 
 export enum DecentralandSortByCriterias {
     Price = 'price',
@@ -23,7 +25,7 @@ export enum DecentralandSortByCriterias {
 
 export interface DecentralandSearchState {
     // sorts
-    sortBy: DecentralandSortByCriterias
+    sortBy: DecentralandSortByCriterias;
     
     // filters
     categoryFilter: DecentralandCategoryFilter[]; // estate, parcel
@@ -31,6 +33,12 @@ export interface DecentralandSearchState {
     priceMinFilter?: number;
     priceMaxFilter?: number;
     ownerFilter?: string;
+}
+
+export const InitialDecentralandSearchState: DecentralandSearchState = {
+    sortBy: DecentralandSortByCriterias.Price,
+    categoryFilter: [DecentralandCategoryFilter.Estate, DecentralandCategoryFilter.Parcel],
+    saleFilter: DecentralandSaleFilter.All,
 }
 
 export enum SandBoxCategoryFilter {
@@ -42,6 +50,9 @@ export enum SandBoxLandTypeFilter {
     Regular = "Regular",
     Premium = "Premium"
 }
+
+export const SandBoxCategoryFilterOptions = Object.values(SandBoxCategoryFilter)
+export const SandBoxLandTypeFilterOptions = Object.values(SandBoxLandTypeFilter)
 
 export interface SandBoxSearchState {
     // sorts
@@ -56,4 +67,9 @@ export interface SandBoxSearchState {
     // priceMinFilter?: number;
     // priceMaxFilter?: number;
     ownerFilter?: string;
+}
+
+export const InitialSandBoxSearchState: SandBoxSearchState = {
+    categoryFilter: SandBoxCategoryFilterOptions,
+    landTypeFilter: SandBoxLandTypeFilterOptions,
 }

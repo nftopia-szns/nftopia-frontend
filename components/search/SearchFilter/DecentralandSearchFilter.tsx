@@ -1,9 +1,9 @@
 import { Button, Checkbox, Col, Collapse, Input, InputNumber, Radio, RadioChangeEvent, Row } from 'antd'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../services/hook';
 import { rPlatformSearchState } from '../../../services/search/search-slice';
-import { DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSearchState } from '../../../services/search/search.types';
+import { DecentralandCategoryFilter, DecentralandCategoryFilterOptions, DecentralandSaleFilter, DecentralandSaleFilterOptions, DecentralandSearchState } from '../../../services/search/search.types';
 
 const { Panel } = Collapse;
 const CheckboxGroup = Checkbox.Group;
@@ -12,27 +12,26 @@ type Props = {}
 
 const DecentralandSearchFilter = (props: Props) => {
     const dispatch = useAppDispatch()
-    const platformSearchState = useAppSelector((state) => state.search.platformSearchState)
+    const platformSearchState = useAppSelector((state) => state.search.platformSearchState as DecentralandSearchState)
 
-    const CategoryFilterOptions = Object.values(DecentralandCategoryFilter)
-    const SaleFilterOptions: DecentralandSaleFilter[] = Object.values(DecentralandSaleFilter)
-    const CategoryFilterDefault = CategoryFilterOptions
-    const SaleFilterDefault = DecentralandSaleFilter.All
-
-    const [categoryFilter, setCategoryFilter] =
-        useState<CheckboxValueType[]>(CategoryFilterDefault);
-    const [saleFilter, setSaleFilter] =
-        useState<DecentralandSaleFilter>(SaleFilterDefault);
-
+    const [categoryFilter, setCategoryFilter] = useState<CheckboxValueType[]>();
+    const [saleFilter, setSaleFilter] = useState<DecentralandSaleFilter>();
     const [ownerFilter, setOwnerFilter] = useState<string>()
-
     const [priceMin, setPriceMin] = useState<number>()
     const [priceMax, setPriceMax] = useState<number>()
+
+    useEffect(() => {
+        setCategoryFilter(platformSearchState.categoryFilter)
+        setSaleFilter(platformSearchState.saleFilter)
+        setOwnerFilter(platformSearchState.ownerFilter)
+        setPriceMin(platformSearchState.priceMinFilter)
+        setPriceMax(platformSearchState.priceMaxFilter)
+    }, [platformSearchState])
 
     const onAssetCategoryChange = (opts: CheckboxValueType[]) => {
         setCategoryFilter(opts);
         dispatch(rPlatformSearchState({
-            ...(platformSearchState as DecentralandSearchState),
+            ...platformSearchState,
             categoryFilter: opts as DecentralandCategoryFilter[]
         }))
     }
@@ -64,10 +63,10 @@ const DecentralandSearchFilter = (props: Props) => {
 
     return (
         <>
-            <Collapse defaultActiveKey={['1']}>
+            <Collapse defaultActiveKey={['1', '2', '3', '4']}>
                 <Panel header="Category" key="1">
                     <CheckboxGroup
-                        options={CategoryFilterOptions}
+                        options={DecentralandCategoryFilterOptions}
                         value={categoryFilter}
                         onChange={onAssetCategoryChange} />
                 </Panel>
@@ -75,7 +74,7 @@ const DecentralandSearchFilter = (props: Props) => {
                     <Radio.Group
                         onChange={onSaleFilterChange}
                         value={saleFilter}
-                        options={SaleFilterOptions}>
+                        options={DecentralandSaleFilterOptions}>
                     </Radio.Group>
                 </Panel>
                 <Panel header="Price" key="3">

@@ -3,7 +3,7 @@ import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import { rPlatformSearchState } from '../../../services/search/search-slice'
-import { SandBoxCategoryFilter, SandBoxLandTypeFilter, SandBoxSearchState } from '../../../services/search/search.types'
+import { SandBoxCategoryFilter, SandBoxCategoryFilterOptions, SandBoxLandTypeFilter, SandBoxLandTypeFilterOptions, SandBoxSearchState } from '../../../services/search/search.types'
 const { Panel } = Collapse;
 const CheckboxGroup = Checkbox.Group;
 
@@ -11,12 +11,10 @@ type Props = {}
 
 const SandBoxSearchFilter = (props: Props) => {
     const dispatch = useAppDispatch()
-    const platformSearchState = useAppSelector((state) => state.search.platformSearchState)
+    const platformSearchState = useAppSelector((state) => state.search.platformSearchState as SandBoxSearchState)
 
-    const CategoryFilterOptions = Object.values(SandBoxCategoryFilter)
-    const LandTypeFilterOptions = Object.values(SandBoxLandTypeFilter)
-    const CategoryFilterDefault = CategoryFilterOptions
-    const LandTypeFilterDefault = LandTypeFilterOptions
+    const CategoryFilterDefault = SandBoxCategoryFilterOptions
+    const LandTypeFilterDefault = SandBoxLandTypeFilterOptions
 
     const [categoryFilter, setCategoryFilter] =
         useState<CheckboxValueType[]>(CategoryFilterDefault);
@@ -25,17 +23,21 @@ const SandBoxSearchFilter = (props: Props) => {
     const [ownerFilter, setOwnerFilter] = useState<string>()
 
     useEffect(() => {
-        dispatch(rPlatformSearchState({
-            ...(platformSearchState as SandBoxSearchState),
-            categoryFilter: CategoryFilterDefault,
-            landTypeFilter: LandTypeFilterDefault,
-        }))
-    }, [])
+        // TODO: should parse from url and dispatch to state
+
+        // dispatch(rPlatformSearchState({
+        //     ...platformSearchState,
+        //     categoryFilter: CategoryFilterDefault,
+        //     landTypeFilter: LandTypeFilterDefault,
+        // }))
+        setCategoryFilter(platformSearchState.categoryFilter)
+        setLandTypeFilter(platformSearchState.landTypeFilter)
+    }, [platformSearchState])
 
     const onAssetCategoryChange = (opts: CheckboxValueType[]) => {
         setCategoryFilter(opts);
         dispatch(rPlatformSearchState({
-            ...(platformSearchState as SandBoxSearchState),
+            ...platformSearchState,
             categoryFilter: opts as SandBoxCategoryFilter[]
         }))
     }
@@ -43,7 +45,7 @@ const SandBoxSearchFilter = (props: Props) => {
     const onLandTypeChange = (opts: CheckboxValueType[]) => {
         setLandTypeFilter(opts);
         dispatch(rPlatformSearchState({
-            ...(platformSearchState as SandBoxSearchState),
+            ...platformSearchState,
             landTypeFilter: opts as SandBoxLandTypeFilter[]
         }))
     }
@@ -59,16 +61,16 @@ const SandBoxSearchFilter = (props: Props) => {
 
     return (
         <>
-            <Collapse defaultActiveKey={['1']}>
+            <Collapse defaultActiveKey={['1', '2', '3']}>
                 <Panel header="Category" key="1">
                     <CheckboxGroup
-                        options={CategoryFilterOptions}
+                        options={SandBoxCategoryFilterOptions}
                         value={categoryFilter}
                         onChange={onAssetCategoryChange} />
                 </Panel>
-                <Panel header="Category" key="2">
+                <Panel header="Land Type" key="2">
                     <CheckboxGroup
-                        options={LandTypeFilterOptions}
+                        options={SandBoxLandTypeFilterOptions}
                         value={landTypeFilter}
                         onChange={onLandTypeChange} />
                 </Panel>
