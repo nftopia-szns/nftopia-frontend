@@ -1,7 +1,7 @@
 import { PageHeader, Image, Spin, Button, Typography } from 'antd'
 import Title from 'antd/lib/typography/Title'
-import React from 'react'
-import { useAppSelector } from '../../../services/hook'
+import React, { useEffect } from 'react'
+import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import './DecentralandAsset.module.css'
 import { DecentralandSearchHitDto } from '../../../pages/api/search/search.types'
 import { useAssetHook } from '../../../services/asset/asset-hook'
@@ -9,14 +9,22 @@ import { isValidOrder } from '../../../utils'
 import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'next/router'
 import { parameterizedRouter } from '../../../router'
+import { fetchAsset } from '../../../services/asset/asset-slice'
 
 const DecentralandAsset = () => {
   const router = useRouter()
   const { index, assetId } = router.query
+  const dispatch = useAppDispatch()
   const isAssetLoading = useAppSelector<boolean>((state) => state.asset.isLoading)
   const assetDetail = useAppSelector<DecentralandSearchHitDto>((state) => state.asset.assetDetail as DecentralandSearchHitDto)
   const { account } = useWeb3React()
   const { owner, order, isLoading } = useAssetHook(assetDetail)
+
+  useEffect(() => {
+    if (index && assetId)  {
+      dispatch(fetchAsset({ index: index.toString(), id: assetId.toString() }))
+    }
+  }, [index, assetId])
 
   const onBidClicked = () => {
     const url = parameterizedRouter.asset.decentraland.bid(index.toString(), assetId.toString())
