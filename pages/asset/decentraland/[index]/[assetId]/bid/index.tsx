@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import BidList from '../../../../../../components/asset/BidList/BidList'
 import { BN_ZERO } from '../../../../../../constants/eth'
-import { IERC20__factory } from '../../../../../../contracts/bid-contract/typechain-types'
+import { ERC20__factory } from '../../../../../../contracts/land-contract/typechain'
 import { useAssetHook } from '../../../../../../services/asset/asset-hook'
 import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors'
 import { fetchAsset } from '../../../../../../services/asset/asset-slice'
@@ -72,7 +72,7 @@ const DecentralandAssetBidPage = (props: Props) => {
         ContractName.MANAToken,
         assetDetail.chain_id,
       )
-      const _contractMana = IERC20__factory.connect(
+      const _contractMana = ERC20__factory.connect(
         contractManaData.address,
         provider,
       )

@@ -5,7 +5,6 @@ import Title from "antd/lib/typography/Title"
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { ERC20__factory } from '../../../../../../contracts/bid-contract/typechain-types'
 import { useAssetHook } from '../../../../../../services/asset/asset-hook'
 import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors'
 import { fetchAsset } from '../../../../../../services/asset/asset-slice'
@@ -13,6 +12,7 @@ import { buyRequest } from '../../../../../../services/sale/sale-slice'
 import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
 import { isValidOrder } from '../../../../../../utils'
 import { DecentralandSearchHitDto } from '../../../../../api/search/search.types'
+import { ERC20__factory } from '../../../../../../contracts/land-contract/typechain'
 
 type Props = {}
 

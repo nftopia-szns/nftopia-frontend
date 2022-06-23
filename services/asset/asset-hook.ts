@@ -4,10 +4,8 @@ import { useWeb3React } from '@web3-react/core'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { BigNumber, BigNumberish } from 'ethers'
 import { DecentralandSearchHitDto } from '../../pages/api/search/search.types'
-import { EstateRegistry__factory, IERC721Base__factory } from '../../contracts/land-contract/typechain-new'
-import { Marketplace__factory } from '../../contracts/land-contract/typechain'
+import { ERC721Bid__factory, ERC721__factory, EstateRegistry__factory, Marketplace__factory } from '../../contracts/land-contract/typechain'
 import { isValidOrder } from '../../utils'
-import { ERC721Bid__factory } from '../../contracts/bid-contract/typechain-types/factories/contracts/bid'
 import { formatEther } from '@ethersproject/units'
 
 export interface Order {
@@ -75,7 +73,7 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
 
   const getOwner = useCallback(async () => {
     const errors = new Set<ASSET_ERRORS>()
-    const assetRegistry = IERC721Base__factory.connect(asset.contract_address, provider)
+    const assetRegistry = ERC721__factory.connect(asset.contract_address, provider)
 
     try {
       const _owner = await assetRegistry.ownerOf(asset.token_id)
