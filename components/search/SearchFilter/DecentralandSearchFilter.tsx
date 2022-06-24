@@ -70,9 +70,10 @@ const DecentralandSearchFilter = (props: Props) => {
                         value={categoryFilter}
                         onChange={onAssetCategoryChange}>
                         <Row>
-                            {DecentralandCategoryFilterOptions.map((v) => <Col>
-                                <Checkbox value={v}>{t(v)}</Checkbox>
-                            </Col>)}
+                            {DecentralandCategoryFilterOptions.map((v) =>
+                                <Col key={v}>
+                                    <Checkbox value={v}>{t(v)}</Checkbox>
+                                </Col>)}
                         </Row>
                     </CheckboxGroup>
                 </Panel>
@@ -82,9 +83,10 @@ const DecentralandSearchFilter = (props: Props) => {
                         value={saleFilter}>
                         <Row>
                             {
-                                DecentralandSaleFilterOptions.map((v) => <Col>
-                                    <Radio value={v}>{t(v)}</Radio>
-                                </Col>)
+                                DecentralandSaleFilterOptions.map((v) =>
+                                    <Col  key={v}>
+                                        <Radio value={v}>{t(v)}</Radio>
+                                    </Col>)
                             }
                         </Row>
                     </Radio.Group>

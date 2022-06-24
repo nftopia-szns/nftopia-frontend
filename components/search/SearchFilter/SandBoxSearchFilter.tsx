@@ -68,9 +68,10 @@ const SandBoxSearchFilter = (props: Props) => {
                         value={categoryFilter}
                         onChange={onAssetCategoryChange}>
                         <Row>
-                            {SandBoxCategoryFilterOptions.map((v) => <Col>
-                                <Checkbox value={v}>{t(v)}</Checkbox>
-                            </Col>)}
+                            {SandBoxCategoryFilterOptions.map((v) =>
+                                <Col key={v}>
+                                    <Checkbox value={v}>{t(v)}</Checkbox>
+                                </Col>)}
                         </Row>
                     </CheckboxGroup>
                 </Panel>
@@ -80,9 +81,10 @@ const SandBoxSearchFilter = (props: Props) => {
                         value={landTypeFilter}
                         onChange={onLandTypeChange}>
                         <Row>
-                            {SandBoxLandTypeFilterOptions.map((v) => <Col>
-                                <Checkbox value={v}>{t(v)}</Checkbox>
-                            </Col>)}
+                            {SandBoxLandTypeFilterOptions.map((v) =>
+                                <Col key={v}>
+                                    <Checkbox value={v}>{t(v)}</Checkbox>
+                                </Col>)}
                         </Row>
                     </CheckboxGroup>
                 </Panel>
