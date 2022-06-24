@@ -6,10 +6,12 @@ import {
     SearchResultDto
 } from '../../pages/api/search/search.types';
 import {
+    CryptovoxelsSearchState,
     DecentralandCategoryFilter,
     DecentralandSaleFilter,
     DecentralandSearchState,
     DecentralandSortByCriterias,
+    InitialCryptovoxelsSearchState,
     InitialDecentralandSearchState,
     InitialSandBoxSearchState,
     MetaversePlatform,
@@ -26,9 +28,10 @@ export interface SearchState {
     page: number;
     pageSize: number;
     platform: MetaversePlatform;
-    platformSearchState: 
-        DecentralandSearchState |
-        SandBoxSearchState;
+    platformSearchState:
+    DecentralandSearchState |
+    SandBoxSearchState |
+    CryptovoxelsSearchState;
 
     searchResult: SearchResultDto<SearchHitBase>;
 }
@@ -71,12 +74,18 @@ export const searchSlice = createSlice({
                 case MetaversePlatform.SandBox:
                     state.platformSearchState = InitialSandBoxSearchState
                     break;
+                case MetaversePlatform.Cryptovoxels:
+                    state.platformSearchState = InitialCryptovoxelsSearchState
+                    break;
                 default:
                     state.platformSearchState = InitialDecentralandSearchState
                     break;
             }
         },
-        rPlatformSearchState(state, action: PayloadAction<DecentralandSearchState | SandBoxSearchState>) {
+        rPlatformSearchState(state,
+            action: PayloadAction<DecentralandSearchState |
+                SandBoxSearchState |
+                CryptovoxelsSearchState>) {
             state.platformSearchState = action.payload;
         },
         // rCategoryFilter(state, action: PayloadAction<DecentralandCategoryFilter[]>) {

@@ -33,7 +33,7 @@ export const DecentralandSortByCriteriasOptions = Object.values(DecentralandSort
 export interface DecentralandSearchState {
     // sorts
     sortBy: DecentralandSortByCriterias;
-    
+
     // filters
     categoryFilter: DecentralandCategoryFilter[]; // estate, parcel
     saleFilter: DecentralandSaleFilter; // on sale, not on sale, expired...
@@ -79,4 +79,41 @@ export interface SandBoxSearchState {
 export const InitialSandBoxSearchState: SandBoxSearchState = {
     categoryFilter: SandBoxCategoryFilterOptions,
     landTypeFilter: SandBoxLandTypeFilterOptions,
+}
+
+export enum CryptovoxelsIslandFilter {
+    OriginCity = "CryptovoxelsIslandFilter.OriginCity"
+}
+
+export enum CryptovoxelsSuburbFilter {
+    TheCenter = "TheCenter",
+    MusicDistrict = "MusicDistrict",
+    LittleTokyo = "LittleTokyo",
+    Makers = "Makers",
+    Scripting = "Scripting",
+    Hiro = "Hiro",
+    NorthTerrace = "NorthTerrace",
+    LeMarais = "LeMarais",
+    Doom = "Doom",
+    Frankfurt = "Frankfurt",
+    Kitties = "Kitties",
+    FantasyFields = "FantasyFields",
+}
+
+export const CryptovoxelsIslandFilterOptions = Object.values(CryptovoxelsIslandFilter)
+export const CryptovoxelsSuburbFilterOptions = Object.values(CryptovoxelsSuburbFilter)
+
+export interface CryptovoxelsSearchState {
+    islandFilter: CryptovoxelsIslandFilter[]
+    suburbFilter: CryptovoxelsSuburbFilter[]
+
+    areaMinFilter?: number;
+    areaMaxFilter?: number;
+    heightMinFilter?: number;
+    heightMaxFilter?: number;
+}
+
+export const InitialCryptovoxelsSearchState: CryptovoxelsSearchState = {
+    islandFilter: CryptovoxelsIslandFilterOptions,
+    suburbFilter: CryptovoxelsSuburbFilterOptions,
 }

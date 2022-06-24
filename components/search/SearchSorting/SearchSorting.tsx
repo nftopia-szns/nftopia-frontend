@@ -3,7 +3,7 @@ import { Dropdown, Menu, MenuProps, Space } from 'antd'
 import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import { rPlatformSearchState } from '../../../services/search/search-slice'
-import { MetaversePlatform, DecentralandSortByCriterias, DecentralandSortByCriteriasOptions } from '../../../services/search/search.types'
+import { MetaversePlatform, DecentralandSortByCriterias, DecentralandSortByCriteriasOptions, DecentralandSearchState } from '../../../services/search/search.types'
 import { t } from '../../../utils/translation'
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 const SearchSorting = (props: Props) => {
     const { platform } = props
     const dispatch = useAppDispatch()
-    const platformSearchState = useAppSelector((state) => state.search.platformSearchState)
+    const platformSearchState = useAppSelector((state) => state.search.platformSearchState as DecentralandSearchState)
 
     const [decentralandSortingCriteria, setDecentralandSortingCriteria] = useState<DecentralandSortByCriterias>(DecentralandSortByCriterias.Price)
 
