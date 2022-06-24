@@ -1,9 +1,10 @@
-import { Collapse, Row, Button, Input, Checkbox } from 'antd'
+import { Collapse, Row, Button, Input, Checkbox, Col } from 'antd'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import { rPlatformSearchState } from '../../../services/search/search-slice'
 import { SandBoxCategoryFilter, SandBoxCategoryFilterOptions, SandBoxLandTypeFilter, SandBoxLandTypeFilterOptions, SandBoxSearchState } from '../../../services/search/search.types'
+import { t } from '../../../utils/translation'
 const { Panel } = Collapse;
 const CheckboxGroup = Checkbox.Group;
 
@@ -64,15 +65,26 @@ const SandBoxSearchFilter = (props: Props) => {
             <Collapse defaultActiveKey={['1', '2', '3']}>
                 <Panel header="Category" key="1">
                     <CheckboxGroup
-                        options={SandBoxCategoryFilterOptions}
                         value={categoryFilter}
-                        onChange={onAssetCategoryChange} />
+                        onChange={onAssetCategoryChange}>
+                        <Row>
+                            {SandBoxCategoryFilterOptions.map((v) => <Col>
+                                <Checkbox value={v}>{t(v)}</Checkbox>
+                            </Col>)}
+                        </Row>
+                    </CheckboxGroup>
                 </Panel>
                 <Panel header="Land Type" key="2">
                     <CheckboxGroup
                         options={SandBoxLandTypeFilterOptions}
                         value={landTypeFilter}
-                        onChange={onLandTypeChange} />
+                        onChange={onLandTypeChange}>
+                        <Row>
+                            {SandBoxLandTypeFilterOptions.map((v) => <Col>
+                                <Checkbox value={v}>{t(v)}</Checkbox>
+                            </Col>)}
+                        </Row>
+                    </CheckboxGroup>
                 </Panel>
                 <Panel header="Owner" key="3">
                     <Row>

@@ -19,7 +19,7 @@ export enum DecentralandSaleFilter {
     NotOnSale = "DecentralandSaleFilter.NotOnSale",
 }
 
-export const DecentralandSaleFilterOptions: DecentralandSaleFilter[] = Object.values(DecentralandSaleFilter)
+export const DecentralandSaleFilterOptions = Object.values(DecentralandSaleFilter)
 
 export enum DecentralandSortByCriterias {
     Price = 'DecentralandSortByCriterias.Price',
@@ -27,6 +27,8 @@ export enum DecentralandSortByCriterias {
     RecentlyBought = 'DecentralandSortByCriterias.RecentlyBought',
     TotalSales = 'DecentralandSortByCriterias.TotalSales'
 }
+
+export const DecentralandSortByCriteriasOptions = Object.values(DecentralandSortByCriterias)
 
 export interface DecentralandSearchState {
     // sorts

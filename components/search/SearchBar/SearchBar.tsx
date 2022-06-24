@@ -5,8 +5,9 @@ import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../../services/hook"
 import { searchStart, rQuery, rPlatform } from "../../../services/search/search-slice"
-import { MetaversePlatform } from "../../../services/search/search.types"
+import { MetaversePlatform, MetaversePlatformOptions } from "../../../services/search/search.types"
 import { buildSearchDtoFromState } from "../../../services/search/search.utils"
+import { t } from "../../../utils/translation"
 import SearchSorting from "../SearchSorting/SearchSorting"
 import "./SearchBar.module.css"
 
@@ -72,16 +73,12 @@ const SearchBar: FC = () => {
         <Menu
             onClick={onMetaversePlatformChange}
             defaultSelectedKeys={[DefaultMetaversePlatform]}
-            items={[
-                {
-                    label: "Decentraland",
-                    key: MetaversePlatform.Decentraland,
-                },
-                {
-                    label: "The Sandbox",
-                    key: MetaversePlatform.SandBox,
-                },
-            ]}
+            items={
+                MetaversePlatformOptions.map((v) => ({
+                    label: t(v),
+                    key: v,
+                }))
+            }
         />
     );
 
@@ -103,7 +100,7 @@ const SearchBar: FC = () => {
                         <Dropdown overlay={metaversePlatformMenu} trigger={['click']}>
                             <a onClick={e => e.preventDefault()}>
                                 <Space>
-                                    {metaversePlatform}
+                                    {t(metaversePlatform)}
                                     <DownOutlined />
                                 </Space>
                             </a>
@@ -126,7 +123,7 @@ const SearchBar: FC = () => {
             </Col>
 
             <Col span={6}>
-                <SearchSorting platform={metaversePlatform}/>
+                <SearchSorting platform={metaversePlatform} />
             </Col>
         </>
     )

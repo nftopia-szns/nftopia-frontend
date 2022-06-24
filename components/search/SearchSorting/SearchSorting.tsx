@@ -3,13 +3,12 @@ import { Dropdown, Menu, MenuProps, Space } from 'antd'
 import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import { rPlatformSearchState } from '../../../services/search/search-slice'
-import { MetaversePlatform, DecentralandSortByCriterias } from '../../../services/search/search.types'
+import { MetaversePlatform, DecentralandSortByCriterias, DecentralandSortByCriteriasOptions } from '../../../services/search/search.types'
+import { t } from '../../../utils/translation'
 
 type Props = {
     platform: MetaversePlatform
 }
-
-
 
 const SearchSorting = (props: Props) => {
     const { platform } = props
@@ -30,38 +29,28 @@ const SearchSorting = (props: Props) => {
         <Menu
             onClick={onDecentralandSortingChange}
             defaultSelectedKeys={[DecentralandSortByCriterias.Price]}
-            items={[
-                {
-                    label: "Price",
-                    key: DecentralandSortByCriterias.Price,
-                },
-                {
-                    label: "Recently listed",
-                    key: DecentralandSortByCriterias.RecentlyListed,
-                },
-                {
-                    label: 'Recently bought',
-                    key: DecentralandSortByCriterias.RecentlyBought,
-                },
-                {
-                    label: 'Total sales',
-                    key: DecentralandSortByCriterias.TotalSales,
-                },
-            ]}
+            items={
+                DecentralandSortByCriteriasOptions.map((v) => ({
+                    label: t(v),
+                    key: v,
+                }))
+            }
         />
     );
-    
+
     switch (platform) {
         case MetaversePlatform.Decentraland:
             return <Dropdown overlay={decentralandSortingMenu} trigger={['click']}>
                 <a onClick={e => e.preventDefault()}>
                     <Space>
-                        {decentralandSortingCriteria}
+                        {t(decentralandSortingCriteria)}
                         <DownOutlined />
                     </Space>
                 </a>
             </Dropdown>
         case MetaversePlatform.SandBox:
+            return null
+        case MetaversePlatform.Cryptovoxels:
             return null
         default:
             return null

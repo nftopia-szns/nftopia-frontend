@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../services/hook';
 import { rPlatformSearchState } from '../../../services/search/search-slice';
 import { DecentralandCategoryFilter, DecentralandCategoryFilterOptions, DecentralandSaleFilter, DecentralandSaleFilterOptions, DecentralandSearchState } from '../../../services/search/search.types';
+import { t } from '../../../utils/translation';
 
 const { Panel } = Collapse;
 const CheckboxGroup = Checkbox.Group;
@@ -66,15 +67,26 @@ const DecentralandSearchFilter = (props: Props) => {
             <Collapse defaultActiveKey={['1', '2', '3', '4']}>
                 <Panel header="Category" key="1">
                     <CheckboxGroup
-                        options={DecentralandCategoryFilterOptions}
                         value={categoryFilter}
-                        onChange={onAssetCategoryChange} />
+                        onChange={onAssetCategoryChange}>
+                        <Row>
+                            {DecentralandCategoryFilterOptions.map((v) => <Col>
+                                <Checkbox value={v}>{t(v)}</Checkbox>
+                            </Col>)}
+                        </Row>
+                    </CheckboxGroup>
                 </Panel>
                 <Panel header="Sale" key="2">
                     <Radio.Group
                         onChange={onSaleFilterChange}
-                        value={saleFilter}
-                        options={DecentralandSaleFilterOptions}>
+                        value={saleFilter}>
+                        <Row>
+                            {
+                                DecentralandSaleFilterOptions.map((v) => <Col>
+                                    <Radio value={v}>{t(v)}</Radio>
+                                </Col>)
+                            }
+                        </Row>
                     </Radio.Group>
                 </Panel>
                 <Panel header="Price" key="3">
