@@ -1,26 +1,31 @@
 export enum MetaversePlatform {
-    Decentraland = 'decentraland',
-    SandBox = 'sandbox',
+    Decentraland = 'MetaversePlatform.Decentraland',
+    SandBox = 'MetaversePlatform.SandBox',
+    Cryptovoxels = 'MetaversePlatform.Cryptovoxels',
 }
 
+export const MetaversePlatformOptions = Object.values(MetaversePlatform)
+
 export enum DecentralandCategoryFilter {
-    Estate = "Estate",
-    Parcel = "Parcel",
+    Estate = "DecentralandCategoryFilter.Estate",
+    Parcel = "DecentralandCategoryFilter.Parcel",
 }
+
 export const DecentralandCategoryFilterOptions = Object.values(DecentralandCategoryFilter)
 
 export enum DecentralandSaleFilter {
-    All = "All",
-    OnSale = "On Sale",
-    NotOnSale = "Not On Sale",
+    All = "DecentralandSaleFilter.All",
+    OnSale = "DecentralandSaleFilter.OnSale",
+    NotOnSale = "DecentralandSaleFilter.NotOnSale",
 }
+
 export const DecentralandSaleFilterOptions: DecentralandSaleFilter[] = Object.values(DecentralandSaleFilter)
 
 export enum DecentralandSortByCriterias {
-    Price = 'price',
-    RecentlyListed = 'recently-listed',
-    RecentlyBought = 'recently-bought',
-    TotalSales = 'total-sales'
+    Price = 'DecentralandSortByCriterias.Price',
+    RecentlyListed = 'DecentralandSortByCriterias.RecentlyListed',
+    RecentlyBought = 'DecentralandSortByCriterias.RecentlyBought',
+    TotalSales = 'DecentralandSortByCriterias.TotalSales'
 }
 
 export interface DecentralandSearchState {
@@ -42,13 +47,13 @@ export const InitialDecentralandSearchState: DecentralandSearchState = {
 }
 
 export enum SandBoxCategoryFilter {
-    Estate = "Estate",
-    Land = "Land"
+    Estate = "SandBoxCategoryFilter.Estate",
+    Land = "SandBoxCategoryFilter.Land"
 }
 
 export enum SandBoxLandTypeFilter {
-    Regular = "Regular",
-    Premium = "Premium"
+    Regular = "SandBoxCategoryFilter.Regular",
+    Premium = "SandBoxCategoryFilter.Premium"
 }
 
 export const SandBoxCategoryFilterOptions = Object.values(SandBoxCategoryFilter)
