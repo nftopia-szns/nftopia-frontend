@@ -3,6 +3,7 @@ import { MetaversePlatform } from '../../../services/search/search.types'
 import CryptovoxelsSearchFilter from './CryptovoxelsSearchFilter'
 import DecentralandSearchFilter from './DecentralandSearchFilter'
 import SandBoxSearchFilter from './SandBoxSearchFilter'
+import SolanaTownSearchFilter from './SolanaTownSearchFilter'
 
 type Props = {}
 
@@ -19,6 +20,9 @@ const SearchFilter = (props: Props) => {
         case MetaversePlatform.Cryptovoxels:
             return <CryptovoxelsSearchFilter />
             
+        case MetaversePlatform.SolanaTown:
+            return <SolanaTownSearchFilter/>
+
         default:
             return null
     }

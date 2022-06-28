@@ -1,6 +1,6 @@
 import { SearchDto } from "../../pages/api/search/search.types";
 import { SearchState } from "./search-slice";
-import { CryptovoxelsIslandFilter, CryptovoxelsSearchState, CryptovoxelsSuburbFilter, DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSearchState, DecentralandSortByCriterias, MetaversePlatform, SandBoxCategoryFilter, SandBoxLandTypeFilter, SandBoxSearchState } from "./search.types";
+import { CryptovoxelsIslandFilter, CryptovoxelsSearchState, CryptovoxelsSuburbFilter, DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSearchState, DecentralandSortByCriterias, MetaversePlatform, SandBoxCategoryFilter, SandBoxLandTypeFilter, SandBoxSearchState, SolanaTownCategoryFilter, SolanaTownSearchState } from "./search.types";
 
 export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
     switch (state.platform) {
@@ -10,6 +10,8 @@ export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
             return _buildSandBoxSearchDtoFromState(state);
         case MetaversePlatform.Cryptovoxels:
             return _buildCryptovoxelsSearchDtoFromState(state);
+        case MetaversePlatform.SolanaTown:
+            return _buildSolanaTownSearchDtoFromState(state);
         default:
             throw new Error(`${state.platform} is not supported`)
     }
@@ -324,6 +326,56 @@ export const _buildCryptovoxelsSearchDtoFromState = (state: SearchState): Search
     return searchDto;
 }
 
+export const _buildSolanaTownSearchDtoFromState = (state: SearchState): SearchDto => {
+    let should = []
+    let must = []
+    let must_not = []
+
+    if (state.query && state.query !== '') {
+        must.push({
+            "multi_match": {
+                "query": state.query,
+                "fields": [
+                    "name",
+                    "description",
+                    //  TODO: how to get owner solana nft
+                    // "owner"
+                ]
+            }
+        })
+    }
+
+    const platformSearchState = state.platformSearchState as SolanaTownSearchState
+
+    must = must.concat(
+        {
+            terms: {
+                "attributes.type": platformSearchState.categoryFilter.map((item) => getSolanaTownKeyCategoryFilter(item))
+            }
+        }
+    )
+
+    // build query
+    const query = {
+        bool: {
+            should: should,
+            must: must,
+            must_not: must_not,
+        }
+    }
+
+    const searchDto = {
+        // TODO: remove this hardcode
+        indices: ['solanatown-solana-1'],
+        query: query,
+        // sort: sort,
+        page: state.page,
+        pageSize: state.pageSize
+    }
+
+    return searchDto
+}
+
 const getDecentralandKeyCategoryFilter = (cat: DecentralandCategoryFilter) => {
     switch (cat) {
         case DecentralandCategoryFilter.Estate:
@@ -420,6 +472,15 @@ const getCryptovoxelsKeySuburbFilter = (cat: CryptovoxelsSuburbFilter) => {
             return "Kitties"
         case CryptovoxelsSuburbFilter.FantasyFields:
             return "Fantasy Fields"
+        default:
+            throw new Error(`${cat} does not exist!`);
+    }
+}
+
+const getSolanaTownKeyCategoryFilter = (cat: SolanaTownCategoryFilter) => {
+    switch (cat) {
+        case SolanaTownCategoryFilter.Residential:
+            return "residential"
         default:
             throw new Error(`${cat} does not exist!`);
     }

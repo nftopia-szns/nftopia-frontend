@@ -2,6 +2,7 @@ export enum MetaversePlatform {
     Decentraland = 'MetaversePlatform.Decentraland',
     SandBox = 'MetaversePlatform.SandBox',
     Cryptovoxels = 'MetaversePlatform.Cryptovoxels',
+    SolanaTown = 'MetaversePlatform.SolanaTown',
 }
 
 export const MetaversePlatformOptions = Object.values(MetaversePlatform)
@@ -116,4 +117,18 @@ export interface CryptovoxelsSearchState {
 export const InitialCryptovoxelsSearchState: CryptovoxelsSearchState = {
     islandFilter: CryptovoxelsIslandFilterOptions,
     suburbFilter: CryptovoxelsSuburbFilterOptions,
+}
+
+export enum SolanaTownCategoryFilter {
+    Residential = "SolanaTownFilter.Residential",
+}
+
+export const SolanaTownCategoryFilterOptions = Object.values(SolanaTownCategoryFilter)
+
+export interface SolanaTownSearchState {
+    categoryFilter: SolanaTownCategoryFilter[]
+}
+
+export const InitialSolanaTownSearchState: SolanaTownSearchState = {
+    categoryFilter: SolanaTownCategoryFilterOptions,
 }

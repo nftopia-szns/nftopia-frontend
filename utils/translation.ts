@@ -14,6 +14,8 @@ export const t_en = (key: any) => {
             return "The Sandbox"
         case MetaversePlatform.Cryptovoxels:
             return "Cryptovoxels"
+        case MetaversePlatform.SolanaTown:
+            return "SolanaTown"
         case DecentralandCategoryFilter.Estate:
             return "Estate"
         case DecentralandCategoryFilter.Parcel:
