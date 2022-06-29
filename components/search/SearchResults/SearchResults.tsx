@@ -9,6 +9,7 @@ import "./SearchResults.module.css"
 import { useRouter } from "next/router";
 import { DecentralandSearchHitDto, SearchDto, SearchHitDto } from "../../../pages/api/search/search.types";
 import { QueryBuilder } from "../../../pages/api/search/search.utils";
+import SearchResultCard from "./SearchResultCard/SearchResultCard";
 
 const SearchResults = () => {
     const router = useRouter()
@@ -61,8 +62,7 @@ const SearchResults = () => {
         <Row id="search-results" gutter={2}>
             {searchResults?.hits.map((_searchHit) =>
                 <Col key={`${_searchHit._index}${_searchHit._id}`} span={4}>
-                    <DecentralandSearchResult
-                        searchHit={_searchHit as SearchHitDto<DecentralandSearchHitDto>} />
+                    <SearchResultCard searchHit={_searchHit} />
                 </Col>
             )}
         </Row>

@@ -8,7 +8,7 @@ export interface AssetBriefInfo {
 
 interface AssetState {
     isLoading: boolean,
-    assetDetail: DecentralandSearchHitDto | object
+    assetDetail: object
 }
 
 const assetInitialState: AssetState = {
@@ -23,10 +23,10 @@ export const assetSlice = createSlice({
         fetchAsset(state, action: PayloadAction<AssetBriefInfo>) {
             state.isLoading = true
         },
-        setAssetDetail(state, action: PayloadAction<DecentralandSearchHitDto>) {
+        setAssetDetail(state, action: PayloadAction<object>) {
             state.assetDetail = action.payload;
         },
-        fetchAssetSuccess(state, action: PayloadAction<DecentralandSearchHitDto>) {
+        fetchAssetSuccess(state, action: PayloadAction<object>) {
             state.isLoading = false
             state.assetDetail = action.payload;
         },

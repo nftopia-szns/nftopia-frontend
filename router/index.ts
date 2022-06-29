@@ -16,6 +16,9 @@ export const parameterizedRouter = {
             // bid: (id) => {
             //     return `/asset/decentraland/${id}/bid`
             // },
+        },
+        detail: (platform, index, assetId) => {
+            return `/asset?platform=${platform}&index=${index}&assetId=${assetId}`
         }
     }
 }

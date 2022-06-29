@@ -13,7 +13,7 @@ export function* handleFetchAsset(action: PayloadAction<AssetBriefInfo>) {
             query,
         }
 
-        const _searchResults: SearchResultDto<DecentralandSearchHitDto> = yield enhancedSearch(searchDto)
+        const _searchResults: SearchResultDto<object> = yield enhancedSearch(searchDto)
 
         // dispatch action from saga
         yield put(fetchAssetSuccess(_searchResults.hits[0]._source))
