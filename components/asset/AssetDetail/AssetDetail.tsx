@@ -5,6 +5,7 @@ import { useAppSelector } from '../../../services/hook'
 import { MetaversePlatform } from '../../../services/search/search.types'
 import { PageHeader, Image, Spin, Button, Typography } from 'antd'
 import Title from 'antd/lib/typography/Title'
+import NearbyAsset from '../NearbyAsset/NearbyAsset'
 
 
 type Props = {}
@@ -14,6 +15,7 @@ const AssetDetail = (props: Props) => {
     const { platform, index, assetId } = router.query
     const isAssetLoading = useAppSelector<boolean>((state) => state.asset.isLoading)
     const assetDetail = useAppSelector((state) => state.asset.assetDetail)
+
 
     const [isValidAsset, setIsValidAsset] = useState(true)
 
@@ -35,6 +37,7 @@ const AssetDetail = (props: Props) => {
                     <>
                         <Title>{assetDetail["name"]}</Title>
                     </>
+                    <NearbyAsset />
                 </>
                 :
                 <p>invalid asset</p>
