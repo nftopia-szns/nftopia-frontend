@@ -10,6 +10,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'next/router'
 import { parameterizedRouter } from '../../../router'
 import { fetchAsset } from '../../../services/asset/asset-slice'
+import { MetaversePlatform } from '../../../services/search/search.types'
 
 const DecentralandAsset = () => {
   const router = useRouter()
@@ -21,8 +22,12 @@ const DecentralandAsset = () => {
   const { owner, order, isLoading } = useAssetHook(assetDetail)
 
   useEffect(() => {
-    if (index && assetId)  {
-      dispatch(fetchAsset({ index: index.toString(), id: assetId.toString() }))
+    if (index && assetId) {
+      dispatch(fetchAsset({
+        platform: MetaversePlatform.Decentraland,
+        index: index.toString(),
+        id: assetId.toString()
+      }))
     }
   }, [index, assetId])
 

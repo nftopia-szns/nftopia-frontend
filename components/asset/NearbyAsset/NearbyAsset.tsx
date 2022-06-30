@@ -1,21 +1,59 @@
+import { Col, Row, Spin, Typography } from 'antd'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { fetchNearbyAssets } from '../../../services/asset/asset-slice'
+import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import { MetaversePlatform } from '../../../services/search/search.types'
+import NearbyAssetItem from './NearbyAssetItem'
 
 type Props = {}
 
 const NearbyAsset = (props: Props) => {
     const router = useRouter()
+    const dispatch = useAppDispatch()
+    const { isLoading, assetDetail, nearbyAssets } = useAppSelector((state) => state.asset)
     const { platform, index, assetId } = router.query
+    const [isEligibleToShowNearbyAssets, setIsEligibleToShowNearbyAssets] = useState<boolean>()
+
+    useEffect(() => {
+        if (platform && assetDetail) {
+            if (canShowNearby(platform, assetDetail)) {
+                setIsEligibleToShowNearbyAssets(true)
+                dispatch(fetchNearbyAssets())
+            }
+        }
+    }, [assetDetail, platform])
+
+    const canShowNearby = (platform, assetDetail) => {
+        switch (platform) {
+            case MetaversePlatform.Cryptovoxels:
+                return false;
+            case MetaversePlatform.Decentraland:
+                return assetDetail["category"] === "parcel"
+            default:
+                return true
+        }
+    }
 
     return (
         <>
-            {
-                MetaversePlatform.Cryptovoxels === platform as string ?
-                    <>Cryptovoxels currently cannot show nearby assets</>
-                    :
-                    <div>NearbyAsset</div>
-            }
+            <Typography>Nearby Assets</Typography>
+            <Spin spinning={isLoading}>
+                {
+                    isEligibleToShowNearbyAssets === true ?
+                        nearbyAssets && nearbyAssets?.length > 0 ?
+                            <Row gutter={[24, 48]}>
+                                {nearbyAssets.map((asset) =>
+                                    <Col span={2}>
+                                        <NearbyAssetItem asset={asset} />
+                                    </Col>)}
+                            </Row>
+                            :
+                            <>This asset does not have any nearby assets</>
+                        :
+                        <>This asset currently cannot show nearby assets</>
+                }
+            </Spin>
         </>
     )
 }

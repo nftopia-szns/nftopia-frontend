@@ -10,6 +10,7 @@ import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-s
 import { fetchAsset } from '../../../../../../services/asset/asset-slice';
 import { useAppDispatch, useAppSelector } from '../../../../../../services/hook';
 import { sellRequest, stopSellingRequest } from '../../../../../../services/sale/sale-slice';
+import { MetaversePlatform } from '../../../../../../services/search/search.types';
 import { isValidOrder } from '../../../../../../utils';
 import { DecentralandSearchHitDto } from '../../../../../api/search/search.types';
 
@@ -37,6 +38,7 @@ const DecentralandAssetSellPage = (props: Props) => {
   useEffect(() => {
     if (assetId) {
       dispatch(fetchAsset({
+        platform: MetaversePlatform.Decentraland,
         index: index.toString(),
         id: assetId.toString()
       }))

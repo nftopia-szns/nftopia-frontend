@@ -5,23 +5,25 @@ import AssetDetail from '../../components/asset/AssetDetail/AssetDetail'
 import { assetSelectorIsLoading } from '../../services/asset/asset-selectors'
 import { fetchAsset } from '../../services/asset/asset-slice'
 import { useAppDispatch, useAppSelector } from '../../services/hook'
+import { MetaversePlatform } from '../../services/search/search.types'
 
 type Props = {}
 
 const AssetPage = (props: Props) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const { index, assetId } = router.query;
+  const { platform, index, assetId } = router.query;
   const isLoading = useAppSelector(assetSelectorIsLoading)
 
   useEffect(() => {
-    if (assetId) {
+    if (platform && index && assetId) {
       dispatch(fetchAsset({
+        platform: platform as MetaversePlatform,
         index: index.toString(),
         id: assetId.toString()
       }))
     }
-  }, [assetId])
+  }, [platform, index, assetId])
 
   return (
     <Spin spinning={isLoading as boolean}>

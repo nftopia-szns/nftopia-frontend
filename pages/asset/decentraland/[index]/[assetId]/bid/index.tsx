@@ -15,6 +15,7 @@ import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-s
 import { fetchAsset } from '../../../../../../services/asset/asset-slice'
 import { bidRequest } from '../../../../../../services/bid/bid-slice'
 import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
+import { MetaversePlatform } from '../../../../../../services/search/search.types'
 import { DecentralandSearchHitDto } from '../../../../../api/search/search.types'
 
 type Props = {}
@@ -44,6 +45,7 @@ const DecentralandAssetBidPage = (props: Props) => {
   useEffect(() => {
     if (assetId) {
       dispatch(fetchAsset({
+        platform: MetaversePlatform.Decentraland,
         index: index.toString(),
         id: assetId.toString()
       }))

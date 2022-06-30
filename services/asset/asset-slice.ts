@@ -1,19 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { DecentralandSearchHitDto } from '../../pages/api/search/search.types';
+import { MetaversePlatform } from '../search/search.types';
 
 export interface AssetBriefInfo {
+    platform: MetaversePlatform
     index: string
     id: string
 }
 
 interface AssetState {
     isLoading: boolean,
-    assetDetail: object
+    platform: MetaversePlatform,
+    assetDetail: object,
+    nearbyAssets: object[],
 }
 
 const assetInitialState: AssetState = {
     isLoading: false,
+    platform: null,
     assetDetail: null,
+    nearbyAssets: null,
 };
 
 export const assetSlice = createSlice({
@@ -22,9 +27,15 @@ export const assetSlice = createSlice({
     reducers: {
         fetchAsset(state, action: PayloadAction<AssetBriefInfo>) {
             state.isLoading = true
+            state.platform = action.payload.platform
         },
         setAssetDetail(state, action: PayloadAction<object>) {
             state.assetDetail = action.payload;
+        },
+        fetchNearbyAssets(state, action: PayloadAction) {
+        },
+        setNearbyAssets(state, action: PayloadAction<object[]>) {
+            state.nearbyAssets = action.payload
         },
         fetchAssetSuccess(state, action: PayloadAction<object>) {
             state.isLoading = false
@@ -33,6 +44,12 @@ export const assetSlice = createSlice({
     },
 });
 
-export const { setAssetDetail, fetchAsset, fetchAssetSuccess } = assetSlice.actions;
+export const {
+    fetchAsset,
+    setAssetDetail,
+    fetchAssetSuccess,
+    fetchNearbyAssets,
+    setNearbyAssets,
+} = assetSlice.actions;
 const assetReducer = assetSlice.reducer;
 export default assetReducer;

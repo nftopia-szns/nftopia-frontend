@@ -1,9 +1,10 @@
 import { PayloadAction } from "@reduxjs/toolkit"
-import { put, takeLatest } from 'redux-saga/effects';
-import { AssetBriefInfo, fetchAsset, fetchAssetSuccess } from "./asset-slice";
+import { put, select, takeLatest } from 'redux-saga/effects';
+import { AssetBriefInfo, fetchAsset, fetchAssetSuccess, fetchNearbyAssets, setNearbyAssets } from "./asset-slice";
 import { enhancedSearch } from "../../pages/api/search";
 import { QueryBuilder } from "../../pages/api/search/search.utils";
-import { DecentralandSearchHitDto, SearchDto, SearchResultDto } from "../../pages/api/search/search.types";
+import { DecentralandSearchHitDto, SearchDto, SearchHitDto, SearchResultDto } from "../../pages/api/search/search.types";
+import { buildSearchNearbyAssets } from "./asset.utils";
 
 export function* handleFetchAsset(action: PayloadAction<AssetBriefInfo>) {
     try {
@@ -22,7 +23,24 @@ export function* handleFetchAsset(action: PayloadAction<AssetBriefInfo>) {
     }
 }
 
+export function* handleFetchNearbyAssets(action: PayloadAction) {
+    try {
+        const assetState = yield select(((state) => state.asset))
+
+        const searchNearbyAssetsSearchDto: SearchDto = buildSearchNearbyAssets(assetState.platform, assetState.assetDetail)
+        console.log(searchNearbyAssetsSearchDto);
+        
+        const _searchResults: SearchResultDto<object> = yield enhancedSearch(searchNearbyAssetsSearchDto)
+
+        // dispatch action from saga
+        yield put(setNearbyAssets(_searchResults.hits))
+    } catch (e) {
+        console.error(e)
+    }
+}
+
 export default function* fetchSaga() {
     // only the take the latest fetch result
     yield takeLatest(fetchAsset().type, handleFetchAsset)
+    yield takeLatest(fetchNearbyAssets().type, handleFetchNearbyAssets)
 }
