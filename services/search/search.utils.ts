@@ -1,5 +1,5 @@
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform";
-import { ChainId, EthereumNetwork } from "nftopia-shared/dist/shared/network";
+import { ChainId, EthereumNetwork, SolanaNetwork } from "nftopia-shared/dist/shared/network";
 import { SearchDto } from "../../pages/api/search/search.types";
 import { SearchState } from "./search-slice";
 import { CryptovoxelsIslandFilter, CryptovoxelsSearchState, CryptovoxelsSuburbFilter, DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSearchState, DecentralandSortByCriterias, SandBoxSearchState, SolanaTownCategoryFilter, SolanaTownSearchState } from "./search.types";
@@ -370,9 +370,11 @@ export const _buildSolanaTownSearchDtoFromState = (state: SearchState): SearchDt
         }
     }
 
+    // build index
+    const index = `${MetaversePlatform.SolanaTown}-${ChainId.Solana}-${SolanaNetwork.Mainnet}`
+
     const searchDto = {
-        // TODO: remove this hardcode
-        indices: ['solanatown-solana-1'],
+        indices: [index],
         query: query,
         // sort: sort,
         page: state.page,
