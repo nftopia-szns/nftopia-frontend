@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
 import { isValidOrder } from '../../../../../../utils'
 import { DecentralandSearchHitDto } from '../../../../../api/search/search.types'
 import { ERC20__factory } from '../../../../../../contracts/land-contract/typechain'
-import { MetaversePlatform } from '../../../../../../services/search/search.types'
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 
 type Props = {}
 

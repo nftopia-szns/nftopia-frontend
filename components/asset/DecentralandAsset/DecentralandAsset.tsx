@@ -10,7 +10,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'next/router'
 import { parameterizedRouter } from '../../../router'
 import { fetchAsset } from '../../../services/asset/asset-slice'
-import { MetaversePlatform } from '../../../services/search/search.types'
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 
 const DecentralandAsset = () => {
   const router = useRouter()

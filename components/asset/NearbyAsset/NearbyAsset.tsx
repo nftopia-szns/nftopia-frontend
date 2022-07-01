@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { fetchNearbyAssets } from '../../../services/asset/asset-slice'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
-import { MetaversePlatform } from '../../../services/search/search.types'
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 import NearbyAssetItem from './NearbyAssetItem'
 
 type Props = {}

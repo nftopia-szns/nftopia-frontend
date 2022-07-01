@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { MetaversePlatform } from '../search/search.types';
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 
 export interface AssetBriefInfo {
     platform: MetaversePlatform

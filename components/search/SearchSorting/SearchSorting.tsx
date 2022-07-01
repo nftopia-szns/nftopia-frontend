@@ -3,7 +3,8 @@ import { Dropdown, Menu, MenuProps, Space } from 'antd'
 import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import { rPlatformSearchState } from '../../../services/search/search-slice'
-import { MetaversePlatform, DecentralandSortByCriterias, DecentralandSortByCriteriasOptions, DecentralandSearchState } from '../../../services/search/search.types'
+import { DecentralandSortByCriterias, DecentralandSortByCriteriasOptions, DecentralandSearchState } from '../../../services/search/search.types'
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 import { t } from '../../../utils/translation'
 
 type Props = {

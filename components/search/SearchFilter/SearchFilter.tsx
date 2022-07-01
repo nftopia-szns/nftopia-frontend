@@ -1,5 +1,5 @@
 import { useAppSelector } from '../../../services/hook'
-import { MetaversePlatform } from '../../../services/search/search.types'
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 import CryptovoxelsSearchFilter from './CryptovoxelsSearchFilter'
 import DecentralandSearchFilter from './DecentralandSearchFilter'
 import SandBoxSearchFilter from './SandBoxSearchFilter'

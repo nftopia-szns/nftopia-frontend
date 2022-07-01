@@ -15,7 +15,7 @@ import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-s
 import { fetchAsset } from '../../../../../../services/asset/asset-slice'
 import { bidRequest } from '../../../../../../services/bid/bid-slice'
 import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
-import { MetaversePlatform } from '../../../../../../services/search/search.types'
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 import { DecentralandSearchHitDto } from '../../../../../api/search/search.types'
 
 type Props = {}

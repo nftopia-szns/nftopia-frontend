@@ -5,7 +5,7 @@ import AssetDetail from '../../components/asset/AssetDetail/AssetDetail'
 import { assetSelectorIsLoading } from '../../services/asset/asset-selectors'
 import { fetchAsset } from '../../services/asset/asset-slice'
 import { useAppDispatch, useAppSelector } from '../../services/hook'
-import { MetaversePlatform } from '../../services/search/search.types'
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 
 type Props = {}
 

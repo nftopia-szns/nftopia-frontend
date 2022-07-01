@@ -1,5 +1,5 @@
 import { DecentralandSearchHitDto, SearchDto, SearchHitDto } from "../../pages/api/search/search.types";
-import { MetaversePlatform } from "../search/search.types";
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 
 export const buildSearchNearbyAssets = (platform, assetDetail): SearchDto => {
     switch (platform) {

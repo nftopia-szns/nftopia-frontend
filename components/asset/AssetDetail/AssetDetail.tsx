@@ -2,11 +2,10 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { DecentralandSearchHitDto } from '../../../pages/api/search/search.types'
 import { useAppSelector } from '../../../services/hook'
-import { MetaversePlatform } from '../../../services/search/search.types'
 import { PageHeader, Image, Spin, Button, Typography } from 'antd'
 import Title from 'antd/lib/typography/Title'
 import NearbyAsset from '../NearbyAsset/NearbyAsset'
-
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 
 type Props = {}
 
