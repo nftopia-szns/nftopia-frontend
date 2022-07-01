@@ -1,9 +1,5 @@
-export enum MetaversePlatform {
-    Decentraland = 'MetaversePlatform.Decentraland',
-    SandBox = 'MetaversePlatform.SandBox',
-    Cryptovoxels = 'MetaversePlatform.Cryptovoxels',
-    SolanaTown = 'MetaversePlatform.SolanaTown',
-}
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
+import { TheSandBoxAssetCategory, TheSandBoxAssetType } from "nftopia-shared/dist/shared/asset"
 
 export const MetaversePlatformOptions = Object.values(MetaversePlatform)
 
@@ -49,18 +45,8 @@ export const InitialDecentralandSearchState: DecentralandSearchState = {
     saleFilter: DecentralandSaleFilter.All,
 }
 
-export enum SandBoxCategoryFilter {
-    Estate = "SandBoxCategoryFilter.Estate",
-    Land = "SandBoxCategoryFilter.Land"
-}
-
-export enum SandBoxLandTypeFilter {
-    Regular = "SandBoxCategoryFilter.Regular",
-    Premium = "SandBoxCategoryFilter.Premium"
-}
-
-export const SandBoxCategoryFilterOptions = Object.values(SandBoxCategoryFilter)
-export const SandBoxLandTypeFilterOptions = Object.values(SandBoxLandTypeFilter)
+export const SandBoxCategoryFilterOptions = Object.values(TheSandBoxAssetCategory)
+export const SandBoxLandTypeFilterOptions = Object.values(TheSandBoxAssetType)
 
 export interface SandBoxSearchState {
     // sorts
@@ -68,8 +54,8 @@ export interface SandBoxSearchState {
     // sortBy: DecentralandSortByCriterias
 
     // filters
-    categoryFilter: SandBoxCategoryFilter[];
-    landTypeFilter: SandBoxLandTypeFilter[];
+    categoryFilter: TheSandBoxAssetCategory[];
+    landTypeFilter: TheSandBoxAssetType[];
     // TODO:
     // saleFilter: DecentralandSaleFilter; // on sale, not on sale, expired...
     // priceMinFilter?: number;

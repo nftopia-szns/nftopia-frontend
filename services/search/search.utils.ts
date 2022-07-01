@@ -1,6 +1,8 @@
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform";
+import { ChainId, EthereumNetwork } from "nftopia-shared/dist/shared/network";
 import { SearchDto } from "../../pages/api/search/search.types";
 import { SearchState } from "./search-slice";
-import { CryptovoxelsIslandFilter, CryptovoxelsSearchState, CryptovoxelsSuburbFilter, DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSearchState, DecentralandSortByCriterias, MetaversePlatform, SandBoxCategoryFilter, SandBoxLandTypeFilter, SandBoxSearchState, SolanaTownCategoryFilter, SolanaTownSearchState } from "./search.types";
+import { CryptovoxelsIslandFilter, CryptovoxelsSearchState, CryptovoxelsSuburbFilter, DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSearchState, DecentralandSortByCriterias, SandBoxSearchState, SolanaTownCategoryFilter, SolanaTownSearchState } from "./search.types";
 
 export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
     switch (state.platform) {
@@ -150,7 +152,7 @@ export const _buildSandBoxSearchDtoFromState = (state: SearchState): SearchDto =
                 "fields": [
                     "name",
                     "description",
-                    "attributes.coordinate",
+                    // "attributes.coordinate",
                     "owner"
                 ]
             }
@@ -162,12 +164,12 @@ export const _buildSandBoxSearchDtoFromState = (state: SearchState): SearchDto =
     must = must.concat(
         {
             terms: {
-                category: platformSearchState.categoryFilter.map((item) => getSandBoxKeyCategoryFilter(item))
+                "attributes.category": platformSearchState.categoryFilter
             }
         },
         {
             terms: {
-                land_type: platformSearchState.landTypeFilter.map((item) => getSandBoxKeyLandTypeFilter(item))
+                "attributes.land_type": platformSearchState.landTypeFilter
             }
         }
     )
@@ -192,10 +194,12 @@ export const _buildSandBoxSearchDtoFromState = (state: SearchState): SearchDto =
     // build sort
     const sort = {}
 
+    // build index
+    const index = `${MetaversePlatform.SandBox}-${ChainId.Ethereum}-${EthereumNetwork.Mainnet}`
+
     // build searchDto
     const searchDto = {
-        // TODO: remove this hardcode
-        indices: ['sandbox-ethereum-1'],
+        indices: [index],
         query: query,
         sort: sort,
         page: state.page,
@@ -382,28 +386,6 @@ const getDecentralandKeyCategoryFilter = (cat: DecentralandCategoryFilter) => {
             return 'estate';
         case DecentralandCategoryFilter.Parcel:
             return 'parcel';
-        default:
-            throw new Error(`${cat} does not exist!`);
-    }
-}
-
-const getSandBoxKeyCategoryFilter = (cat: SandBoxCategoryFilter) => {
-    switch (cat) {
-        case SandBoxCategoryFilter.Estate:
-            return 'estate';
-        case SandBoxCategoryFilter.Land:
-            return 'land';
-        default:
-            throw new Error(`${cat} does not exist!`);
-    }
-}
-
-const getSandBoxKeyLandTypeFilter = (cat: SandBoxLandTypeFilter) => {
-    switch (cat) {
-        case SandBoxLandTypeFilter.Regular:
-            return 'regular';
-        case SandBoxLandTypeFilter.Premium:
-            return 'premium';
         default:
             throw new Error(`${cat} does not exist!`);
     }

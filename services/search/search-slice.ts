@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { MetaversePlatform } from 'nftopia-shared/dist/shared/platform';
 import {
     EmptySearchResultDto,
     SearchDto,
@@ -15,7 +16,6 @@ import {
     InitialDecentralandSearchState,
     InitialSandBoxSearchState,
     InitialSolanaTownSearchState,
-    MetaversePlatform,
     SandBoxSearchState,
     SolanaTownSearchState
 } from './search.types';

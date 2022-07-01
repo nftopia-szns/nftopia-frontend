@@ -1,4 +1,5 @@
-import { DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSortByCriterias, MetaversePlatform } from "../services/search/search.types"
+import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
+import { DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSortByCriterias } from "../services/search/search.types"
 
 export const t = (key: any) => {
     // if english
