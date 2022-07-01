@@ -317,10 +317,12 @@ export const _buildCryptovoxelsSearchDtoFromState = (state: SearchState): Search
     //         break;
     // }
 
+    // build index
+    const index = `${MetaversePlatform.Cryptovoxels}-${ChainId.Ethereum}-${EthereumNetwork.Mainnet}`
+
     // build searchDto
     const searchDto = {
-        // TODO: remove this hardcode
-        indices: ['cryptovoxels-ethereum-1'],
+        indices: [index],
         query: query,
         // sort: sort,
         page: state.page,
