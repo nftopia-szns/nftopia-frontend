@@ -33,4 +33,4 @@ asset detail page, with params:
 search page, with params: to be documented later
 
 ## Local setup
-
+This frontend heavily depends on other services to query and display data. Please visit [this README](https://github.com/NFTopia-SZNS/nftopia-devtools.git) to set up your dev environment.
