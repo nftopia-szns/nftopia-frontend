@@ -32,4 +32,5 @@ asset detail page, with params:
 #### /search
 search page, with params: to be documented later
 
+## Local setup
 

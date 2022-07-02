@@ -1,5 +1,6 @@
+import { DecentralandAssetCategory } from "nftopia-shared/dist/shared/asset"
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
-import { DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSortByCriterias } from "../services/search/search.types"
+import { DecentralandSaleFilter, DecentralandSortByCriterias } from "../services/search/search.types"
 
 export const t = (key: any) => {
     // if english
@@ -17,9 +18,9 @@ export const t_en = (key: any) => {
             return "Cryptovoxels"
         case MetaversePlatform.SolanaTown:
             return "SolanaTown"
-        case DecentralandCategoryFilter.Estate:
+        case DecentralandAssetCategory.Estate:
             return "Estate"
-        case DecentralandCategoryFilter.Parcel:
+        case DecentralandAssetCategory.Parcel:
             return "Parcel"
         case DecentralandSaleFilter.All:
             return "All"

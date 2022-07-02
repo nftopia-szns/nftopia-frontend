@@ -1,14 +1,10 @@
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
-import { TheSandBoxAssetCategory, TheSandBoxAssetType } from "nftopia-shared/dist/shared/asset"
+import { DecentralandAssetCategory, SolanaTownAssetType, TheSandBoxAssetCategory, TheSandBoxAssetType } from "nftopia-shared/dist/shared/asset"
+import { CryptovoxelsAttributeIsland, CryptovoxelsAttributeSuburb } from "nftopia-shared/dist/shared/asset/cryptovoxels"
 
 export const MetaversePlatformOptions = Object.values(MetaversePlatform)
 
-export enum DecentralandCategoryFilter {
-    Estate = "DecentralandCategoryFilter.Estate",
-    Parcel = "DecentralandCategoryFilter.Parcel",
-}
-
-export const DecentralandCategoryFilterOptions = Object.values(DecentralandCategoryFilter)
+export const DecentralandCategoryFilterOptions = Object.values(DecentralandAssetCategory)
 
 export enum DecentralandSaleFilter {
     All = "DecentralandSaleFilter.All",
@@ -32,7 +28,7 @@ export interface DecentralandSearchState {
     sortBy: DecentralandSortByCriterias;
 
     // filters
-    categoryFilter: DecentralandCategoryFilter[]; // estate, parcel
+    categoryFilter: DecentralandAssetCategory[]; // estate, parcel
     saleFilter: DecentralandSaleFilter; // on sale, not on sale, expired...
     priceMinFilter?: number;
     priceMaxFilter?: number;
@@ -41,7 +37,7 @@ export interface DecentralandSearchState {
 
 export const InitialDecentralandSearchState: DecentralandSearchState = {
     sortBy: DecentralandSortByCriterias.Price,
-    categoryFilter: [DecentralandCategoryFilter.Estate, DecentralandCategoryFilter.Parcel],
+    categoryFilter: DecentralandCategoryFilterOptions,
     saleFilter: DecentralandSaleFilter.All,
 }
 
@@ -68,31 +64,12 @@ export const InitialSandBoxSearchState: SandBoxSearchState = {
     landTypeFilter: SandBoxLandTypeFilterOptions,
 }
 
-export enum CryptovoxelsIslandFilter {
-    OriginCity = "CryptovoxelsIslandFilter.OriginCity"
-}
-
-export enum CryptovoxelsSuburbFilter {
-    TheCenter = "TheCenter",
-    MusicDistrict = "MusicDistrict",
-    LittleTokyo = "LittleTokyo",
-    Makers = "Makers",
-    Scripting = "Scripting",
-    Hiro = "Hiro",
-    NorthTerrace = "NorthTerrace",
-    LeMarais = "LeMarais",
-    Doom = "Doom",
-    Frankfurt = "Frankfurt",
-    Kitties = "Kitties",
-    FantasyFields = "FantasyFields",
-}
-
-export const CryptovoxelsIslandFilterOptions = Object.values(CryptovoxelsIslandFilter)
-export const CryptovoxelsSuburbFilterOptions = Object.values(CryptovoxelsSuburbFilter)
+export const CryptovoxelsIslandFilterOptions = Object.values(CryptovoxelsAttributeIsland)
+export const CryptovoxelsSuburbFilterOptions = Object.values(CryptovoxelsAttributeSuburb)
 
 export interface CryptovoxelsSearchState {
-    islandFilter: CryptovoxelsIslandFilter[]
-    suburbFilter: CryptovoxelsSuburbFilter[]
+    islandFilter: CryptovoxelsAttributeIsland[]
+    suburbFilter: CryptovoxelsAttributeSuburb[]
 
     areaMinFilter?: number;
     areaMaxFilter?: number;
@@ -105,14 +82,10 @@ export const InitialCryptovoxelsSearchState: CryptovoxelsSearchState = {
     suburbFilter: CryptovoxelsSuburbFilterOptions,
 }
 
-export enum SolanaTownCategoryFilter {
-    Residential = "SolanaTownFilter.Residential",
-}
-
-export const SolanaTownCategoryFilterOptions = Object.values(SolanaTownCategoryFilter)
+export const SolanaTownCategoryFilterOptions = Object.values(SolanaTownAssetType)
 
 export interface SolanaTownSearchState {
-    categoryFilter: SolanaTownCategoryFilter[]
+    categoryFilter: SolanaTownAssetType[]
 }
 
 export const InitialSolanaTownSearchState: SolanaTownSearchState = {

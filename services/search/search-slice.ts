@@ -8,7 +8,7 @@ import {
 } from '../../pages/api/search/search.types';
 import {
     CryptovoxelsSearchState,
-    DecentralandCategoryFilter,
+    DecentralandCategoryFilterOptions,
     DecentralandSaleFilter,
     DecentralandSearchState,
     DecentralandSortByCriterias,
@@ -49,7 +49,7 @@ export const searchInitialState: SearchState = {
     pageSize: 10,
     platform: MetaversePlatform.Decentraland,
     platformSearchState: {
-        categoryFilter: [DecentralandCategoryFilter.Estate, DecentralandCategoryFilter.Parcel],
+        categoryFilter: DecentralandCategoryFilterOptions,
         saleFilter: DecentralandSaleFilter.All,
         sortBy: DecentralandSortByCriterias.Price,
     },
@@ -94,24 +94,6 @@ export const searchSlice = createSlice({
             action: PayloadAction<PlatformSearchState>) {
             state.platformSearchState = action.payload;
         },
-        // rCategoryFilter(state, action: PayloadAction<DecentralandCategoryFilter[]>) {
-        //     state.categoryFilter = action.payload
-        // },
-        // rSaleFilter(state, action: PayloadAction<DecentralandSaleFilter>) {
-        //     state.saleFilter = action.payload;
-        // },
-        // rPriceMinFilter(state, action: PayloadAction<number>) {
-        //     state.priceMinFilter = action.payload;
-        // },
-        // rPriceMaxFilter(state, action: PayloadAction<number>) {
-        //     state.priceMaxFilter = action.payload;
-        // },
-        // rOwnerFilter(state, action: PayloadAction<string>) {
-        //     state.ownerFilter = action.payload;
-        // },
-        // rSortBy(state, action: PayloadAction<DecentralandSortByCriterias>) {
-        //     state.sortBy = action.payload;
-        // },
         searchStart(state, action: PayloadAction<SearchDto>) {
             state.isLoading = true
         },

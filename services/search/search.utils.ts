@@ -2,7 +2,14 @@ import { MetaversePlatform } from "nftopia-shared/dist/shared/platform";
 import { ChainId, EthereumNetwork, SolanaNetwork } from "nftopia-shared/dist/shared/network";
 import { SearchDto } from "../../pages/api/search/search.types";
 import { SearchState } from "./search-slice";
-import { CryptovoxelsIslandFilter, CryptovoxelsSearchState, CryptovoxelsSuburbFilter, DecentralandCategoryFilter, DecentralandSaleFilter, DecentralandSearchState, DecentralandSortByCriterias, SandBoxSearchState, SolanaTownCategoryFilter, SolanaTownSearchState } from "./search.types";
+import {
+    CryptovoxelsSearchState,
+    DecentralandSaleFilter,
+    DecentralandSearchState,
+    DecentralandSortByCriterias,
+    SandBoxSearchState,
+    SolanaTownSearchState
+} from "./search.types";
 
 export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
     switch (state.platform) {
@@ -31,7 +38,7 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
                 "fields": [
                     "name",
                     "description",
-                    "attributes.coordinate",
+                    // "attributes.coordinate",
                     "owner"
                 ]
             }
@@ -44,14 +51,14 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
         case DecentralandSaleFilter.OnSale:
             must.push({
                 "exists": {
-                    "field": "active_order"
+                    "field": "attributes.active_order"
                 }
             })
             break;
         case DecentralandSaleFilter.NotOnSale:
             must_not.push({
                 "exists": {
-                    "field": "active_order"
+                    "field": "attributes.active_order"
                 }
             })
             break;
@@ -62,7 +69,7 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
 
     must.push({
         terms: {
-            category: platformSearchState.categoryFilter.map((item) => getDecentralandKeyCategoryFilter(item))
+            "attributes.category": platformSearchState.categoryFilter
         }
     })
 
@@ -77,13 +84,13 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
     const range = {}
     if (platformSearchState.priceMinFilter || platformSearchState.priceMaxFilter) {
         if (platformSearchState.priceMinFilter) {
-            range["active_order.price"] = {
+            range["attributes.active_order.price"] = {
                 gte: platformSearchState.priceMinFilter
             }
         }
 
         if (platformSearchState.priceMaxFilter) {
-            range["active_order.price"] = {
+            range["attributes.active_order.price"] = {
                 ...range["active_order.price"],
                 lte: platformSearchState.priceMaxFilter
             }
@@ -105,32 +112,34 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
     const sort = {}
     switch (platformSearchState.sortBy) {
         case DecentralandSortByCriterias.RecentlyBought:
-            sort["sold_at"] = {
+            sort["attributes.sold_at"] = {
                 order: "desc"
             }
             break;
         case DecentralandSortByCriterias.TotalSales:
-            sort["sales"] = {
+            sort["attributes.sales"] = {
                 order: "desc"
             }
             break;
         case DecentralandSortByCriterias.RecentlyListed:
-            sort["active_order.updated_at"] = {
+            sort["attributes.active_order.updated_at"] = {
                 order: "desc"
             }
             break;
         case DecentralandSortByCriterias.Price:
         default:
-            sort["active_order.price"] = {
+            sort["attributes.active_order.price"] = {
                 order: "desc"
             }
             break;
     }
 
+    // build index
+    const index = `${MetaversePlatform.Decentraland}-${ChainId.Ethereum}-${EthereumNetwork.Mainnet}`
+
     // build searchDto
     const searchDto = {
-        // TODO: remove this hardcode
-        indices: ['decentraland-ethereum-3'],
+        indices: [index],
         query: query,
         sort: sort,
         page: state.page,
@@ -232,12 +241,12 @@ export const _buildCryptovoxelsSearchDtoFromState = (state: SearchState): Search
     must = must.concat(
         {
             terms: {
-                "attributes.suburb": platformSearchState.suburbFilter.map((item) => getCryptovoxelsKeySuburbFilter(item))
+                "attributes.suburb": platformSearchState.suburbFilter
             }
         },
         {
             terms: {
-                "attributes.island": platformSearchState.islandFilter.map((item) => getCryptovoxelsKeyIslandFilter(item))
+                "attributes.island": platformSearchState.islandFilter
             }
         }
     )
@@ -356,7 +365,7 @@ export const _buildSolanaTownSearchDtoFromState = (state: SearchState): SearchDt
     must = must.concat(
         {
             terms: {
-                "attributes.type": platformSearchState.categoryFilter.map((item) => getSolanaTownKeyCategoryFilter(item))
+                "attributes.type": platformSearchState.categoryFilter
             }
         }
     )
@@ -382,92 +391,4 @@ export const _buildSolanaTownSearchDtoFromState = (state: SearchState): SearchDt
     }
 
     return searchDto
-}
-
-const getDecentralandKeyCategoryFilter = (cat: DecentralandCategoryFilter) => {
-    switch (cat) {
-        case DecentralandCategoryFilter.Estate:
-            return 'estate';
-        case DecentralandCategoryFilter.Parcel:
-            return 'parcel';
-        default:
-            throw new Error(`${cat} does not exist!`);
-    }
-}
-
-const getCryptovoxelsKeyIslandFilter = (cat: CryptovoxelsIslandFilter) => {
-    switch (cat) {
-        case CryptovoxelsIslandFilter.OriginCity:
-            return "Origin City";
-        default:
-            throw new Error(`${cat} does not exist!`);
-    }
-}
-
-// Area 51
-// Doom
-// Axies
-// Le Marais
-// Little Tokyo
-// Moon
-// Rome
-// Babylon
-// Kitties
-// West End
-// Oasis
-// Junkyard
-// North Pole
-// Scripting
-// Midtown
-// Te Aro
-// Music District
-// Shenzhen
-// Hiro
-// North Terrace
-// Memes
-// Deep South
-// Makers
-// The Center
-// Fantasy Fields
-// Punks
-// Frankfurt
-// Gangnam
-const getCryptovoxelsKeySuburbFilter = (cat: CryptovoxelsSuburbFilter) => {
-    switch (cat) {
-        case CryptovoxelsSuburbFilter.TheCenter:
-            return "The Center"
-        case CryptovoxelsSuburbFilter.MusicDistrict:
-            return "Music District"
-        case CryptovoxelsSuburbFilter.LittleTokyo:
-            return "Little Tokyo"
-        case CryptovoxelsSuburbFilter.Makers:
-            return "Makers"
-        case CryptovoxelsSuburbFilter.Scripting:
-            return "Scripting"
-        case CryptovoxelsSuburbFilter.Hiro:
-            return "Hiro"
-        case CryptovoxelsSuburbFilter.NorthTerrace:
-            return "North Terrace"
-        case CryptovoxelsSuburbFilter.LeMarais:
-            return "Le Marais"
-        case CryptovoxelsSuburbFilter.Doom:
-            return "Doom"
-        case CryptovoxelsSuburbFilter.Frankfurt:
-            return "Frankfurt"
-        case CryptovoxelsSuburbFilter.Kitties:
-            return "Kitties"
-        case CryptovoxelsSuburbFilter.FantasyFields:
-            return "Fantasy Fields"
-        default:
-            throw new Error(`${cat} does not exist!`);
-    }
-}
-
-const getSolanaTownKeyCategoryFilter = (cat: SolanaTownCategoryFilter) => {
-    switch (cat) {
-        case SolanaTownCategoryFilter.Residential:
-            return "residential"
-        default:
-            throw new Error(`${cat} does not exist!`);
-    }
 }
