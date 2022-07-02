@@ -34,3 +34,9 @@ search page, with params: to be documented later
 
 ## Local setup
 This frontend heavily depends on other services to query and display data. Please visit [this README](https://github.com/NFTopia-SZNS/nftopia-devtools.git) to set up your dev environment.
+
+## Shared library for common data models
+This repo used [nftopia-shared](https://github.com/NFTopia-SZNS/nftopia-shared) as a convention for data models of entire platform. Remember to update the package regularly (since we're in development process) by running: 
+```
+yarn add https://github.com/NFTopia-SZNS/nftopia-shared
+```
