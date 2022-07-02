@@ -11,7 +11,7 @@ type Props = {
     searchHit: SearchHitDto<any>
 }
 
-const SearchResultCard = (props: Props) => {
+const SearchResultGridCard = (props: Props) => {
     const platform = useAppSelector((state) => state.search.platform)
     const { searchHit } = props
     const router = useRouter()
@@ -41,4 +41,4 @@ const SearchResultCard = (props: Props) => {
     )
 }
 
-export default SearchResultCard
+export default SearchResultGridCard

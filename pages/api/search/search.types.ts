@@ -2,6 +2,8 @@
  * Search queries
  */
 
+import { GenericAssetDto } from "nftopia-shared/dist/shared/asset/types"
+
 export interface SearchDto {
     indices: string[]
     query: IQuery | object
@@ -75,7 +77,7 @@ export interface DecentralandSearchHitDto extends SearchHitBase {
     }
 }
 
-export const EmptySearchResultDto: SearchResultDto<SearchHitBase> = {
+export const EmptySearchResultDto: SearchResultDto<GenericAssetDto> = {
     total: 0,
     max_score: 0,
     hits: []

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types';
 import { MetaversePlatform } from 'nftopia-shared/dist/shared/platform';
 import {
     EmptySearchResultDto,
@@ -38,7 +39,7 @@ export interface SearchState {
     platform: MetaversePlatform;
     platformSearchState: PlatformSearchState;
 
-    searchResult: SearchResultDto<SearchHitBase>;
+    searchResult: SearchResultDto<GenericAssetDto>;
 }
 
 export const searchInitialState: SearchState = {
@@ -97,7 +98,7 @@ export const searchSlice = createSlice({
         searchStart(state, action: PayloadAction<SearchDto>) {
             state.isLoading = true
         },
-        searchSuccess(state, action: PayloadAction<SearchResultDto<SearchHitBase>>) {
+        searchSuccess(state, action: PayloadAction<SearchResultDto<GenericAssetDto>>) {
             state.isLoading = false
             state.searchResult = action.payload
         },

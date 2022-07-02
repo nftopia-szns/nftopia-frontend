@@ -1,21 +1,22 @@
 import { Row, Col, Divider, Pagination } from "antd"
-import { useEffect } from "react"
-import DecentralandSearchResult from "./DecentralandSearchResult/DecentralandSearchResult"
+import { useEffect, useState } from "react"
 import { Typography } from 'antd';
 const { Text } = Typography;
 import { useAppDispatch, useAppSelector } from "../../../services/hook"
 import { searchStart, rPage, rPageSize } from "../../../services/search/search-slice"
 import "./SearchResults.module.css"
 import { useRouter } from "next/router";
-import { DecentralandSearchHitDto, SearchDto, SearchHitDto } from "../../../pages/api/search/search.types";
+import { SearchDto } from "../../../pages/api/search/search.types";
 import { QueryBuilder } from "../../../pages/api/search/search.utils";
-import SearchResultCard from "./SearchResultCard/SearchResultCard";
+import SearchResultGridCard from "./SearchResultCard/SearchResultGridCard";
+import SearchResultListCard from "./SearchResultCard/SearchResultListCard";
 
 const SearchResults = () => {
     const router = useRouter()
     const dispatch = useAppDispatch()
     const searchState = useAppSelector((state) => state.search)
     const searchResults = useAppSelector((state) => state.search.searchResult)
+    const [toggleListView, setToggleListView] = useState<boolean>(true)
 
     useEffect(() => {
         // below code is expected to execute only once when the query in url is ready
@@ -59,13 +60,27 @@ const SearchResults = () => {
             <Text>Total: No result</Text>
         }
         <Divider />
-        <Row id="search-results" gutter={2}>
-            {searchResults?.hits.map((_searchHit) =>
-                <Col key={`${_searchHit._index}${_searchHit._id}`} span={4}>
-                    <SearchResultCard searchHit={_searchHit} />
-                </Col>
-            )}
-        </Row>
+        {
+            toggleListView ?
+                <Row id="search-results" gutter={2}>
+                    {searchResults?.hits.map((_searchHit) =>
+                        // <Col key={`${_searchHit._index}${_searchHit._id}`} span={4}>
+                        //     <SearchResultGridCard searchHit={_searchHit} />
+                        // </Col>
+                        <Row key={`${_searchHit._index}${_searchHit._id}`}>
+                            <SearchResultListCard searchHit={_searchHit} />
+                        </Row>
+                    )}
+                </Row>
+                :
+                <Row id="search-results" gutter={2}>
+                    {searchResults?.hits.map((_searchHit) =>
+                        <Col key={`${_searchHit._index}${_searchHit._id}`} span={4}>
+                            <SearchResultGridCard searchHit={_searchHit} />
+                        </Col>
+                    )}
+                </Row>
+        }
         <Divider />
         <Pagination
             defaultCurrent={searchState.pageSize}
