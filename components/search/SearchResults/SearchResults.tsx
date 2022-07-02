@@ -67,7 +67,9 @@ const SearchResults = () => {
                         // <Col key={`${_searchHit._index}${_searchHit._id}`} span={4}>
                         //     <SearchResultGridCard searchHit={_searchHit} />
                         // </Col>
-                        <Row key={`${_searchHit._index}${_searchHit._id}`}>
+                        <Row
+                            style={{ margin: "20 10px", padding: "5px 2px 5px 2px"}}
+                            key={`${_searchHit._index}${_searchHit._id}`}>
                             <SearchResultListCard searchHit={_searchHit} />
                         </Row>
                     )}
