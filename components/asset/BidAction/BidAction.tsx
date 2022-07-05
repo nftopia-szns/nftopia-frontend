@@ -1,7 +1,7 @@
 import { useWeb3React } from '@web3-react/core'
 import { Button } from 'antd'
 import React from 'react'
-import { Bid, useAssetHook } from '../../../services/asset/asset-hook'
+import { Bid, useDecentralandAssetHook } from '../../../services/asset/asset-hook'
 import { acceptBidRequest, cancelBidRequest } from '../../../services/bid/bid-slice'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import { DecentralandSearchHitDto } from '../../../pages/api/search/search.types'
@@ -14,7 +14,7 @@ function BidAction(props: Props) {
     const { bid } = props
     const dispatch = useAppDispatch()
     const asset = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
-    const { owner } = useAssetHook(asset)
+    const { owner } = useDecentralandAssetHook(asset)
     const { account, provider } = useWeb3React()
 
     const onCancelBid = () => {

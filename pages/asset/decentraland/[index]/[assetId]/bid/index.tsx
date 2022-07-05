@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react'
 import BidList from '../../../../../../components/asset/BidList/BidList'
 import { BN_ZERO } from '../../../../../../constants/eth'
 import { ERC20__factory } from '../../../../../../contracts/land-contract/typechain'
-import { useAssetHook } from '../../../../../../services/asset/asset-hook'
+import { useDecentralandAssetHook } from '../../../../../../services/asset/asset-hook'
 import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors'
 import { fetchAsset } from '../../../../../../services/asset/asset-slice'
 import { bidRequest } from '../../../../../../services/bid/bid-slice'
@@ -34,7 +34,7 @@ const DecentralandAssetBidPage = (props: Props) => {
     bids,
     fingerprint,
     isLoading
-  } = useAssetHook(assetDetail)
+  } = useDecentralandAssetHook(assetDetail)
 
   const [balanceOfMana, setBalanceOfMana] = useState<BigNumber>(BN_ZERO)
   const [bidAmount, setBidAmount] = useState<number>(1000)

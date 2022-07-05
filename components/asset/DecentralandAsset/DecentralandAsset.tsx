@@ -4,22 +4,24 @@ import React, { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import './DecentralandAsset.module.css'
 import { DecentralandSearchHitDto } from '../../../pages/api/search/search.types'
-import { useAssetHook } from '../../../services/asset/asset-hook'
+import { useDecentralandAssetHook } from '../../../services/asset/asset-hook'
 import { isValidOrder } from '../../../utils'
 import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'next/router'
 import { parameterizedRouter } from '../../../router'
 import { fetchAsset } from '../../../services/asset/asset-slice'
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
+import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types'
+import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
 
 const DecentralandAsset = () => {
   const router = useRouter()
   const { index, assetId } = router.query
   const dispatch = useAppDispatch()
   const isAssetLoading = useAppSelector<boolean>((state) => state.asset.isLoading)
-  const assetDetail = useAppSelector<DecentralandSearchHitDto>((state) => state.asset.assetDetail as DecentralandSearchHitDto)
+  const assetDetail = useAppSelector((state) => state.asset.assetDetail as GenericAssetDto)
   const { account } = useWeb3React()
-  const { owner, order, isLoading } = useAssetHook(assetDetail)
+  const { owner, order, isLoading } = useDecentralandAssetHook(assetDetail as DecentralandAssetDto)
 
   useEffect(() => {
     if (index && assetId) {

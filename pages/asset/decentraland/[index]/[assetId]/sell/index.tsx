@@ -5,7 +5,7 @@ import Title from 'antd/lib/typography/Title';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
-import { useAssetHook } from '../../../../../../services/asset/asset-hook';
+import { useDecentralandAssetHook } from '../../../../../../services/asset/asset-hook';
 import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors';
 import { fetchAsset } from '../../../../../../services/asset/asset-slice';
 import { useAppDispatch, useAppSelector } from '../../../../../../services/hook';
@@ -28,7 +28,7 @@ const DecentralandAssetSellPage = (props: Props) => {
   const {
     order,
     isLoading
-  } = useAssetHook(assetDetail)
+  } = useDecentralandAssetHook(assetDetail)
 
   const [price, setPrice] = useState<number>(1000)
   const [isValidPrice, setIsValidPrice] = useState<boolean>(true)

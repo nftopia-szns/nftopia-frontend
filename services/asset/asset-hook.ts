@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
-import { NFTCategory } from '@dcl/schemas'
 import { useWeb3React } from '@web3-react/core'
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { BigNumber, BigNumberish } from 'ethers'
-import { DecentralandSearchHitDto } from '../../pages/api/search/search.types'
 import { ERC721Bid__factory, ERC721__factory, EstateRegistry__factory, Marketplace__factory } from '../../contracts/land-contract/typechain'
 import { isValidOrder } from '../../utils'
 import { formatEther } from '@ethersproject/units'
+import { DecentralandAssetCategory, DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
+import { ChainId } from '../../components/asset/DecentralandAsset/DecentralandAsset.type'
+import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types'
+import { MetaversePlatform } from 'nftopia-shared/dist/shared/platform'
 
 export interface Order {
   id: string
@@ -35,7 +37,7 @@ export enum LOADING_TASKS {
   FINGERPRINT,
 }
 
-export const useAssetHook = (asset: DecentralandSearchHitDto) => {
+export const useDecentralandAssetHook = (asset: DecentralandAssetDto) => {
   const { account, provider } = useWeb3React()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -76,7 +78,7 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
     const assetRegistry = ERC721__factory.connect(asset.contract_address, provider)
 
     try {
-      const _owner = await assetRegistry.ownerOf(asset.token_id)
+      const _owner = await assetRegistry.ownerOf(asset.id)
       setOwner(_owner)
     } catch (error) {
       console.error(error);
@@ -91,13 +93,14 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
     const errors = new Set<ASSET_ERRORS>()
     const marketplaceContractData = getContract(
       ContractName.Marketplace,
-      asset.chain_id
+      // TODO: avoid to hardcode this
+      ChainId.ETHEREUM_MAINNET
     )
     const marketplaceContract = Marketplace__factory.connect(marketplaceContractData.address, provider)
 
     // check token's order existence in marketplace
     try {
-      const _order = await marketplaceContract.orderByAssetId(asset.contract_address, asset.token_id)
+      const _order = await marketplaceContract.orderByAssetId(asset.contract_address, asset.id)
       if (isValidOrder(_order)) {
         setOrder(_order)
       } else {
@@ -114,13 +117,13 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
   }, [provider, asset])
 
   const getFingerprint = useCallback(async () => {
-    if (asset.category === NFTCategory.ESTATE) {
+    if (asset.attributes.category === DecentralandAssetCategory.Estate) {
       try {
         const _estateRegistry = EstateRegistry__factory.connect(
           asset.contract_address,
           provider
         )
-        const fingerprint = await _estateRegistry.getFingerprint(asset.token_id)
+        const fingerprint = await _estateRegistry.getFingerprint(asset.id)
         setFingerprint(fingerprint)
       } catch (error) {
         // do nothing
@@ -131,7 +134,7 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
   const getBids = useCallback(async () => {
     const contractBidData: ContractData = getContract(
       ContractName.Bid,
-      asset.chain_id,
+      ChainId.ETHEREUM_MAINNET,
     )
     const contractBid = ERC721Bid__factory.connect(
       contractBidData.address,
@@ -140,9 +143,9 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
 
     let bids: Bid[] = []
 
-    const bidCounter = await contractBid.bidCounterByToken(asset.contract_address, asset.token_id)
+    const bidCounter = await contractBid.bidCounterByToken(asset.contract_address, asset.id)
     for (let i = 0; i < bidCounter.toNumber(); i++) {
-      const _bid = await contractBid.getBidByToken(asset.contract_address, asset.token_id, i)
+      const _bid = await contractBid.getBidByToken(asset.contract_address, asset.id, i)
       bids.push({
         id: _bid[0],
         bidder: _bid[1],
@@ -151,8 +154,6 @@ export const useAssetHook = (asset: DecentralandSearchHitDto) => {
       })
     }
     setBids(bids)
-    console.log(bids);
-
   }, [provider, asset])
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import { fetchNearbyAssets } from '../../../services/asset/asset-slice'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 import NearbyAssetItem from './NearbyAssetItem'
+import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
 
 type Props = {}
 
@@ -29,7 +30,7 @@ const NearbyAsset = (props: Props) => {
             case MetaversePlatform.Cryptovoxels:
                 return false;
             case MetaversePlatform.Decentraland:
-                return assetDetail["category"] === "parcel"
+                return (assetDetail as DecentralandAssetDto).attributes.category === "parcel"
             default:
                 return true
         }
@@ -43,8 +44,10 @@ const NearbyAsset = (props: Props) => {
                     isEligibleToShowNearbyAssets === true ?
                         nearbyAssets && nearbyAssets?.length > 0 ?
                             <Row gutter={[24, 48]}>
-                                {nearbyAssets.map((asset) =>
-                                    <Col span={2}>
+                                {nearbyAssets.map((asset, index) =>
+                                    <Col
+                                        key={index} 
+                                        span={2}>
                                         <NearbyAssetItem asset={asset} />
                                     </Col>)}
                             </Row>

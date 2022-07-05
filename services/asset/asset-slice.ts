@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types';
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 
 export interface AssetBriefInfo {
@@ -10,7 +11,7 @@ export interface AssetBriefInfo {
 interface AssetState {
     isLoading: boolean,
     platform: MetaversePlatform,
-    assetDetail: object,
+    assetDetail: GenericAssetDto,
     nearbyAssets: object[],
 }
 
@@ -29,7 +30,7 @@ export const assetSlice = createSlice({
             state.isLoading = true
             state.platform = action.payload.platform
         },
-        setAssetDetail(state, action: PayloadAction<object>) {
+        setAssetDetail(state, action: PayloadAction<GenericAssetDto>) {
             state.assetDetail = action.payload;
         },
         fetchNearbyAssets(state, action: PayloadAction) {
@@ -37,7 +38,7 @@ export const assetSlice = createSlice({
         setNearbyAssets(state, action: PayloadAction<object[]>) {
             state.nearbyAssets = action.payload
         },
-        fetchAssetSuccess(state, action: PayloadAction<object>) {
+        fetchAssetSuccess(state, action: PayloadAction<GenericAssetDto>) {
             state.isLoading = false
             state.assetDetail = action.payload;
         },

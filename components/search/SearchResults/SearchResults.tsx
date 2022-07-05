@@ -65,11 +65,12 @@ const SearchResults = () => {
                 <Row id="search-results" gutter={2}>
                     {searchResults?.hits.map((_searchHit) =>
                         <Row
+                            key={`${_searchHit._index}${_searchHit._id}`}
                             style={{ margin: "20 10px", padding: "5px 2px 5px 2px" }}>
                             <SearchResultListCard
                                 searchHit={_searchHit} />
                         </Row>
-                    )} 
+                    )}
                 </Row>
                 :
                 <Row id="search-results" gutter={2}>

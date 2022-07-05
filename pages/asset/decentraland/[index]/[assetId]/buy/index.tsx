@@ -5,7 +5,7 @@ import Title from "antd/lib/typography/Title"
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { useAssetHook } from '../../../../../../services/asset/asset-hook'
+import { useDecentralandAssetHook } from '../../../../../../services/asset/asset-hook'
 import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors'
 import { fetchAsset } from '../../../../../../services/asset/asset-slice'
 import { buyRequest } from '../../../../../../services/sale/sale-slice'
@@ -32,7 +32,7 @@ function DecentralandAssetBuyPage({ }: Props) {
         owner,
         order,
         isLoading
-    } = useAssetHook(assetDetail)
+    } = useDecentralandAssetHook(assetDetail)
     const [isEnoughBalance, setIsEnoughBalance] = useState<boolean>(true)
 
     useEffect(() => {
