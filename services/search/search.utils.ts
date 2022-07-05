@@ -10,6 +10,7 @@ import {
     SandBoxSearchState,
     SolanaTownSearchState
 } from "./search.types";
+import { DecentralandAssetCategory } from "nftopia-shared/dist/shared/asset";
 
 export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
     switch (state.platform) {
@@ -81,8 +82,11 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
         })
     }
 
-    const range = {}
+    // filter price
     if (platformSearchState.priceMinFilter || platformSearchState.priceMaxFilter) {
+        // build range
+        const range = {}
+
         if (platformSearchState.priceMinFilter) {
             range["attributes.active_order.price"] = {
                 gte: platformSearchState.priceMinFilter
@@ -97,6 +101,15 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
         }
 
         must.push({ range: range })
+    }
+
+    // filter out invalid estate (size = 0)
+    if (platformSearchState.categoryFilter.includes(DecentralandAssetCategory.Estate)) {
+        must_not.push({
+            "match": {
+                "attributes.estate_size": 0
+            }
+        })
     }
 
     // build query

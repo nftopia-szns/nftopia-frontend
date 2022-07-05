@@ -52,8 +52,8 @@ const SearchResultListCard = (props: Props) => {
                     </Row>
                     <Row>
                         <Typography>Highlights: </Typography>
-                        {getHighlights(searchHit._source).map((hl) =>
-                            <Typography>• {hl}</Typography>)}
+                        {getHighlights(searchHit._source).map((hl, index) =>
+                            <Typography key={index}>• {hl}</Typography>)}
                     </Row>
                 </Col>
             </Row>

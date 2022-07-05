@@ -28,7 +28,6 @@ export function* handleFetchNearbyAssets(action: PayloadAction) {
         const assetState = yield select(((state) => state.asset))
 
         const searchNearbyAssetsSearchDto: SearchDto = buildSearchNearbyAssets(assetState.platform, assetState.assetDetail)
-        console.log(searchNearbyAssetsSearchDto);
         
         const _searchResults: SearchResultDto<object> = yield enhancedSearch(searchNearbyAssetsSearchDto)
 
