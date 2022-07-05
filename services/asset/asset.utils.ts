@@ -1,5 +1,6 @@
 import { DecentralandSearchHitDto, SearchDto, SearchHitDto } from "../../pages/api/search/search.types";
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
+import { ChainId, EthereumNetwork } from "nftopia-shared/dist/shared/network";
 
 export const buildSearchNearbyAssets = (platform, assetDetail): SearchDto => {
     switch (platform) {
@@ -54,8 +55,11 @@ const _buildDecentralandSearchNearbyAssets = (assetDetail: DecentralandSearchHit
         }
     }
 
+    // build index
+    const index = `${MetaversePlatform.Decentraland}-${ChainId.Ethereum}-${EthereumNetwork.Mainnet}`
+
     return {
-        indices: ["decentraland-ethereum-1"],
+        indices: [index],
         query: query,
         pageSize: 100,
     }
@@ -94,8 +98,11 @@ const _buildTheSandboxSearchNearbyAssets = (assetDetail: DecentralandSearchHitDt
         }
     }
 
+    // build index
+    const index = `${MetaversePlatform.SandBox}-${ChainId.Ethereum}-${EthereumNetwork.Mainnet}`
+
     return {
-        indices: ["sandbox-ethereum-1"],
+        indices: [index],
         query: query,
         pageSize: 100,
     }
@@ -134,8 +141,12 @@ const _buildSolanaTownSearchNearbyAssets = (assetDetail: DecentralandSearchHitDt
         }
     }
 
+
+    // build index
+    const index = `${MetaversePlatform.SolanaTown}-${ChainId.Solana}-${EthereumNetwork.Mainnet}`
+
     return {
-        indices: ["solanatown-solana-1"],
+        indices: [index],
         query: query,
         pageSize: 100,
     }

@@ -3,7 +3,7 @@ import { put, select, takeLatest } from 'redux-saga/effects';
 import { AssetBriefInfo, fetchAsset, fetchAssetSuccess, fetchNearbyAssets, setNearbyAssets } from "./asset-slice";
 import { enhancedSearch } from "../../pages/api/search";
 import { QueryBuilder } from "../../pages/api/search/search.utils";
-import { DecentralandSearchHitDto, SearchDto, SearchHitDto, SearchResultDto } from "../../pages/api/search/search.types";
+import { SearchDto, SearchResultDto } from "../../pages/api/search/search.types";
 import { buildSearchNearbyAssets } from "./asset.utils";
 
 export function* handleFetchAsset(action: PayloadAction<AssetBriefInfo>) {
