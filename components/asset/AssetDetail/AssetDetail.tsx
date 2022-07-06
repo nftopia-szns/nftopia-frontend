@@ -31,6 +31,9 @@ const AssetDetail = (props: Props) => {
                                 />
                             </Row>
                             <Row>
+                                <Typography>Network: {assetDetail.chain_id} {assetDetail.network}</Typography>
+                            </Row>
+                            <Row>
                                 <Typography>Description: {assetDetail.description}</Typography>
                             </Row>
                             <Row>
