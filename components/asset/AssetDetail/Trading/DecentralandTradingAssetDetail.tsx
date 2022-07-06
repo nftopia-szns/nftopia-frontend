@@ -1,8 +1,9 @@
 import { formatEther } from '@ethersproject/units'
 import { useWeb3React } from '@web3-react/core'
 import { Button, Modal, Row, Typography } from 'antd'
-import router from 'next/router'
+import router, { useRouter } from 'next/router'
 import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
+import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
 import React, { useEffect, useState } from 'react'
 import { parameterizedRouter } from '../../../../router'
 import { useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
@@ -19,9 +20,12 @@ type Props = {
 
 const DecentralandTradingAssetDetail = (props: Props) => {
     const dispatch = useAppDispatch()
-    const { account, provider, connector } = useWeb3React()
+    const router = useRouter()
+    const { index, assetId } = router.query
+    const { account, provider, connector, chainId } = useWeb3React()
     const [showConnectWalletModal, setShowConnectWalletModal] = useState(false)
-    
+    const [showWrongChainId, setShowWrongChainId] = useState(false)
+
     const { asset } = props
     const { owner, buyable, bids, order } = useDecentralandAssetHook(asset)
 
@@ -31,40 +35,42 @@ const DecentralandTradingAssetDetail = (props: Props) => {
 
     useEffect(() => {
         dispatch(setWallet({ account, provider }))
-    }, [account, provider])
+        if (chainId) {
+            setShowWrongChainId(chainId !== toCanonicalEthereumChainId(asset.chain_id as EthereumChainId))
+        }
+    }, [account, provider, chainId])
 
     const isWalletConnected = (account) => {
         return account !== undefined
     }
 
     const onBidClicked = () => {
-        if (account) {       
+        if (account) {
             // TODO: check chain id
+            const url = parameterizedRouter.asset.decentraland.bid(index.toString(), assetId.toString())
+            router.push(url)
         } else {
             setShowConnectWalletModal(true)
         }
-        // const url = parameterizedRouter.asset.decentraland.bid(index.toString(), assetId.toString())
-        // router.push(url)
     }
 
     const onBuyClicked = () => {
         if (account) {
             // TODO: check chain id upon asset chain id
+            const url = parameterizedRouter.asset.decentraland.buy(index.toString(), assetId.toString())
+            router.push(url)
         } else {
             setShowConnectWalletModal(true)
         }
-        // const url = parameterizedRouter.asset.decentraland.buy(index.toString(), assetId.toString())
-        // router.push(url)
     }
 
     const onSellClicked = () => {
         if (account) {
-
+            const url = parameterizedRouter.asset.decentraland.sell(index.toString(), assetId.toString())
+            router.push(url)
         } else {
             setShowConnectWalletModal(true)
         }
-        // const url = parameterizedRouter.asset.decentraland.sell(index.toString(), assetId.toString())
-        // router.push(url)
     }
 
     return (
@@ -77,6 +83,7 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                     </>
                 }
             </Row>
+            <Row></Row>
             <Row>
                 {account === owner ?
                     <>
@@ -107,7 +114,17 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                     <WalletConnectCard />
                     <CoinbaseWalletCard />
                 </div>
-            </Modal>˝
+            </Modal>
+            <Modal
+                closable={false}
+                maskClosable={true}
+                footer={null}
+                visible={showWrongChainId}
+            >
+                <div style={{ display: 'flex', flexFlow: 'wrap', fontFamily: 'sans-serif' }}>
+                    Wrong network. Please connect to network {asset.network}, chainid {asset.chain_id}
+                </div>
+            </Modal>
         </>
     )
 }

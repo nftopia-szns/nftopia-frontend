@@ -1,5 +1,5 @@
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform";
-import { ChainId, EthereumNetwork, SolanaNetwork } from "nftopia-shared/dist/shared/network";
+import { Network, EthereumChainId, SolanaChainId } from "nftopia-shared/dist/shared/network";
 import { SearchDto } from "../../pages/api/search/search.types";
 import { SearchState } from "./search-slice";
 import {
@@ -148,7 +148,7 @@ export const _buildDecentralandSearchDtoFromState = (state: SearchState): Search
     }
 
     // build index
-    const index = `${MetaversePlatform.Decentraland}-${ChainId.Ethereum}-${EthereumNetwork.Mainnet}`
+    const index = `${MetaversePlatform.Decentraland}-${Network.Ethereum}-${EthereumChainId.Mainnet}`
 
     // build searchDto
     const searchDto = {
@@ -217,7 +217,7 @@ export const _buildSandBoxSearchDtoFromState = (state: SearchState): SearchDto =
     const sort = {}
 
     // build index
-    const index = `${MetaversePlatform.SandBox}-${ChainId.Ethereum}-${EthereumNetwork.Mainnet}`
+    const index = `${MetaversePlatform.SandBox}-${Network.Ethereum}-${EthereumChainId.Mainnet}`
 
     // build searchDto
     const searchDto = {
@@ -340,7 +340,7 @@ export const _buildCryptovoxelsSearchDtoFromState = (state: SearchState): Search
     // }
 
     // build index
-    const index = `${MetaversePlatform.Cryptovoxels}-${ChainId.Ethereum}-${EthereumNetwork.Mainnet}`
+    const index = `${MetaversePlatform.Cryptovoxels}-${Network.Ethereum}-${EthereumChainId.Mainnet}`
 
     // build searchDto
     const searchDto = {
@@ -393,7 +393,7 @@ export const _buildSolanaTownSearchDtoFromState = (state: SearchState): SearchDt
     }
 
     // build index
-    const index = `${MetaversePlatform.SolanaTown}-${ChainId.Solana}-${SolanaNetwork.Mainnet}`
+    const index = `${MetaversePlatform.SolanaTown}-${Network.Solana}-${SolanaChainId.Mainnet}`
 
     const searchDto = {
         indices: [index],

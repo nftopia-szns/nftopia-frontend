@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
 import { sellRequest, stopSellingRequest } from '../../../../../../services/sale/sale-slice';
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 import { isValidOrder } from '../../../../../../utils';
-import { DecentralandSearchHitDto } from '../../../../../api/search/search.types';
+import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset';
 
 type Props = {}
 
@@ -23,7 +23,7 @@ const DecentralandAssetSellPage = (props: Props) => {
   const { account, provider } = useWeb3React()
 
   const isAssetDetailLoading = useAppSelector(assetSelectorIsLoading)
-  const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
+  const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandAssetDto)
 
   const {
     order,

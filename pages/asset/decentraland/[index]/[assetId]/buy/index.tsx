@@ -11,9 +11,10 @@ import { fetchAsset } from '../../../../../../services/asset/asset-slice'
 import { buyRequest } from '../../../../../../services/sale/sale-slice'
 import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
 import { isValidOrder } from '../../../../../../utils'
-import { DecentralandSearchHitDto } from '../../../../../api/search/search.types'
 import { ERC20__factory } from '../../../../../../contracts/land-contract/typechain'
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
+import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
+import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
 
 type Props = {}
 
@@ -24,7 +25,7 @@ function DecentralandAssetBuyPage({ }: Props) {
     const { account, provider } = useWeb3React()
 
     const isAssetDetailLoading = useAppSelector(assetSelectorIsLoading)
-    const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
+    const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandAssetDto)
     const isBuyLoading = useAppSelector((state) => state.sale.isLoading)
 
     const {
@@ -49,7 +50,7 @@ function DecentralandAssetBuyPage({ }: Props) {
         if (account && assetDetail && order) {
             const contractManaData: ContractData = getContract(
                 ContractName.MANAToken,
-                assetDetail.chain_id,
+                toCanonicalEthereumChainId(assetDetail.chain_id as EthereumChainId),
             )
             const contractMana = ERC20__factory.connect(
                 contractManaData.address,

@@ -1,6 +1,7 @@
-import { DecentralandSearchHitDto, SearchDto, SearchHitDto } from "../../pages/api/search/search.types";
+import { SearchDto, SearchHitDto } from "../../pages/api/search/search.types";
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
-import { ChainId, EthereumNetwork } from "nftopia-shared/dist/shared/network";
+import { EthereumChainId, Network } from "nftopia-shared/dist/shared/network";
+import { DecentralandAssetDto, SolanaTownAssetDto, TheSandBoxAssetDto } from "nftopia-shared/dist/shared/asset";
 
 export const buildSearchNearbyAssets = (platform, assetDetail): SearchDto => {
     switch (platform) {
@@ -17,7 +18,7 @@ export const buildSearchNearbyAssets = (platform, assetDetail): SearchDto => {
     }
 }
 
-const _buildDecentralandSearchNearbyAssets = (assetDetail: DecentralandSearchHitDto): SearchDto => {
+const _buildDecentralandSearchNearbyAssets = (assetDetail: DecentralandAssetDto): SearchDto => {
     if (assetDetail["category"] === "estate") {
         // TODO: find a way to support nearby assets for estate
         return null
@@ -56,7 +57,7 @@ const _buildDecentralandSearchNearbyAssets = (assetDetail: DecentralandSearchHit
     }
 
     // build index
-    const index = `${MetaversePlatform.Decentraland}-${ChainId.Ethereum}-${EthereumNetwork.Mainnet}`
+    const index = `${MetaversePlatform.Decentraland}-${Network.Ethereum}-${EthereumChainId.Mainnet}`
 
     return {
         indices: [index],
@@ -65,7 +66,7 @@ const _buildDecentralandSearchNearbyAssets = (assetDetail: DecentralandSearchHit
     }
 }
 
-const _buildTheSandboxSearchNearbyAssets = (assetDetail: DecentralandSearchHitDto): SearchDto => {
+const _buildTheSandboxSearchNearbyAssets = (assetDetail: TheSandBoxAssetDto): SearchDto => {
     const { x, y } = assetDetail.attributes
 
     const lowerboundX = x - 5
@@ -99,7 +100,7 @@ const _buildTheSandboxSearchNearbyAssets = (assetDetail: DecentralandSearchHitDt
     }
 
     // build index
-    const index = `${MetaversePlatform.SandBox}-${ChainId.Ethereum}-${EthereumNetwork.Mainnet}`
+    const index = `${MetaversePlatform.SandBox}-${Network.Ethereum}-${EthereumChainId.Mainnet}`
 
     return {
         indices: [index],
@@ -108,7 +109,7 @@ const _buildTheSandboxSearchNearbyAssets = (assetDetail: DecentralandSearchHitDt
     }
 }
 
-const _buildSolanaTownSearchNearbyAssets = (assetDetail: DecentralandSearchHitDto): SearchDto => {
+const _buildSolanaTownSearchNearbyAssets = (assetDetail: SolanaTownAssetDto): SearchDto => {
     const { x, y } = assetDetail.attributes
 
     const lowerboundX = x - 5
@@ -143,7 +144,7 @@ const _buildSolanaTownSearchNearbyAssets = (assetDetail: DecentralandSearchHitDt
 
 
     // build index
-    const index = `${MetaversePlatform.SolanaTown}-${ChainId.Solana}-${EthereumNetwork.Mainnet}`
+    const index = `${MetaversePlatform.SolanaTown}-${Network.Solana}-${EthereumChainId.Mainnet}`
 
     return {
         indices: [index],

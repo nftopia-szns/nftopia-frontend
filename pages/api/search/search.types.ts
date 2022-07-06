@@ -47,36 +47,6 @@ export interface SearchHitDto<T> {
     _source: T
 }
 
-// This interface just an empty base object
-export interface SearchHitBase { }
-
-export interface DecentralandSearchHitDto extends SearchHitBase {
-    id: string
-    owner: string
-    network: string
-    chain_id: number
-    contract_address: string
-    token_id: string
-    category: string
-    name: string
-    description: string
-    image: string
-    external_url: string
-    active_order: {
-        price: number
-        expires_at: number
-        updated_at: number
-    },
-    attributes: {
-        x: number
-        y: number
-        size?: number
-        distance_to_plaza?: number
-        distance_to_district?: number
-        distance_to_road?: number
-    }
-}
-
 export const EmptySearchResultDto: SearchResultDto<GenericAssetDto> = {
     total: 0,
     max_score: 0,

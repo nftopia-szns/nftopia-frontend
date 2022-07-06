@@ -37,7 +37,7 @@
     "decentraland-ui": "^3.37.2",
     "ethers": "^5.6.8",
     "next": "12.1.6",
-    "nftopia-shared": "https://github.com/NFTopia-SZNS/nftopia-shared",
+    "nftopia-shared": "github:nftopia-szns/nftopia-shared",
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-redux": "^8.0.2",

@@ -16,7 +16,8 @@ import { fetchAsset } from '../../../../../../services/asset/asset-slice'
 import { bidRequest } from '../../../../../../services/bid/bid-slice'
 import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
-import { DecentralandSearchHitDto } from '../../../../../api/search/search.types'
+import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
+import { toCanonicalEthereumChainId, EthereumChainId } from 'nftopia-shared/dist/shared/network'
 
 type Props = {}
 
@@ -27,7 +28,7 @@ const DecentralandAssetBidPage = (props: Props) => {
   const { account, provider } = useWeb3React()
 
   const isAssetDetailLoading = useAppSelector(assetSelectorIsLoading)
-  const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandSearchHitDto)
+  const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandAssetDto)
 
   const {
     owner,
@@ -72,7 +73,7 @@ const DecentralandAssetBidPage = (props: Props) => {
     if (account && assetDetail) {
       const contractManaData: ContractData = getContract(
         ContractName.MANAToken,
-        assetDetail.chain_id,
+        toCanonicalEthereumChainId(assetDetail.chain_id as EthereumChainId),
       )
       const _contractMana = ERC20__factory.connect(
         contractManaData.address,
