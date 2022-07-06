@@ -1,10 +1,11 @@
 import { formatEther } from '@ethersproject/units'
 import { useWeb3React } from '@web3-react/core'
-import { Button, Modal, Row, Typography } from 'antd'
+import { Button, Modal, Row, Typography, Collapse } from 'antd'
 import router, { useRouter } from 'next/router'
 import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
 import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
 import React, { useEffect, useState } from 'react'
+const { Panel } = Collapse;
 import { parameterizedRouter } from '../../../../router'
 import { useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
 import { useAppDispatch } from '../../../../services/hook'
@@ -13,6 +14,7 @@ import { isValidOrder } from '../../../../utils'
 import CoinbaseWalletCard from '../../../connect-wallet/connectorCards/CoinbaseWalletCard'
 import MetaMaskCard from '../../../connect-wallet/connectorCards/MetaMaskCard'
 import WalletConnectCard from '../../../connect-wallet/connectorCards/WalletConnectCard'
+import BidList from '../../BidList/BidList'
 
 type Props = {
     asset: DecentralandAssetDto,
@@ -100,8 +102,17 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                     </>
                 }
             </Row>
-            <Row></Row>
-            <Row></Row>
+            <Row>
+                <Collapse defaultActiveKey={['1']}>
+                    <Panel header="Listing history" key="1" style={{ width: "100%" }}>
+                    </Panel>
+                    <Panel header="Bid history" key="2" style={{ width: "100%" }}>
+                        <BidList bids={bids} />
+                    </Panel>
+                </Collapse>
+            </Row>
+            <Row>
+            </Row>
             <Modal
                 closable={false}
                 maskClosable={true}
