@@ -1,13 +1,13 @@
 import { formatEther } from '@ethersproject/units'
 import { useWeb3React } from '@web3-react/core'
 import { Button, Row, Typography, Collapse } from 'antd'
-import { useRouter } from 'next/router'
 import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
+import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
 import React, { useEffect, useState } from 'react'
 const { Panel } = Collapse;
 import { useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
 import { useAppDispatch } from '../../../../services/hook'
-import { setEthRequiredWalletConnect } from '../../../../services/wallet/wallet-slice'
+import { setEthRequireChainId, setEthRequiredWalletConnect } from '../../../../services/wallet/wallet-slice'
 import { isValidOrder } from '../../../../utils'
 import BidModal from '../../../trading/Bid/BidModal'
 import BuyModal from '../../../trading/Buy/BuyModal'
@@ -20,7 +20,7 @@ type Props = {
 
 const DecentralandTradingAssetDetail = (props: Props) => {
     const dispatch = useAppDispatch()
-    const { account, connector } = useWeb3React()
+    const { account, connector, chainId } = useWeb3React()
     const { asset } = props
     const { owner, bids, order } = useDecentralandAssetHook(asset)
 
@@ -32,19 +32,37 @@ const DecentralandTradingAssetDetail = (props: Props) => {
         connector.connectEagerly()
     }, [])
 
+    const isWalletReady = (): boolean => {
+        if (account === undefined) {
+            dispatch(setEthRequiredWalletConnect(true))
+            return false
+        }
+
+        const assetChainId = toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)
+        if (chainId !== assetChainId) {
+            dispatch(setEthRequireChainId(assetChainId))
+            return false
+        }
+
+        return true
+    }
+
     const onBidClicked = () => {
-        dispatch(setEthRequiredWalletConnect(true))
-        setShowBid(true)
+        if (isWalletReady()) {
+            setShowBid(true)
+        }
     }
 
     const onBuyClicked = () => {
-        dispatch(setEthRequiredWalletConnect(true))
-        setShowBuy(true)
+        if (isWalletReady()) {
+            setShowBuy(true)
+        }
     }
 
     const onSellClicked = () => {
-        dispatch(setEthRequiredWalletConnect(true))
-        setShowSell(true)
+        if (isWalletReady()) {
+            setShowSell(true)
+        }
     }
 
     return (
