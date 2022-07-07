@@ -5,20 +5,20 @@ import Title from "antd/lib/typography/Title"
 import { ContractData, ContractName, getContract } from 'decentraland-transactions'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { useDecentralandAssetHook } from '../../../../../../services/asset/asset-hook'
-import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors'
-import { fetchAsset } from '../../../../../../services/asset/asset-slice'
-import { buyRequest } from '../../../../../../services/sale/sale-slice'
-import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
-import { isValidOrder } from '../../../../../../utils'
-import { ERC20__factory } from '../../../../../../contracts/land-contract/typechain'
+import { useDecentralandAssetHook } from '../../../services/asset/asset-hook'
+import { assetSelectorIsLoading } from '../../../services/asset/asset-selectors'
+import { fetchAsset } from '../../../services/asset/asset-slice'
+import { buyRequest } from '../../../services/sale/sale-slice'
+import { useAppDispatch, useAppSelector } from '../../../services/hook'
+import { isValidOrder } from '../../../utils'
+import { ERC20__factory } from '../../../contracts/land-contract/typechain'
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
 import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
 
 type Props = {}
 
-function DecentralandAssetBuyPage({ }: Props) {
+function DecentralandBidModalContent({ }: Props) {
     const router = useRouter()
     const { index, assetId } = router.query;
     const dispatch = useAppDispatch()
@@ -118,4 +118,4 @@ function DecentralandAssetBuyPage({ }: Props) {
     )
 }
 
-export default DecentralandAssetBuyPage
+export default DecentralandBidModalContent

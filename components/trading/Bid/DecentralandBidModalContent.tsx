@@ -5,53 +5,38 @@ import Title from 'antd/lib/typography/Title'
 import { ContractData, getContract, ContractName } from 'decentraland-transactions'
 import { BigNumber } from 'ethers'
 import moment from "moment"
-import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import BidList from '../../../../../../components/asset/BidList/BidList'
-import { BN_ZERO } from '../../../../../../constants/eth'
-import { ERC20__factory } from '../../../../../../contracts/land-contract/typechain'
-import { useDecentralandAssetHook } from '../../../../../../services/asset/asset-hook'
-import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors'
-import { fetchAsset } from '../../../../../../services/asset/asset-slice'
-import { bidRequest } from '../../../../../../services/bid/bid-slice'
-import { useAppDispatch, useAppSelector } from '../../../../../../services/hook'
-import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
+import BidList from '../../asset/BidList/BidList'
+import { BN_ZERO } from '../../../constants/eth'
+import { ERC20__factory } from '../../../contracts/land-contract/typechain'
+import { useDecentralandAssetHook } from '../../../services/asset/asset-hook'
+import { assetSelectorIsLoading } from '../../../services/asset/asset-selectors'
+import { bidRequest } from '../../../services/bid/bid-slice'
+import { useAppDispatch, useAppSelector } from '../../../services/hook'
 import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
 import { toCanonicalEthereumChainId, EthereumChainId } from 'nftopia-shared/dist/shared/network'
 
 type Props = {}
 
-const DecentralandAssetBidPage = (props: Props) => {
-  const router = useRouter()
-  const { index, assetId } = router.query;
+const DecentralandBidModal = (props: Props) => {
   const dispatch = useAppDispatch()
   const { account, provider } = useWeb3React()
 
   const isAssetDetailLoading = useAppSelector(assetSelectorIsLoading)
-  const assetDetail = useAppSelector((state) => state.asset.assetDetail as DecentralandAssetDto)
+  const asset = useAppSelector((state) => state.asset.assetDetail as DecentralandAssetDto)
 
   const {
     owner,
     bids,
     fingerprint,
     isLoading
-  } = useDecentralandAssetHook(assetDetail)
+  } = useDecentralandAssetHook(asset)
 
   const [balanceOfMana, setBalanceOfMana] = useState<BigNumber>(BN_ZERO)
   const [bidAmount, setBidAmount] = useState<number>(1000)
   const [isValidBidAmount, setValidBidAmount] = useState<boolean>(true)
   const [duration, setDuration] = useState<number>(0)
   const [isValidDuration, setIsValidDuration] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (assetId) {
-      dispatch(fetchAsset({
-        platform: MetaversePlatform.Decentraland,
-        index: index.toString(),
-        id: assetId.toString()
-      }))
-    }
-  }, [assetId])
 
   useEffect(() => {
     setValidBidAmount(balanceOfMana >= BigNumber.from(bidAmount).mul(BigNumber.from(10).pow(18)))
@@ -70,10 +55,10 @@ const DecentralandAssetBidPage = (props: Props) => {
   }
 
   useEffect(() => {
-    if (account && assetDetail) {
+    if (account && asset) {
       const contractManaData: ContractData = getContract(
         ContractName.MANAToken,
-        toCanonicalEthereumChainId(assetDetail.chain_id as EthereumChainId),
+        toCanonicalEthereumChainId(asset.chain_id as EthereumChainId),
       )
       const _contractMana = ERC20__factory.connect(
         contractManaData.address,
@@ -83,14 +68,14 @@ const DecentralandAssetBidPage = (props: Props) => {
         setBalanceOfMana(v)
       })
     }
-  }, [assetDetail, account])
+  }, [asset, account])
 
   const onBid = async () => {
 
     dispatch(bidRequest({
       caller: account,
       provider,
-      asset: assetDetail,
+      asset: asset,
       price: parseEther(bidAmount.toString()),
       duration,
       fingerprint
@@ -104,8 +89,8 @@ const DecentralandAssetBidPage = (props: Props) => {
           <Image
             preview={false}
             width={200}
-            src={assetDetail?.image}
-            placeholder={<Spin spinning={!assetDetail} />} />
+            src={asset?.image}
+            placeholder={<Spin spinning={!asset} />} />
         </Col>
         <Col span={12}>
           {
@@ -115,7 +100,7 @@ const DecentralandAssetBidPage = (props: Props) => {
                 <Title>Place a bid</Title>
               </Row>
               <Row>
-                <Typography>Set a price and expiration date for your bid on <b>{assetDetail?.name}</b>.</Typography>
+                <Typography>Set a price and expiration date for your bid on <b>{asset?.name}</b>.</Typography>
               </Row>
               <Row>
                 <InputNumber
@@ -165,4 +150,4 @@ const DecentralandAssetBidPage = (props: Props) => {
   )
 }
 
-export default DecentralandAssetBidPage
+export default DecentralandBidModal

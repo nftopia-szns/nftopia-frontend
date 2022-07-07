@@ -9,6 +9,9 @@ import { useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
 import { useAppDispatch } from '../../../../services/hook'
 import { setEthRequiredWalletConnect } from '../../../../services/wallet/wallet-slice'
 import { isValidOrder } from '../../../../utils'
+import BidModal from '../../../trading/Bid/BidModal'
+import BuyModal from '../../../trading/Buy/BuyModal'
+import SellModal from '../../../trading/Sell/SellModal'
 import BidList from '../../BidList/BidList'
 
 type Props = {
@@ -17,11 +20,9 @@ type Props = {
 
 const DecentralandTradingAssetDetail = (props: Props) => {
     const dispatch = useAppDispatch()
-    const router = useRouter()
-    const { index, assetId } = router.query
-    const { account, provider, connector, chainId } = useWeb3React()
+    const { account, connector } = useWeb3React()
     const { asset } = props
-    const { owner, buyable, bids, order } = useDecentralandAssetHook(asset)
+    const { owner, bids, order } = useDecentralandAssetHook(asset)
 
     const [showBid, setShowBid] = useState(false)
     const [showBuy, setShowBuy] = useState(false)
@@ -30,10 +31,6 @@ const DecentralandTradingAssetDetail = (props: Props) => {
     useEffect(() => {
         connector.connectEagerly()
     }, [])
-
-    const isWalletConnected = (account) => {
-        return account !== undefined
-    }
 
     const onBidClicked = () => {
         dispatch(setEthRequiredWalletConnect(true))
@@ -65,14 +62,27 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                 {account === owner ?
                     <>
                         <Button onClick={onSellClicked}>Sell</Button>
+                        <SellModal
+                            visible={showSell}
+                            onCancel={() => setShowSell(false)} />
                     </>
                     :
                     <>
                         {isValidOrder(order) && account !== owner &&
-                            <Button onClick={onBuyClicked}>Buy</Button>
+                            <>
+                                <Button onClick={onBuyClicked}>Buy</Button>
+                                <BuyModal
+                                    visible={showBuy}
+                                    onCancel={() => setShowBuy(false)} />
+                            </>
                         }
                         {account !== owner &&
-                            <Button onClick={onBidClicked}>Bid</Button>
+                            <>
+                                <Button onClick={onBidClicked}>Bid</Button>
+                                <BidModal
+                                    visible={showBid}
+                                    onCancel={() => setShowBid(false)} />
+                            </>
                         }
                     </>
                 }
@@ -86,6 +96,7 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                     </Panel>
                 </Collapse>
             </Row>
+
         </>
     )
 }

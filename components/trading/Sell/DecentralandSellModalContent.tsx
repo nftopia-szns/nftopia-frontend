@@ -5,18 +5,18 @@ import Title from 'antd/lib/typography/Title';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
-import { useDecentralandAssetHook } from '../../../../../../services/asset/asset-hook';
-import { assetSelectorIsLoading } from '../../../../../../services/asset/asset-selectors';
-import { fetchAsset } from '../../../../../../services/asset/asset-slice';
-import { useAppDispatch, useAppSelector } from '../../../../../../services/hook';
-import { sellRequest, stopSellingRequest } from '../../../../../../services/sale/sale-slice';
+import { useDecentralandAssetHook } from '../../../services/asset/asset-hook';
+import { assetSelectorIsLoading } from '../../../services/asset/asset-selectors';
+import { fetchAsset } from '../../../services/asset/asset-slice';
+import { useAppDispatch, useAppSelector } from '../../../services/hook';
+import { sellRequest, stopSellingRequest } from '../../../services/sale/sale-slice';
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
-import { isValidOrder } from '../../../../../../utils';
+import { isValidOrder } from '../../../utils';
 import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset';
 
 type Props = {}
 
-const DecentralandAssetSellPage = (props: Props) => {
+const DecentralandSellModalContent = (props: Props) => {
   const router = useRouter()
   const { index, assetId } = router.query;
   const dispatch = useAppDispatch()
@@ -145,4 +145,4 @@ const DecentralandAssetSellPage = (props: Props) => {
   )
 }
 
-export default DecentralandAssetSellPage
+export default DecentralandSellModalContent
