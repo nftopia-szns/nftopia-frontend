@@ -1,32 +1,47 @@
-import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { EthereumBasedWallet } from './wallet.types';
 
 export interface WalletState {
-    account: string,
-    provider: Web3Provider,
-}
+    // this could be applied for ETH, BSC, Polygon... or EVM-like in general
+    ethWallet: EthereumBasedWallet
 
-export interface SetWalletPayload {
-    account: string,
-    provider: Web3Provider,
+    // app demand
+    ethRequiredWalletConnect: boolean,
+    ethRequiredChainId: number,
 }
 
 const walletInitialState: WalletState = {
-    account: undefined,
-    provider: undefined,
+    ethWallet: {
+        account: undefined,
+        provider: undefined,
+        chainId: undefined,
+    },
+
+    // app demand
+    ethRequiredWalletConnect: false,
+    ethRequiredChainId: undefined,
 };
 
 export const walletSlice = createSlice({
     name: 'wallet',
     initialState: walletInitialState,
     reducers: {
-        setWallet(state, action: PayloadAction<SetWalletPayload>) {
-            state.account = action.payload.account;
-            state.provider = action.payload.provider;
+        setEthWallet(state, action: PayloadAction<EthereumBasedWallet>) {
+            state.ethWallet = action.payload;
+        },
+        setEthRequiredWalletConnect(state, action: PayloadAction<boolean>) {
+            state.ethRequiredWalletConnect = action.payload
+        },
+        setEthRequireChainId(state, action: PayloadAction<number>) {
+            state.ethRequiredChainId = action.payload;
         },
     },
 });
 
-export const { setWallet } = walletSlice.actions;
+export const {
+    setEthWallet,
+    setEthRequiredWalletConnect,
+    setEthRequireChainId,
+} = walletSlice.actions;
 const walletReducer = walletSlice.reducer;
 export default walletReducer;

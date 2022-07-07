@@ -22,7 +22,7 @@ export const store = configureStore({
             serializableCheck: {
                 // Ignore these action types
                 ignoredActions: [
-                    'wallet/setWallet',
+                    'wallet/setEthWallet',
                     'bid/bidRequest',
                     'bid/cancelBidRequest',
                     'bid/acceptBidRequest',
@@ -35,7 +35,7 @@ export const store = configureStore({
                 // ignoredActionPaths: ['meta.arg', 'payload.timestamp'],
                 // Ignore these paths in the state
                 ignoredPaths: [
-                    'wallet.provider',
+                    'wallet.ethWallet',
                     'payload.query'
                 ],
             },

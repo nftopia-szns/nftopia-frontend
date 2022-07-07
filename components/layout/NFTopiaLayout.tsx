@@ -1,21 +1,19 @@
 import { useWeb3React } from "@web3-react/core"
-import { Button, Dropdown, Layout, Menu, Modal, Space } from "antd"
+import { Button, Dropdown, Layout, Menu, Space } from "antd"
 import { Header, Content, Footer } from "antd/lib/layout/layout"
 import { ReactNode, useEffect, useState } from "react"
-import CoinbaseWalletCard from "../connect-wallet/connectorCards/CoinbaseWalletCard"
-import MetaMaskCard from "../connect-wallet/connectorCards/MetaMaskCard"
-import WalletConnectCard from "../connect-wallet/connectorCards/WalletConnectCard"
-import { shortenAddress } from "../../utils/eth";
 import { DownOutlined } from '@ant-design/icons';
 
-import "./NFTopiaLayout.module.css"
-import { MenuInfo } from "rc-menu/lib/interface"
+import { shortenAddress } from "../../utils/eth";
 import { useAppDispatch } from "../../services/hook"
-import { setWallet } from "../../services/wallet/wallet-slice"
+import EthWalletDrawer from "../connect-wallet/EthWalletDrawer"
+
+import "./NFTopiaLayout.module.css"
+import { setEthRequiredWalletConnect, setEthWallet } from "../../services/wallet/wallet-slice";
 
 const NFTopiaLayout = ({ children }: { children: ReactNode }) => {
     const dispatch = useAppDispatch()
-    const { account, connector, provider } = useWeb3React()
+    const { account, connector, provider, chainId } = useWeb3React()
     const [showConnectWalletModal, setShowConnectWalletModal] = useState(false)
 
     useEffect(() => {
@@ -23,11 +21,21 @@ const NFTopiaLayout = ({ children }: { children: ReactNode }) => {
     }, [])
 
     useEffect(() => {
-        dispatch(setWallet({ account, provider }))
-    }, [account, provider])
+        if (account) {
+            dispatch(setEthWallet({ account, provider, chainId }))
+        } else {
+            // in case user disconnect wallet
+            dispatch(setEthWallet(undefined))
+        }
+    }, [account, provider, chainId])
 
-    const onDisconnect = (info: MenuInfo) => {
+    const setShowEthWalletConnectPopup = () => {
+        dispatch(setEthRequiredWalletConnect(true))
+    }
+
+    const onDisconnect = (_) => {
         connector.deactivate()
+        dispatch(setEthWallet(undefined))
     }
 
     return (
@@ -56,7 +64,7 @@ const NFTopiaLayout = ({ children }: { children: ReactNode }) => {
                                         {
                                             label: 'Disconnect',
                                             key: 'disconnect',
-                                            onClick: (_) => { connector.deactivate() }
+                                            onClick: onDisconnect,
                                         },
                                     ]}
                                 />
@@ -69,35 +77,21 @@ const NFTopiaLayout = ({ children }: { children: ReactNode }) => {
                             </a>
                         </Dropdown>
                         :
-                        <>
-                            <Button
-                                key="connect-wallet"
-                                onClick={() => { setShowConnectWalletModal(true) }}
-                            >
-                                Connect Wallet
-                            </Button>
-                            <Modal
-                                closable={false}
-                                maskClosable={true}
-                                footer={null}
-                                visible={showConnectWalletModal}
-                                onCancel={() => setShowConnectWalletModal(false)}
-                            >
-                                <div style={{ display: 'flex', flexFlow: 'wrap', fontFamily: 'sans-serif' }}>
-                                    <MetaMaskCard />
-                                    <WalletConnectCard />
-                                    <CoinbaseWalletCard />
-                                </div>
-                            </Modal>
-                        </>
+                        <Button
+                            key="connect-wallet"
+                            onClick={() => setShowEthWalletConnectPopup()}
+                        >
+                            Connect Wallet
+                        </Button>
                     }
+                    <EthWalletDrawer />
                 </Header>
                 <Content style={{ padding: '100 50px' }}>
                     <div className="site-layout-content" style={{ padding: '100 50px' }}>
                         {children}
                     </div>
                 </Content>
-                <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+                <Footer style={{ textAlign: 'center' }}>NFTopia ©2022</Footer>
             </Layout>
 
         </>

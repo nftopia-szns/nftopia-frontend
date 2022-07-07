@@ -1,19 +1,14 @@
 import { formatEther } from '@ethersproject/units'
 import { useWeb3React } from '@web3-react/core'
-import { Button, Modal, Row, Typography, Collapse } from 'antd'
-import router, { useRouter } from 'next/router'
+import { Button, Row, Typography, Collapse } from 'antd'
+import { useRouter } from 'next/router'
 import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
-import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
 import React, { useEffect, useState } from 'react'
 const { Panel } = Collapse;
-import { parameterizedRouter } from '../../../../router'
 import { useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
 import { useAppDispatch } from '../../../../services/hook'
-import { setWallet } from '../../../../services/wallet/wallet-slice'
+import { setEthRequiredWalletConnect } from '../../../../services/wallet/wallet-slice'
 import { isValidOrder } from '../../../../utils'
-import CoinbaseWalletCard from '../../../connect-wallet/connectorCards/CoinbaseWalletCard'
-import MetaMaskCard from '../../../connect-wallet/connectorCards/MetaMaskCard'
-import WalletConnectCard from '../../../connect-wallet/connectorCards/WalletConnectCard'
 import BidList from '../../BidList/BidList'
 
 type Props = {
@@ -25,54 +20,34 @@ const DecentralandTradingAssetDetail = (props: Props) => {
     const router = useRouter()
     const { index, assetId } = router.query
     const { account, provider, connector, chainId } = useWeb3React()
-    const [showConnectWalletModal, setShowConnectWalletModal] = useState(false)
-    const [showWrongChainId, setShowWrongChainId] = useState(false)
-
     const { asset } = props
     const { owner, buyable, bids, order } = useDecentralandAssetHook(asset)
+
+    const [showBid, setShowBid] = useState(false)
+    const [showBuy, setShowBuy] = useState(false)
+    const [showSell, setShowSell] = useState(false)
 
     useEffect(() => {
         connector.connectEagerly()
     }, [])
-
-    useEffect(() => {
-        dispatch(setWallet({ account, provider }))
-        if (chainId) {
-            setShowWrongChainId(chainId !== toCanonicalEthereumChainId(asset.chain_id as EthereumChainId))
-        }
-    }, [account, provider, chainId])
 
     const isWalletConnected = (account) => {
         return account !== undefined
     }
 
     const onBidClicked = () => {
-        if (account) {
-            // TODO: check chain id
-            const url = parameterizedRouter.asset.decentraland.bid(index.toString(), assetId.toString())
-            router.push(url)
-        } else {
-            setShowConnectWalletModal(true)
-        }
+        dispatch(setEthRequiredWalletConnect(true))
+        setShowBid(true)
     }
 
     const onBuyClicked = () => {
-        if (account) {
-            // TODO: check chain id upon asset chain id
-            const url = parameterizedRouter.asset.decentraland.buy(index.toString(), assetId.toString())
-            router.push(url)
-        } else {
-            setShowConnectWalletModal(true)
-        }
+        dispatch(setEthRequiredWalletConnect(true))
+        setShowBuy(true)
     }
 
     const onSellClicked = () => {
-        if (account) {
-            const url = parameterizedRouter.asset.decentraland.sell(index.toString(), assetId.toString())
-            router.push(url)
-        } else {
-            setShowConnectWalletModal(true)
-        }
+        dispatch(setEthRequiredWalletConnect(true))
+        setShowSell(true)
     }
 
     return (
@@ -111,31 +86,6 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                     </Panel>
                 </Collapse>
             </Row>
-            <Row>
-            </Row>
-            <Modal
-                closable={false}
-                maskClosable={true}
-                footer={null}
-                visible={showConnectWalletModal}
-                onCancel={() => setShowConnectWalletModal(false)}
-            >
-                <div style={{ display: 'flex', flexFlow: 'wrap', fontFamily: 'sans-serif' }}>
-                    <MetaMaskCard />
-                    <WalletConnectCard />
-                    <CoinbaseWalletCard />
-                </div>
-            </Modal>
-            <Modal
-                closable={false}
-                maskClosable={true}
-                footer={null}
-                visible={showWrongChainId}
-            >
-                <div style={{ display: 'flex', flexFlow: 'wrap', fontFamily: 'sans-serif' }}>
-                    Wrong network. Please connect to network {asset.network}, chainid {asset.chain_id}
-                </div>
-            </Modal>
         </>
     )
 }
