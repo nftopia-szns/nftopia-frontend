@@ -5,6 +5,7 @@ import { enhancedSearch } from "../../pages/api/search";
 import { QueryBuilder } from "../../pages/api/search/search.utils";
 import { SearchDto, SearchResultDto } from "../../pages/api/search/search.types";
 import { buildSearchNearbyAssets } from "./asset.utils";
+import { GenericAssetDto } from "nftopia-shared/dist/shared/asset/types";
 
 export function* handleFetchAsset(action: PayloadAction<AssetBriefInfo>) {
     try {
@@ -14,7 +15,7 @@ export function* handleFetchAsset(action: PayloadAction<AssetBriefInfo>) {
             query,
         }
 
-        const _searchResults: SearchResultDto<object> = yield enhancedSearch(searchDto)
+        const _searchResults: SearchResultDto<GenericAssetDto> = yield enhancedSearch(searchDto)
 
         // dispatch action from saga
         yield put(fetchAssetSuccess(_searchResults.hits[0]._source))
