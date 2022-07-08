@@ -1,16 +1,18 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { BigNumber } from 'ethers';
-import { DecentralandSearchHitDto } from '../../pages/api/search/search.types';
+import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types';
 
 interface BidState {
     isLoading: boolean,
+    bidModalVisible: boolean,
+    asset: GenericAssetDto,
 }
 
 export interface BidPayload {
     caller: string,
     provider: Web3Provider,
-    asset: DecentralandSearchHitDto,
+    asset: GenericAssetDto,
     price: BigNumber,
     duration: number,
     fingerprint?: string
@@ -19,20 +21,29 @@ export interface AcceptBidPayload {
     sender: string,
     recipient: string,
     provider: Web3Provider,
-    asset: DecentralandSearchHitDto,
+    asset: GenericAssetDto,
 }
 export interface CancelBidPayload {
     provider: Web3Provider,
-    asset: DecentralandSearchHitDto,
+    asset: GenericAssetDto,
 }
+
 const bidInitialState: BidState = {
     isLoading: false,
+    bidModalVisible: false,
+    asset: undefined,
 };
 
 export const bidSlice = createSlice({
     name: 'bid',
     initialState: bidInitialState,
     reducers: {
+        openBidModal(state, action: PayloadAction<GenericAssetDto>) {
+            state.asset = action.payload
+        },
+        setBidModalVisible(state, action: PayloadAction<boolean>) {
+            state.bidModalVisible = action.payload
+        },
         bidRequest(state, action: PayloadAction<BidPayload>) {
             state.isLoading = true
         },
@@ -64,6 +75,8 @@ export const bidSlice = createSlice({
 });
 
 export const {
+    openBidModal,
+    setBidModalVisible,
     bidRequest,
     bidSuccess,
     bidFailure,

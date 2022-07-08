@@ -6,7 +6,8 @@ import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist
 import React, { useEffect, useState } from 'react'
 const { Panel } = Collapse;
 import { useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
-import { useAppDispatch } from '../../../../services/hook'
+import { openBidModal, setBidModalVisible } from '../../../../services/bid/bid-slice'
+import { useAppDispatch, useAppSelector } from '../../../../services/hook'
 import { setEthRequireChainId, setEthRequiredWalletConnect } from '../../../../services/wallet/wallet-slice'
 import { isValidOrder } from '../../../../utils'
 import BidModal from '../../../trading/Bid/BidModal'
@@ -20,6 +21,7 @@ type Props = {
 
 const DecentralandTradingAssetDetail = (props: Props) => {
     const dispatch = useAppDispatch()
+    const bidModalVisible = useAppSelector((state) => state.bid.bidModalVisible)
     const { account, connector, chainId } = useWeb3React()
     const { asset } = props
     const { owner, bids, order } = useDecentralandAssetHook(asset)
@@ -30,6 +32,11 @@ const DecentralandTradingAssetDetail = (props: Props) => {
 
     useEffect(() => {
         connector.connectEagerly()
+        dispatch(
+            setEthRequireChainId(
+                toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)
+            )
+        )
     }, [])
 
     const isWalletReady = (): boolean => {
@@ -48,9 +55,7 @@ const DecentralandTradingAssetDetail = (props: Props) => {
     }
 
     const onBidClicked = () => {
-        if (isWalletReady()) {
-            setShowBid(true)
-        }
+        dispatch(openBidModal(asset))
     }
 
     const onBuyClicked = () => {
@@ -98,8 +103,8 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                             <>
                                 <Button onClick={onBidClicked}>Bid</Button>
                                 <BidModal
-                                    visible={showBid}
-                                    onCancel={() => setShowBid(false)} />
+                                    visible={bidModalVisible}
+                                    onCancel={() => dispatch(setBidModalVisible(false))} />
                             </>
                         }
                     </>
