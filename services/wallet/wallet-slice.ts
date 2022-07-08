@@ -6,11 +6,10 @@ export interface WalletState {
     ethWallet: EthereumBasedWallet
 
     // app demand
-    ethRequiredWalletConnect: boolean,
     ethRequiredChainId: number,
 
-    ethRequireWalletConnectPopup: boolean,
-    ethRequireSwitchChainIdPopup: boolean,
+    ethShowWalletConnectPopup: boolean,
+    ethShowSwitchChainIdPopup: boolean,
 }
 
 const walletInitialState: WalletState = {
@@ -20,12 +19,12 @@ const walletInitialState: WalletState = {
         chainId: undefined,
     },
 
-    // app demand
-    ethRequiredWalletConnect: false,
+    // eth state
     ethRequiredChainId: undefined,
 
-    ethRequireWalletConnectPopup: false,
-    ethRequireSwitchChainIdPopup: false,
+    // eth popups
+    ethShowWalletConnectPopup: false,
+    ethShowSwitchChainIdPopup: false,
 };
 
 export const walletSlice = createSlice({
@@ -35,27 +34,34 @@ export const walletSlice = createSlice({
         setEthWallet(state, action: PayloadAction<EthereumBasedWallet>) {
             state.ethWallet = action.payload;
         },
-        setEthRequiredWalletConnect(state, action: PayloadAction<boolean>) {
-            state.ethRequiredWalletConnect = action.payload
-        },
-        setEthRequireChainId(state, action: PayloadAction<number>) {
+        setEthRequiredChainId(state, action: PayloadAction<number>) {
+            console.log('chain id', action.payload);
+            
             state.ethRequiredChainId = action.payload;
         },
-        setEthRequireWalletConnectPopup(state, action: PayloadAction<boolean>) {
-            state.ethRequireWalletConnectPopup = action.payload
+        setEthShowWalletConnectPopup(state, action: PayloadAction<boolean>) {
+            console.log('show wallet connect popup');
+            state.ethShowWalletConnectPopup = action.payload;
         },
-        setEthRequireSwitchChainIdPopup(state, action: PayloadAction<boolean>) {
-            state.ethRequireSwitchChainIdPopup = action.payload
+        setEthShowSwitchChainIdPopup(state, action: PayloadAction<boolean>) {
+            console.log('show switch chain id popup');
+            state.ethShowSwitchChainIdPopup = action.payload;
+        },
+        // saga actions
+        requireEthWalletConnected(state, action: PayloadAction) {
+        },
+        requireEthChainIdMatched(state, action: PayloadAction) {
         },
     },
 });
 
 export const {
     setEthWallet,
-    setEthRequiredWalletConnect,
-    setEthRequireChainId,
-    setEthRequireWalletConnectPopup,
-    setEthRequireSwitchChainIdPopup,
+    setEthRequiredChainId,
+    setEthShowWalletConnectPopup,
+    setEthShowSwitchChainIdPopup,
+    requireEthWalletConnected,
+    requireEthChainIdMatched,
 } = walletSlice.actions;
 const walletReducer = walletSlice.reducer;
 export default walletReducer;

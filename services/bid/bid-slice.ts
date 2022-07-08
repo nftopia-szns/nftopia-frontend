@@ -5,6 +5,7 @@ import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types';
 
 interface BidState {
     isLoading: boolean,
+    bidModalRequired: boolean,
     bidModalVisible: boolean,
     asset: GenericAssetDto,
 }
@@ -30,6 +31,7 @@ export interface CancelBidPayload {
 
 const bidInitialState: BidState = {
     isLoading: false,
+    bidModalRequired: false,
     bidModalVisible: false,
     asset: undefined,
 };
@@ -38,7 +40,10 @@ export const bidSlice = createSlice({
     name: 'bid',
     initialState: bidInitialState,
     reducers: {
-        openBidModal(state, action: PayloadAction<GenericAssetDto>) {
+        setBidModalRequired(state, action: PayloadAction<boolean>) {
+            state.bidModalRequired = action.payload
+        },
+        setAssetForBid(state, action: PayloadAction<GenericAssetDto>) {
             state.asset = action.payload
         },
         setBidModalVisible(state, action: PayloadAction<boolean>) {
@@ -75,7 +80,8 @@ export const bidSlice = createSlice({
 });
 
 export const {
-    openBidModal,
+    setBidModalRequired,
+    setAssetForBid,
     setBidModalVisible,
     bidRequest,
     bidSuccess,

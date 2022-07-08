@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core"
 import { Button, Dropdown, Layout, Menu, Space } from "antd"
 import { Header, Content, Footer } from "antd/lib/layout/layout"
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useEffect } from "react"
 import { DownOutlined } from '@ant-design/icons';
 
 import { shortenAddress } from "../../utils/eth";
@@ -9,29 +9,15 @@ import { useAppDispatch } from "../../services/hook"
 import EthWalletDrawer from "../connect-wallet/EthWalletDrawer"
 
 import "./NFTopiaLayout.module.css"
-import { setEthRequiredWalletConnect, setEthWallet } from "../../services/wallet/wallet-slice";
+import { requireEthWalletConnected, setEthWallet } from "../../services/wallet/wallet-slice";
 
 const NFTopiaLayout = ({ children }: { children: ReactNode }) => {
     const dispatch = useAppDispatch()
-    const { account, connector, provider, chainId } = useWeb3React()
-    const [showConnectWalletModal, setShowConnectWalletModal] = useState(false)
+    const { account, connector } = useWeb3React()
 
     useEffect(() => {
         connector.connectEagerly()
     }, [])
-
-    useEffect(() => {
-        if (account) {
-            dispatch(setEthWallet({ account, provider, chainId }))
-        } else {
-            // in case user disconnect wallet
-            dispatch(setEthWallet(undefined))
-        }
-    }, [account, provider, chainId])
-
-    const setShowEthWalletConnectPopup = () => {
-        dispatch(setEthRequiredWalletConnect(true))
-    }
 
     const onDisconnect = (_) => {
         connector.deactivate()
@@ -79,7 +65,7 @@ const NFTopiaLayout = ({ children }: { children: ReactNode }) => {
                         :
                         <Button
                             key="connect-wallet"
-                            onClick={() => setShowEthWalletConnectPopup()}
+                            onClick={() => dispatch(requireEthWalletConnected())}
                         >
                             Connect Wallet
                         </Button>

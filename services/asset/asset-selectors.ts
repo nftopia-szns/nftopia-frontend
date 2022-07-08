@@ -1,1 +1,3 @@
-export const assetSelectorIsLoading = (state) => state.asset.isLoading
+import { RootState } from "../store";
+
+export const assetSelectorIsLoading = (state: RootState) => state.asset.isLoading

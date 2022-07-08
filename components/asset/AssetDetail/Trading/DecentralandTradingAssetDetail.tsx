@@ -6,9 +6,10 @@ import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist
 import React, { useEffect, useState } from 'react'
 const { Panel } = Collapse;
 import { useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
-import { openBidModal, setBidModalVisible } from '../../../../services/bid/bid-slice'
+import { setAssetForBid, setBidModalRequired, setBidModalVisible } from '../../../../services/bid/bid-slice'
 import { useAppDispatch, useAppSelector } from '../../../../services/hook'
-import { setEthRequireChainId, setEthRequiredWalletConnect } from '../../../../services/wallet/wallet-slice'
+import { walletSelectorEthIsChainIdMatched, walletSelectorEthIsWalletConnected } from '../../../../services/wallet/wallet-selectors'
+import { setEthRequiredChainId } from '../../../../services/wallet/wallet-slice'
 import { isValidOrder } from '../../../../utils'
 import BidModal from '../../../trading/Bid/BidModal'
 import BuyModal from '../../../trading/Buy/BuyModal'
@@ -21,7 +22,9 @@ type Props = {
 
 const DecentralandTradingAssetDetail = (props: Props) => {
     const dispatch = useAppDispatch()
-    const bidModalVisible = useAppSelector((state) => state.bid.bidModalVisible)
+    const bidModalRequired = useAppSelector((state) => state.bid.bidModalRequired)
+    const isWalletConnected = useAppSelector(walletSelectorEthIsWalletConnected)
+    const isChainIdMatched = useAppSelector(walletSelectorEthIsChainIdMatched)
     const { account, connector, chainId } = useWeb3React()
     const { asset } = props
     const { owner, bids, order } = useDecentralandAssetHook(asset)
@@ -33,41 +36,42 @@ const DecentralandTradingAssetDetail = (props: Props) => {
     useEffect(() => {
         connector.connectEagerly()
         dispatch(
-            setEthRequireChainId(
+            setEthRequiredChainId(
                 toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)
             )
         )
     }, [])
 
-    const isWalletReady = (): boolean => {
-        if (account === undefined) {
-            dispatch(setEthRequiredWalletConnect(true))
-            return false
-        }
+    // const isWalletReady = (): boolean => {
+    //     if (account === undefined) {
+    //         dispatch(setEthRequiredWalletConnect(true))
+    //         return false
+    //     }
 
-        const assetChainId = toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)
-        if (chainId !== assetChainId) {
-            dispatch(setEthRequireChainId(assetChainId))
-            return false
-        }
+    //     const assetChainId = toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)
+    //     if (chainId !== assetChainId) {
+    //         dispatch(setEthRequiredChainId(assetChainId))
+    //         return false
+    //     }
 
-        return true
-    }
+    //     return true
+    // }
 
     const onBidClicked = () => {
-        dispatch(openBidModal(asset))
+        dispatch(setAssetForBid(asset))
+        dispatch(setBidModalRequired(true))
     }
 
     const onBuyClicked = () => {
-        if (isWalletReady()) {
-            setShowBuy(true)
-        }
+        // if (isWalletReady()) {
+        //     setShowBuy(true)
+        // }
     }
 
     const onSellClicked = () => {
-        if (isWalletReady()) {
-            setShowSell(true)
-        }
+        // if (isWalletReady()) {
+        //     setShowSell(true)
+        // }
     }
 
     return (
@@ -103,7 +107,11 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                             <>
                                 <Button onClick={onBidClicked}>Bid</Button>
                                 <BidModal
-                                    visible={bidModalVisible}
+                                    visible={
+                                        bidModalRequired &&
+                                        isWalletConnected &&
+                                        isChainIdMatched
+                                    }
                                     onCancel={() => dispatch(setBidModalVisible(false))} />
                             </>
                         }

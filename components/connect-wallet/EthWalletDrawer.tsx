@@ -1,9 +1,12 @@
 import { useWeb3React } from '@web3-react/core'
 import { Drawer } from 'antd'
-import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../../services/hook'
-import { setEthRequireChainId, setEthRequiredWalletConnect, setEthRequireSwitchChainIdPopup, setEthRequireWalletConnectPopup, setEthWallet } from '../../services/wallet/wallet-slice'
+import {
+    setEthShowSwitchChainIdPopup,
+    setEthShowWalletConnectPopup,
+    setEthWallet
+} from '../../services/wallet/wallet-slice'
 import CoinbaseWalletCard from './connectorCards/CoinbaseWalletCard'
 import MetaMaskCard from './connectorCards/MetaMaskCard'
 import WalletConnectCard from './connectorCards/WalletConnectCard'
@@ -14,13 +17,10 @@ const EthWalletDrawer = (props: Props) => {
     const dispatch = useAppDispatch()
     const { account, provider, chainId } = useWeb3React()
     const {
-        ethRequiredWalletConnect,
         ethRequiredChainId,
-        ethRequireWalletConnectPopup,
-        ethRequireSwitchChainIdPopup,
+        ethShowWalletConnectPopup,
+        ethShowSwitchChainIdPopup,
     } = useAppSelector((state) => state.wallet)
-    const [ethShowConnectWallet, setEthShowConnectWallet] = useState(false)
-    const [ethShowSwitchChainId, setEthShowSwitchChainId] = useState(false)
 
     // useEffect(() => {
     //     // show wallet connect
@@ -59,20 +59,14 @@ const EthWalletDrawer = (props: Props) => {
             chainId
         }))
 
-        const isWalletConnected = account && provider && true
-        const isChainIdMatched = chainId === ethRequiredChainId
-        dispatch(setEthRequireWalletConnectPopup(!isWalletConnected))
-        dispatch(setEthRequireSwitchChainIdPopup(!isChainIdMatched))
     }, [account, provider, chainId])
 
     const onCloseEthWaletConnectDrawer = () => {
-        setEthShowConnectWallet(false)
-        dispatch(setEthRequireWalletConnectPopup(false))
+        dispatch(setEthShowWalletConnectPopup(false))
     }
 
     const onCloseEthSwichChainIdDrawer = () => {
-        setEthShowSwitchChainId(false)
-        dispatch(setEthRequireSwitchChainIdPopup(false))
+        dispatch(setEthShowSwitchChainIdPopup(false))
     }
 
     return (
@@ -80,10 +74,7 @@ const EthWalletDrawer = (props: Props) => {
             <Drawer
                 title="Eth Wallet Connect Drawer" placement="right"
                 onClose={() => onCloseEthWaletConnectDrawer()}
-                visible={
-                    ethRequireWalletConnectPopup &&
-                    !account
-                }>
+                visible={ethShowWalletConnectPopup}>
                 <div style={{ display: 'flex', flexFlow: 'wrap', fontFamily: 'sans-serif' }}>
                     <MetaMaskCard />
                     <WalletConnectCard />
@@ -93,10 +84,7 @@ const EthWalletDrawer = (props: Props) => {
             <Drawer
                 title="Eth Switch Chain Id Drawer" placement="right"
                 onClose={() => onCloseEthSwichChainIdDrawer()}
-                visible={
-                    ethRequireSwitchChainIdPopup &&
-                    chainId !== ethRequiredChainId
-                }>
+                visible={ethShowSwitchChainIdPopup}>
                 <div style={{ display: 'flex', flexFlow: 'wrap', fontFamily: 'sans-serif' }}>
                     Wrong network. Please connect to network chainid {ethRequiredChainId}
                 </div>

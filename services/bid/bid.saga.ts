@@ -1,38 +1,50 @@
 import { PayloadAction } from "@reduxjs/toolkit"
-import { GenericAssetDto } from "nftopia-shared/dist/shared/asset/types";
-import { EthereumChainId, toCanonicalEthereumChainId } from "nftopia-shared/dist/shared/network";
+import { BSCChainId, EthereumChainId, Network, toCanonicalBSCChainId, toCanonicalEthereumChainId } from "nftopia-shared/dist/shared/network";
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform";
 import { put, select, takeLatest } from 'redux-saga/effects';
-import { setEthRequireSwitchChainIdPopup, setEthRequireWalletConnectPopup, WalletState } from "../wallet/wallet-slice";
-import { AcceptBidPayload, acceptBidRequest, BidPayload, bidRequest, CancelBidPayload, cancelBidRequest, openBidModal, setBidModalVisible } from "./bid-slice";
+import { AssetState } from "../asset/asset-slice";
+import { RootState } from "../store";
+import { requireEthChainIdMatched, requireEthWalletConnected, setEthRequiredChainId, WalletState } from "../wallet/wallet-slice";
+import { AcceptBidPayload, acceptBidRequest, BidPayload, bidRequest, CancelBidPayload, cancelBidRequest, setAssetForBid, setBidModalRequired, setBidModalVisible } from "./bid-slice";
 import { BidService } from "./bid.service";
 
-export function* handleOpenBidModal(action: PayloadAction<GenericAssetDto>) {
-    console.log('open bid modal requested');
+export function* handleSetBidModalRequired(action: PayloadAction<boolean>) {
+    // do nothing when bid modal is deactivated
+    if (action.payload === false) return
 
-    const state: WalletState = yield select((state) => state.wallet as WalletState)
-    const ethWallet = state.ethWallet
-    const asset = action.payload
+    console.log('open bid modal requested');
+    const assetState: AssetState = yield select((state: RootState) => state.asset as AssetState)
+    const walletState: WalletState = yield select((state: RootState) => state.wallet as WalletState)
+    const asset = assetState.assetDetail
+
+    // set asset for bidding state
+    yield put(setAssetForBid(asset))
 
     switch (asset.platform) {
         case MetaversePlatform.Decentraland:
             // case MetaversePlatform.Cryptovoxels:
             // case MetaversePlatform.SandBox:
 
-            const isWalletConnected = ethWallet?.account && ethWallet?.provider && true
-            const isChainIdMatched = ethWallet?.chainId ===
-                toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)
-
-            console.log(isWalletConnected, isChainIdMatched);
+            console.log('asf');
             
-            yield put(setBidModalVisible(isWalletConnected && isChainIdMatched))
-            yield put(setEthRequireWalletConnectPopup(!isWalletConnected))
-            yield put(setEthRequireSwitchChainIdPopup(!isChainIdMatched))
-            break;
 
+            yield(put(requireEthWalletConnected()))
+
+            // determine chain id
+            if (asset.network === Network.Ethereum) {
+                yield put(setEthRequiredChainId(toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)))
+            }
+            if (asset.network === Network.BSC) {
+                yield put(setEthRequiredChainId(toCanonicalBSCChainId(asset.chain_id as BSCChainId)))
+            }
+
+            yield(put(requireEthChainIdMatched()))
+
+            break;
         default:
             console.error(`Bid isn't support for platform: ${asset.platform}`);
             yield put(setBidModalVisible(false))
+            break;
     }
 }
 
@@ -93,10 +105,10 @@ export function* handleCancelBidRequest(action: PayloadAction<CancelBidPayload>)
 
 export default function* fetchSaga() {
     // only the take the latest fetch result
+    yield takeLatest(setBidModalRequired().type, handleSetBidModalRequired)
     yield takeLatest(bidRequest().type, handleBidRequest)
     yield takeLatest(acceptBidRequest().type, handleAcceptBidRequest)
     yield takeLatest(cancelBidRequest().type, handleCancelBidRequest)
-    yield takeLatest(openBidModal().type, handleOpenBidModal)
 }
 
 function ethRequireWalletConnectPopup(arg0: boolean): any {

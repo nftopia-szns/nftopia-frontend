@@ -8,7 +8,7 @@ export interface AssetBriefInfo {
     id: string
 }
 
-interface AssetState {
+export interface AssetState {
     isLoading: boolean,
     platform: MetaversePlatform,
     assetDetail: GenericAssetDto,
