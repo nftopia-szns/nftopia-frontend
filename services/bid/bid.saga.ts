@@ -61,11 +61,10 @@ export function* handleBidRequest(action: PayloadAction<BidPayload>) {
         const payload = action.payload
         const state: WalletState = yield select((state) => state.wallet as WalletState)
 
-
         const bidService = new BidService()
         yield bidService.place(
+            state.ethWallet.provider,
             payload.caller,
-            payload.provider,
             payload.asset,
             payload.price,
             payload.duration,
@@ -81,12 +80,13 @@ export function* handleBidRequest(action: PayloadAction<BidPayload>) {
 export function* handleAcceptBidRequest(action: PayloadAction<AcceptBidPayload>) {
     try {
         const payload = action.payload
+        const state: WalletState = yield select((state) => state.wallet as WalletState)
 
         const bidService = new BidService()
         yield bidService.accept(
-            payload.sender,
+            state.ethWallet.provider,
+            state.ethWallet.account,
             payload.recipient,
-            payload.provider,
             payload.asset);
         //     // dispatch action from saga
         //     yield put(fetchSuccess(_searchResults))
