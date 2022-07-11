@@ -9,6 +9,6 @@ export const walletSelectorEthIsWalletConnected = (state: RootState) => {
 }
 
 export const walletSelectorEthIsChainIdMatched = (state: RootState) => {
-    return state.wallet.ethWallet && state.wallet.ethRequiredChainId ?
+    return walletSelectorEthIsWalletConnected(state) && state.wallet.ethRequiredChainId ?
         state.wallet.ethWallet.chainId === state.wallet.ethRequiredChainId  : true
 }

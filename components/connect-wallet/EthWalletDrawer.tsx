@@ -22,43 +22,12 @@ const EthWalletDrawer = (props: Props) => {
         ethShowSwitchChainIdPopup,
     } = useAppSelector((state) => state.wallet)
 
-    // useEffect(() => {
-    //     // show wallet connect
-    //     setEthShowConnectWallet(
-    //         ethRequiredWalletConnect &&
-    //         account === undefined)
-    // }, [ethRequiredWalletConnect, account])
-
-    // useEffect(() => {
-    //     setEthShowSwitchChainId(
-    //         account &&
-    //         ethRequiredChainId !== ethRequiredChainId)
-    // }, [ethRequiredChainId, account, chainId])
-
-    // const onCloseEthWaletConnectDrawer = () => {
-    //     setEthShowConnectWallet(false)
-    //     dispatch(setEthRequiredWalletConnect(false))
-    // }
-
-    // const onCloseEthSwichChainIdDrawer = () => {
-    //     setEthShowSwitchChainId(false)
-    //     dispatch(setEthRequireChainId(undefined))
-    // }
-
-    // useEffect(() => {
-    //     // show wallet connect
-    //     setEthShowConnectWallet(
-    //         ethRequiredWalletConnect &&
-    //         account === undefined)
-    // }, [ethRequiredWalletConnect, account])
-
     useEffect(() => {
         dispatch(setEthWallet({
             account,
             provider,
             chainId
         }))
-
     }, [account, provider, chainId])
 
     const onCloseEthWaletConnectDrawer = () => {

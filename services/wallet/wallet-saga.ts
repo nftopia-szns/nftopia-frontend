@@ -5,25 +5,32 @@ import {
     requireEthWalletConnected,
     setEthShowSwitchChainIdPopup,
     setEthShowWalletConnectPopup,
+    setEthWallet,
 } from "../wallet/wallet-slice";
 import { walletSelectorEthIsChainIdMatched, walletSelectorEthIsWalletConnected } from "./wallet-selectors";
 
+export function* handleSetEthWallet(action: PayloadAction) {
+    const isWalletConnected = yield select(walletSelectorEthIsWalletConnected)
+    if (isWalletConnected) {
+        yield put(setEthShowWalletConnectPopup(false))
+    }
+}
+
 export function* handleRequireEthChainIdMatched(action: PayloadAction) {
     const isWalletConnected = yield select(walletSelectorEthIsWalletConnected)
-    console.log(isWalletConnected);
 
     yield put(setEthShowWalletConnectPopup(!isWalletConnected))
 }
 
 export function* handleRequireEthWalletConnected(action: PayloadAction) {
     const isChainIdMatched = yield select(walletSelectorEthIsChainIdMatched)
-    console.log(isChainIdMatched);
     
     yield put(setEthShowSwitchChainIdPopup(!isChainIdMatched))
 }
 
 export default function* walletSaga() {
     // only the take the latest fetch result
+    yield takeLatest(setEthWallet().type, handleSetEthWallet)
     yield takeLatest(requireEthChainIdMatched().type, handleRequireEthChainIdMatched)
     yield takeLatest(requireEthWalletConnected().type, handleRequireEthWalletConnected)
 }
