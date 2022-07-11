@@ -40,14 +40,11 @@ export const bidSlice = createSlice({
     name: 'bid',
     initialState: bidInitialState,
     reducers: {
-        setBidModalRequired(state, action: PayloadAction<boolean>) {
-            state.bidModalRequired = action.payload
-        },
         setAssetForBid(state, action: PayloadAction<GenericAssetDto>) {
             state.asset = action.payload
         },
-        setBidModalVisible(state, action: PayloadAction<boolean>) {
-            state.bidModalVisible = action.payload
+        setBidModalRequired(state, action: PayloadAction<boolean>) {
+            state.bidModalRequired = action.payload
         },
         bidRequest(state, action: PayloadAction<BidPayload>) {
             state.isLoading = true
@@ -82,7 +79,6 @@ export const bidSlice = createSlice({
 export const {
     setBidModalRequired,
     setAssetForBid,
-    setBidModalVisible,
     bidRequest,
     bidSuccess,
     bidFailure,

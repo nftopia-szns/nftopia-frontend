@@ -4,17 +4,29 @@ import { MetaversePlatform } from "nftopia-shared/dist/shared/platform";
 import { put, select, takeLatest } from 'redux-saga/effects';
 import { AssetState } from "../asset/asset-slice";
 import { RootState } from "../store";
-import { requireEthChainIdMatched, requireEthWalletConnected, setEthRequiredChainId, WalletState } from "../wallet/wallet-slice";
-import { AcceptBidPayload, acceptBidRequest, BidPayload, bidRequest, CancelBidPayload, cancelBidRequest, setAssetForBid, setBidModalRequired, setBidModalVisible } from "./bid-slice";
+import {
+    requireEthChainIdMatched,
+    requireEthWalletConnected,
+    setEthRequiredChainId,
+    WalletState
+} from "../wallet/wallet-slice";
+import {
+    AcceptBidPayload,
+    acceptBidRequest,
+    BidPayload,
+    bidRequest,
+    CancelBidPayload,
+    cancelBidRequest,
+    setAssetForBid,
+    setBidModalRequired
+} from "./bid-slice";
 import { BidService } from "./bid.service";
 
 export function* handleSetBidModalRequired(action: PayloadAction<boolean>) {
     // do nothing when bid modal is deactivated
     if (action.payload === false) return
 
-    console.log('open bid modal requested');
     const assetState: AssetState = yield select((state: RootState) => state.asset as AssetState)
-    const walletState: WalletState = yield select((state: RootState) => state.wallet as WalletState)
     const asset = assetState.assetDetail
 
     // set asset for bidding state
@@ -24,11 +36,7 @@ export function* handleSetBidModalRequired(action: PayloadAction<boolean>) {
         case MetaversePlatform.Decentraland:
             // case MetaversePlatform.Cryptovoxels:
             // case MetaversePlatform.SandBox:
-
-            console.log('asf');
-            
-
-            yield(put(requireEthWalletConnected()))
+            yield (put(requireEthWalletConnected()))
 
             // determine chain id
             if (asset.network === Network.Ethereum) {
@@ -38,12 +46,12 @@ export function* handleSetBidModalRequired(action: PayloadAction<boolean>) {
                 yield put(setEthRequiredChainId(toCanonicalBSCChainId(asset.chain_id as BSCChainId)))
             }
 
-            yield(put(requireEthChainIdMatched()))
+            yield (put(requireEthChainIdMatched()))
 
             break;
         default:
             console.error(`Bid isn't support for platform: ${asset.platform}`);
-            yield put(setBidModalVisible(false))
+            yield put(setBidModalRequired(false))
             break;
     }
 }
@@ -109,8 +117,4 @@ export default function* fetchSaga() {
     yield takeLatest(bidRequest().type, handleBidRequest)
     yield takeLatest(acceptBidRequest().type, handleAcceptBidRequest)
     yield takeLatest(cancelBidRequest().type, handleCancelBidRequest)
-}
-
-function ethRequireWalletConnectPopup(arg0: boolean): any {
-    throw new Error("Function not implemented.");
 }

@@ -1,16 +1,21 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { BigNumber } from 'ethers';
-import { DecentralandSearchHitDto } from '../../pages/api/search/search.types';
+import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types';
 
 interface SaleState {
     isLoading: boolean,
+    buyModalRequired: boolean,
+    buyModalVisible: boolean,
+    sellModalRequired: boolean,
+    sellModalVisible: boolean,
+    asset: GenericAssetDto,
 }
 
 export interface BuyPayload {
     caller: string,
     provider: Web3Provider,
-    asset: DecentralandSearchHitDto,
+    asset: GenericAssetDto,
     price: BigNumber,
     fingerprint?: string
 }
@@ -18,7 +23,7 @@ export interface BuyPayload {
 export interface SellPayload {
     caller: string,
     provider: Web3Provider,
-    asset: DecentralandSearchHitDto,
+    asset: GenericAssetDto,
     price: BigNumber,
     expiresAt: number,
 }
@@ -26,17 +31,30 @@ export interface SellPayload {
 export interface StopSellingPayload {
     caller: string,
     provider: Web3Provider,
-    asset: DecentralandSearchHitDto,
+    asset: GenericAssetDto,
 }
 
 export const saleInitialState: SaleState = {
     isLoading: false,
+    buyModalRequired: false,
+    buyModalVisible: false,
+    sellModalRequired: false,
+    sellModalVisible: false,
+    asset: undefined,
 };
 
 export const saleSlice = createSlice({
     name: 'sale',
     initialState: saleInitialState,
     reducers: {
+        setAssetForSale(state, action: PayloadAction<GenericAssetDto>) {
+            state.asset = action.payload
+        },
+
+        // buyings
+        setBuyModalRequired(state, action: PayloadAction<boolean>) {
+            state.buyModalRequired = action.payload
+        },
         buyRequest(state, action: PayloadAction<BuyPayload>) {
             state.isLoading = true
         },
@@ -45,6 +63,11 @@ export const saleSlice = createSlice({
         },
         buyFailure(state, action: PayloadAction<{}>) {
             state.isLoading = false
+        },
+
+        // sellings
+        setSellModalRequired(state, action: PayloadAction<boolean>) {
+            state.sellModalRequired = action.payload
         },
         sellRequest(state, action: PayloadAction<SellPayload>) {
             state.isLoading = true
@@ -68,9 +91,13 @@ export const saleSlice = createSlice({
 });
 
 export const {
+    setAssetForSale,
+    setBuyModalRequired,
     buyRequest,
     buySuccess,
     buyFailure,
+
+    setSellModalRequired,
     sellRequest,
     sellSuccess,
     sellFailure,

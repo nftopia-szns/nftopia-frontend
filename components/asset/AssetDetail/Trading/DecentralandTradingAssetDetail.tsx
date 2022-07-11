@@ -6,9 +6,22 @@ import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist
 import React, { useEffect, useState } from 'react'
 const { Panel } = Collapse;
 import { useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
-import { setAssetForBid, setBidModalRequired, setBidModalVisible } from '../../../../services/bid/bid-slice'
-import { useAppDispatch, useAppSelector } from '../../../../services/hook'
-import { walletSelectorEthIsChainIdMatched, walletSelectorEthIsWalletConnected } from '../../../../services/wallet/wallet-selectors'
+import {
+    setAssetForBid,
+    setBidModalRequired,
+} from '../../../../services/bid/bid-slice'
+import {
+    useAppDispatch,
+    useAppSelector
+} from '../../../../services/hook'
+import {
+    setAssetForSale,
+    setBuyModalRequired,
+} from '../../../../services/sale/sale-slice'
+import {
+    walletSelectorEthIsChainIdMatched,
+    walletSelectorEthIsWalletConnected
+} from '../../../../services/wallet/wallet-selectors'
 import { setEthRequiredChainId } from '../../../../services/wallet/wallet-slice'
 import { isValidOrder } from '../../../../utils'
 import BidModal from '../../../trading/Bid/BidModal'
@@ -23,6 +36,9 @@ type Props = {
 const DecentralandTradingAssetDetail = (props: Props) => {
     const dispatch = useAppDispatch()
     const bidModalRequired = useAppSelector((state) => state.bid.bidModalRequired)
+    const {
+        buyModalRequired
+    } = useAppSelector((state) => state.sale)
     const isWalletConnected = useAppSelector(walletSelectorEthIsWalletConnected)
     const isChainIdMatched = useAppSelector(walletSelectorEthIsChainIdMatched)
     const { account, connector, chainId } = useWeb3React()
@@ -63,9 +79,8 @@ const DecentralandTradingAssetDetail = (props: Props) => {
     }
 
     const onBuyClicked = () => {
-        // if (isWalletReady()) {
-        //     setShowBuy(true)
-        // }
+        dispatch(setAssetForSale(asset))
+        dispatch(setBuyModalRequired(true))
     }
 
     const onSellClicked = () => {
@@ -99,8 +114,12 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                             <>
                                 <Button onClick={onBuyClicked}>Buy</Button>
                                 <BuyModal
-                                    visible={showBuy}
-                                    onCancel={() => setShowBuy(false)} />
+                                    visible={
+                                        buyModalRequired &&
+                                        isWalletConnected &&
+                                        isChainIdMatched
+                                    }
+                                    onCancel={() => dispatch(setBuyModalRequired(false))} />
                             </>
                         }
                         {account !== owner &&
@@ -112,7 +131,7 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                                         isWalletConnected &&
                                         isChainIdMatched
                                     }
-                                    onCancel={() => dispatch(setBidModalVisible(false))} />
+                                    onCancel={() => dispatch(setBidModalRequired(false))} />
                             </>
                         }
                     </>
