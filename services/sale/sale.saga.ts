@@ -1,5 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit"
 import {
+    BSCChainId,
     EthereumChainId,
     Network,
     toCanonicalBSCChainId,
@@ -59,13 +60,13 @@ export function* handleSetBuyModalRequired(action: PayloadAction<boolean>) {
 export function* handleBuyRequest(action: PayloadAction<BuyPayload>) {
     try {
         const payload = action.payload
-        const state: WalletState = yield select((state) => state.wallet as WalletState)
+        const walletState: WalletState = yield select((state) => state.wallet as WalletState)
 
         try {
             const saleService = new SaleService()
             yield saleService.executeOrder(
-                state.account,
-                state.provider,
+                walletState.ethWallet.account,
+                walletState.ethWallet.provider,
                 payload.asset,
                 payload.price,
                 payload.fingerprint);
@@ -83,12 +84,12 @@ export function* handleBuyRequest(action: PayloadAction<BuyPayload>) {
 export function* handleSellRequest(action: PayloadAction<SellPayload>) {
     try {
         const payload = action.payload
-        const state: WalletState = yield select((state) => state.wallet as WalletState)
+        const walletState: WalletState = yield select((state) => state.wallet as WalletState)
 
         try {
             const saleService = new SaleService()
             yield saleService.createOrder(
-                state.provider,
+                walletState.ethWallet.provider,
                 payload.asset,
                 payload.price,
                 payload.expiresAt);
@@ -103,16 +104,15 @@ export function* handleSellRequest(action: PayloadAction<SellPayload>) {
     }
 }
 
-
 export function* handleStopSellingRequest(action: PayloadAction<StopSellingPayload>) {
     try {
         const payload = action.payload
-        const state: WalletState = yield select((state) => state.wallet as WalletState)
+        const walletState: WalletState = yield select((state) => state.wallet as WalletState)
 
         try {
             const saleService = new SaleService()
             yield saleService.cancelOrder(
-                state.provider,
+                walletState.ethWallet.provider,
                 payload.asset);
         } catch (e) {
             console.error(e)
