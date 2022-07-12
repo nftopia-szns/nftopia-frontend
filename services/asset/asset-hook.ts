@@ -6,9 +6,7 @@ import { ERC721Bid__factory, ERC721__factory, EstateRegistry__factory, Marketpla
 import { isValidOrder } from '../../utils'
 import { formatEther } from '@ethersproject/units'
 import { DecentralandAssetCategory, DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
-import { ChainId } from '../../components/asset/DecentralandAsset/DecentralandAsset.type'
-import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types'
-import { MetaversePlatform } from 'nftopia-shared/dist/shared/platform'
+import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
 
 export interface Order {
   id: string
@@ -93,8 +91,7 @@ export const useDecentralandAssetHook = (asset: DecentralandAssetDto) => {
     const errors = new Set<ASSET_ERRORS>()
     const marketplaceContractData = getContract(
       ContractName.Marketplace,
-      // TODO: avoid to hardcode this
-      ChainId.ETHEREUM_MAINNET
+      toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)
     )
     const marketplaceContract = Marketplace__factory.connect(marketplaceContractData.address, provider)
 
@@ -134,7 +131,7 @@ export const useDecentralandAssetHook = (asset: DecentralandAssetDto) => {
   const getBids = useCallback(async () => {
     const contractBidData: ContractData = getContract(
       ContractName.Bid,
-      ChainId.ETHEREUM_MAINNET,
+      toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)
     )
     const contractBid = ERC721Bid__factory.connect(
       contractBidData.address,
