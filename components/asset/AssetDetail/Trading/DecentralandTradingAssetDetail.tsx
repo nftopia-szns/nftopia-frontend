@@ -17,6 +17,7 @@ import {
 import {
     setAssetForSale,
     setBuyModalRequired,
+    setSellModalRequired,
 } from '../../../../services/sale/sale-slice'
 import {
     walletSelectorEthIsChainIdMatched,
@@ -37,6 +38,7 @@ const DecentralandTradingAssetDetail = (props: Props) => {
     const dispatch = useAppDispatch()
     const bidModalRequired = useAppSelector((state) => state.bid.bidModalRequired)
     const {
+        sellModalRequired,
         buyModalRequired
     } = useAppSelector((state) => state.sale)
     const isWalletConnected = useAppSelector(walletSelectorEthIsWalletConnected)
@@ -84,9 +86,8 @@ const DecentralandTradingAssetDetail = (props: Props) => {
     }
 
     const onSellClicked = () => {
-        // if (isWalletReady()) {
-        //     setShowSell(true)
-        // }
+        dispatch(setAssetForSale(asset))
+        dispatch(setSellModalRequired(true))
     }
 
     return (
@@ -101,12 +102,16 @@ const DecentralandTradingAssetDetail = (props: Props) => {
             </Row>
             <Row></Row>
             <Row>
-                {account === owner ?
+                {account !== owner ?
                     <>
                         <Button onClick={onSellClicked}>Sell</Button>
                         <SellModal
-                            visible={showSell}
-                            onCancel={() => setShowSell(false)} />
+                            visible={
+                                sellModalRequired &&
+                                isWalletConnected &&
+                                isChainIdMatched
+                            }
+                            onCancel={() => dispatch(setSellModalRequired(false))} />
                     </>
                     :
                     <>
