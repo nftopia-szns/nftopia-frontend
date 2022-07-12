@@ -35,21 +35,17 @@ type Props = {
 }
 
 const DecentralandTradingAssetDetail = (props: Props) => {
+    const { asset } = props
     const dispatch = useAppDispatch()
+    const isWalletConnected = useAppSelector(walletSelectorEthIsWalletConnected)
+    const isChainIdMatched = useAppSelector(walletSelectorEthIsChainIdMatched)
     const bidModalRequired = useAppSelector((state) => state.bid.bidModalRequired)
     const {
         sellModalRequired,
         buyModalRequired
     } = useAppSelector((state) => state.sale)
-    const isWalletConnected = useAppSelector(walletSelectorEthIsWalletConnected)
-    const isChainIdMatched = useAppSelector(walletSelectorEthIsChainIdMatched)
-    const { account, connector, chainId } = useWeb3React()
-    const { asset } = props
+    const { account, connector } = useWeb3React()
     const { owner, bids, order } = useDecentralandAssetHook(asset)
-
-    const [showBid, setShowBid] = useState(false)
-    const [showBuy, setShowBuy] = useState(false)
-    const [showSell, setShowSell] = useState(false)
 
     useEffect(() => {
         connector.connectEagerly()
