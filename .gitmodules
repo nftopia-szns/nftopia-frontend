@@ -2,3 +2,6 @@
 	path = contracts/land-contract
 	branch = main
 	url = https://github.com/phatngluu/land-contract
+[submodule "contracts/nftopia-mpsc"]
+	path = contracts/nftopia-mpsc
+	url = https://github.com/nftopia-szns/nftopia-mpsc.git
