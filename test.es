@@ -1,187 +1,29 @@
-GET /decentraland-ethereum-3/_search
-{
-    "query": {
-        "match": {
-            "id": "parcel-0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b-115792089237316195423570985008687907839318407621882087037459225103210632970096"
-        }
-    }
-}
-
-GET /decentraland-ethereum-3/_search
-{
-    "query": {
-        "bool": {
-            "must": [
-                {
-                    "multi_match": {
-                        "query": "a",
-                        "fields": [
-                            "name",
-                            "description",
-                            "attributes.coordinate",
-                            "owner"
-                        ]
-                    }
-                },
-                {
-                    "terms": {
-                        "category": [
-                            "estate",
-                            "parcel"
-                        ]
-                    }
-                }
-            ]
-        }
-    }
-}
-
-GET /decentraland-ethereum-3/_search
+GET /decentraland-ethereum-mainnet/_search
 {
     "query": {
         "match_all": {}
     }
 }
 
-GET /decentraland-ethereum-3/_search
+PUT /testplatform-polygon-mumbai/_doc/1
+{
+    "platform": "testplatform",
+    "network": "polygon",
+    "chain_id": "mumbai",
+    "contract_address": "0x2faac886960981cd3811329b02816f5a6a9b5d87",
+    "id": "1",
+    "name": "1",
+    "description": "1",
+    "owner": "0x959e104e1a4db6317fa58f8295f586e1a978c297",
+    "image": "https://api.decentraland.org/v1/parcels/13/87/map.png",
+    "external_url": ""
+}
+
+GET /sandbox-ethereum-mainnet/_search
 {
     "query": {
-        "match": {
-            "token_id": "30625413022884461711703714668859139030897"
-        }
+        "match_all": {}
     }
 }
 
-DELETE /decentraland-ethereum-3
-
-
-GET /decentraland-ethereum-3/_search
-{
-    "query": {
-        "bool": {
-            "should": [
-                {
-                    "match": {
-                        "category": "estate"
-                    }
-                },
-                {
-                    "match": {
-                        "category": "parcel"
-                    }
-                }
-            ],
-            "must": [
-                {
-                    "exists": {
-                        "field": "active_order"
-                    }
-                }
-            ],
-            "must_not": []
-        }
-    },
-    "sort": {
-        "sales": {
-            "order": "desc"
-        }
-    }
-}
-
-GET /_search
-{
-    "indices": [
-        "decentraland-ethereum-3"
-    ],
-  "query": {
-    "bool": {
-      "should": [
-        {
-          "match": {
-            "category": "estate"
-          }
-        },
-        {
-          "match": {
-            "category": "parcel"
-          }
-        }
-      ],
-      "must": [],
-      "must_not": []
-    }
-  },
-  "sort": [
-    "active_order.price"
-  ]
-}
-
-
-GET /decentraland-ethereum-3/_search
-{
-    "query": {
-        "bool": {
-            "should": [
-              { 
-                "match": {
-                  "category": "parcel"
-                }
-              },
-              { 
-                "match": {
-                  "category": "estate"
-                }
-              },
-              { name}
-            ],
-            "must": [
-                // {
-                //     "multi_match": {
-                //         "query": "a",
-                //         "fields": [
-                //             "name",
-                //             "description",
-                //             "attributes.coordinate",
-                //             "owner"
-                //         ]
-                //     }
-                // },
-                // {
-                //     "range": {
-                //         "active_order.price": {
-                //             gte: ""
-                //         }
-                //     }
-                // },
-                // {
-                //     "match": {
-                //         "sold_at": 0
-                //     }
-                // },
-                // {
-                //     "terms": {
-                //         "category": [
-                //             "estate",
-                //             "parcel"
-                //         ]
-                //     }
-                // }
-                {
-
-                },
-                {
-                  "exists": {
-                        "field": "active_order"
-                  }
-                }
-            ]
-            // "must_not": [
-            //     {
-            //       "exists": {
-            //             "field": "active_order"
-            //       }
-            //     }
-            // ]
-        }
-    }
-}
+DELETE solanatown-solana-mainnet

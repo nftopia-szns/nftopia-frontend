@@ -4,7 +4,6 @@ import { MetaversePlatform } from 'nftopia-shared/dist/shared/platform';
 import {
     EmptySearchResultDto,
     SearchDto,
-    SearchHitBase,
     SearchResultDto
 } from '../../pages/api/search/search.types';
 import {

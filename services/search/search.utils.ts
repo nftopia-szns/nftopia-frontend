@@ -1,5 +1,5 @@
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform";
-import { Network, EthereumChainId, SolanaChainId } from "nftopia-shared/dist/shared/network";
+import { Network, EthereumChainId, SolanaChainId, PolygonChainId } from "nftopia-shared/dist/shared/network";
 import { SearchDto } from "../../pages/api/search/search.types";
 import { SearchState } from "./search-slice";
 import {
@@ -22,6 +22,8 @@ export const buildSearchDtoFromState = (state: SearchState): SearchDto => {
             return _buildCryptovoxelsSearchDtoFromState(state);
         case MetaversePlatform.SolanaTown:
             return _buildSolanaTownSearchDtoFromState(state);
+        case MetaversePlatform.TestPlatform:
+            return _buildTestPlatformSearchDtoFromState(state);
         default:
             throw new Error(`${state.platform} is not supported`)
     }
@@ -394,6 +396,47 @@ export const _buildSolanaTownSearchDtoFromState = (state: SearchState): SearchDt
 
     // build index
     const index = `${MetaversePlatform.SolanaTown}-${Network.Solana}-${SolanaChainId.Mainnet}`
+
+    const searchDto = {
+        indices: [index],
+        query: query,
+        // sort: sort,
+        page: state.page,
+        pageSize: state.pageSize
+    }
+
+    return searchDto
+}
+
+export const _buildTestPlatformSearchDtoFromState = (state: SearchState): SearchDto => {
+    let should = []
+    let must = []
+    let must_not = []
+
+    if (state.query && state.query !== '') {
+        must.push({
+            "multi_match": {
+                "query": state.query,
+                "fields": [
+                    "name",
+                    "description",
+                    "id"
+                ]
+            }
+        })
+    }
+
+    // build query
+    const query = {
+        bool: {
+            should: should,
+            must: must,
+            must_not: must_not,
+        }
+    }
+
+    // build index
+    const index = `${MetaversePlatform.TestPlatform}-${Network.Polygon}-${PolygonChainId.Mumbai}`
 
     const searchDto = {
         indices: [index],

@@ -83,12 +83,6 @@ const SearchBar: FC = () => {
         />
     );
 
-    const getFilterComponent = (p: MetaversePlatform) => {
-        switch (p) {
-
-        }
-    }
-
     return (
         <>
             <Col span={6}>

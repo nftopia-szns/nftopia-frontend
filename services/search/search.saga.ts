@@ -1,6 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit"
 import { searchStart, searchSuccess } from './search-slice';
-import { put, select, takeLatest } from 'redux-saga/effects';
+import { put, takeLatest } from 'redux-saga/effects';
 import { SearchDto } from "../../pages/api/search/search.types";
 import { enhancedSearch } from "../../pages/api/search";
 import { GenericAssetDto } from "nftopia-shared/dist/shared/asset/types";
