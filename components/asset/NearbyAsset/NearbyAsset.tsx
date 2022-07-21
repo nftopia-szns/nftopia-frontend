@@ -9,11 +9,11 @@ import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
 
 type Props = {}
 
-const NearbyAsset = (props: Props) => {
+const NearbyAsset = () => {
     const router = useRouter()
     const dispatch = useAppDispatch()
     const { isLoading, assetDetail, nearbyAssets } = useAppSelector((state) => state.asset)
-    const { platform, index, assetId } = router.query
+    const { platform } = router.query
     const [isEligibleToShowNearbyAssets, setIsEligibleToShowNearbyAssets] = useState<boolean>()
 
     useEffect(() => {
@@ -21,18 +21,24 @@ const NearbyAsset = (props: Props) => {
             if (canShowNearby(platform, assetDetail)) {
                 setIsEligibleToShowNearbyAssets(true)
                 dispatch(fetchNearbyAssets())
+            } else {
+                setIsEligibleToShowNearbyAssets(false)
             }
         }
     }, [assetDetail, platform])
 
     const canShowNearby = (platform, assetDetail) => {
         switch (platform) {
+            case MetaversePlatform.Decentraland:
+                return (assetDetail as DecentralandAssetDto).attributes.category === "parcel";
+            case MetaversePlatform.SandBox:
+                return true;
+            case MetaversePlatform.SolanaTown:
+                return true;
             case MetaversePlatform.Cryptovoxels:
                 return false;
-            case MetaversePlatform.Decentraland:
-                return (assetDetail as DecentralandAssetDto).attributes.category === "parcel"
             default:
-                return true
+                return false;
         }
     }
 
@@ -46,7 +52,7 @@ const NearbyAsset = (props: Props) => {
                             <Row gutter={[24, 48]}>
                                 {nearbyAssets.map((asset, index) =>
                                     <Col
-                                        key={index} 
+                                        key={index}
                                         span={2}>
                                         <NearbyAssetItem asset={asset} />
                                     </Col>)}
