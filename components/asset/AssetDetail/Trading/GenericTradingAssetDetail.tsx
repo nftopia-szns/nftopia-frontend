@@ -1,11 +1,11 @@
+import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types'
 import { formatEther } from '@ethersproject/units'
 import { useWeb3React } from '@web3-react/core'
 import { Button, Row, Typography, Collapse } from 'antd'
-import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
 import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 const { Panel } = Collapse;
-import { useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
+import { getValidAsk, isValidAsk, useAssetHook, useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
 import {
     setAssetForBid,
     setBidModalRequired,
@@ -29,12 +29,11 @@ import BidModal from '../../../trading/Bid/BidModal'
 import BuyModal from '../../../trading/Buy/BuyModal'
 import SellModal from '../../../trading/Sell/SellModal'
 import BidList from '../../BidList/BidList'
-
 type Props = {
-    asset: DecentralandAssetDto,
+    asset: GenericAssetDto,
 }
 
-const DecentralandTradingAssetDetail = (props: Props) => {
+const GenericTradingAssetDetail = (props: Props) => {
     const { asset } = props
     const dispatch = useAppDispatch()
     const isWalletConnected = useAppSelector(walletSelectorEthIsWalletConnected)
@@ -45,7 +44,7 @@ const DecentralandTradingAssetDetail = (props: Props) => {
         buyModalRequired
     } = useAppSelector((state) => state.sale)
     const { account, connector } = useWeb3React()
-    const { owner, bids, order } = useDecentralandAssetHook(asset)
+    const { owner, asks, bids } = useAssetHook(asset)
 
     useEffect(() => {
         connector.connectEagerly()
@@ -88,14 +87,14 @@ const DecentralandTradingAssetDetail = (props: Props) => {
 
     return (
         <>
-            <Row>
+            {/* <Row>
                 {isValidOrder(order) &&
                     <>
                         <Typography>Current price: </Typography>
                         <Typography>{formatEther(order.price)}</Typography>
                     </>
                 }
-            </Row>
+            </Row> */}
             <Row></Row>
             <Row>
                 {account === owner ?
@@ -111,7 +110,7 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                     </>
                     :
                     <>
-                        {isValidOrder(order) &&
+                        {getValidAsk(asks) &&
                             <>
                                 <Button onClick={onBuyClicked}>Buy</Button>
                                 <BuyModal
@@ -141,7 +140,7 @@ const DecentralandTradingAssetDetail = (props: Props) => {
                     <Panel header="Listing history" key="1" style={{ width: "100%" }}>
                     </Panel>
                     <Panel header="Bid history" key="2" style={{ width: "100%" }}>
-                        {/* <BidList bids={bids} /> */}
+                        <BidList bids={bids} />
                     </Panel>
                 </Collapse>
             </Row>
@@ -150,4 +149,4 @@ const DecentralandTradingAssetDetail = (props: Props) => {
     )
 }
 
-export default DecentralandTradingAssetDetail
+export default GenericTradingAssetDetail

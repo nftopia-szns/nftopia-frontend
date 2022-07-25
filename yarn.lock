@@ -3335,7 +3335,7 @@ next@12.1.6:
 
 "nftopia-shared@https://github.com/nftopia-szns/nftopia-shared.git":
   version "1.0.0"
-  resolved "https://github.com/nftopia-szns/nftopia-shared.git#c186a591ccb10db24d51302cc08e93fa3114118f"
+  resolved "https://github.com/nftopia-szns/nftopia-shared.git#47d906dea190e2955f18a725d0e302bdf609851d"
 
 node-addon-api@^2.0.0:
   version "2.0.2"
