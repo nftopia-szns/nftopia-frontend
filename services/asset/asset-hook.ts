@@ -8,17 +8,13 @@ import { formatEther } from '@ethersproject/units'
 import { DecentralandAssetCategory, DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
 import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
 import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types'
-import { getMarketplaceContractAddress } from 'nftopia-shared/dist/shared/trading/utils'
-import { ERC721NFTMarket__factory } from '../../contracts/nftopia-mpsc/typechain-types'
+import { getAsset, getAssetAsks, getAssetBids } from '../../pages/api/asset'
 import {
-  getAsks,
-  getBids,
-  getToken,
-  Token as TokenV2,
-  Ask as AskV2,
+  AskStatus,
+  BidStatus,
   Bid as BidV2,
-  Status,
-} from '../../utils/subgraph'
+  Ask
+} from 'nftopia-shared/dist/shared'
 
 export interface Order {
   id: string
@@ -182,17 +178,11 @@ export const useDecentralandAssetHook = (asset: DecentralandAssetDto) => {
   } as const
 }
 
-export interface Ask {
-  seller: string;
-  quoteToken: string;
-  price: BigNumber;
-}
-
 export const useAssetHook = (asset: GenericAssetDto) => {
   const { account, provider } = useWeb3React()
   const [isLoading, setIsLoading] = useState(false)
   const [owner, setOwner] = useState<string>(undefined)
-  const [asks, setAsks] = useState<AskV2[]>(undefined)
+  const [asks, setAsks] = useState<Ask[]>(undefined)
   const [bids, setBids] = useState<BidV2[]>([])
   const [errors, setErrors] = useState<Set<ASSET_ERRORS>>(new Set())
 
@@ -221,16 +211,24 @@ export const useAssetHook = (asset: GenericAssetDto) => {
 
   const getOwner = useCallback(async () => {
     const errors = new Set<ASSET_ERRORS>()
+    
+    if (asset) {
+      try {
+        const token = await getAsset({
+          platform: asset.platform,
+          network: asset.network,
+          chainId: asset.chain_id,
+          address: asset.contract_address,
+          tokenId: asset.id,
+        })
+        console.log(token.owner);
 
-    try {
-      const token = await getToken(asset)
-      console.log(token.owner);
-
-      setOwner(token.owner)
-    } catch (error) {
-      console.error(error);
-      setOwner(undefined)
-      errors.add(ASSET_ERRORS.OWNER)
+        setOwner(token.owner)
+      } catch (error) {
+        console.error(error);
+        setOwner(undefined)
+        errors.add(ASSET_ERRORS.OWNER)
+      }
     }
 
     return errors
@@ -238,14 +236,30 @@ export const useAssetHook = (asset: GenericAssetDto) => {
 
   const getOrder = useCallback(async () => {
     const errors = new Set<ASSET_ERRORS>()
-    // check token's order existence in marketplace
-    try {
-      const _asks = await getAsks(asset)
-      setAsks(_asks)
-    } catch (error) {
-      setAsks(undefined)
-      // if order doesn't exist, consider it is expired
-      errors.add(ASSET_ERRORS.ORDER)
+
+    if (asset) {
+      // check token's order existence in marketplace
+      try {
+        const _asks = await getAssetAsks({
+          platform: asset.platform,
+          network: asset.network,
+          chainId: asset.chain_id,
+          address: asset.contract_address,
+          tokenId: asset.id,
+          page: 1,
+          pageSize: 10,
+          filter: {
+            status: [
+              AskStatus.New
+            ]
+          }
+        })
+        setAsks(_asks)
+      } catch (error) {
+        setAsks(undefined)
+        // if order doesn't exist, consider it is expired
+        errors.add(ASSET_ERRORS.ORDER)
+      }
     }
 
     return errors
@@ -254,12 +268,26 @@ export const useAssetHook = (asset: GenericAssetDto) => {
   const _getBids = useCallback(async () => {
     const errors = new Set<ASSET_ERRORS>()
 
-    // check token's order existence in marketplace
-    try {
-      const _bids = await getBids(asset)
-      setBids(_bids)
-    } catch (error) {
-      setBids(undefined)
+    if (asset) {// check token's order existence in marketplace
+      try {
+        const _bids = await getAssetBids({
+          platform: asset.platform,
+          network: asset.network,
+          chainId: asset.chain_id,
+          address: asset.contract_address,
+          tokenId: asset.id,
+          page: 1,
+          pageSize: 10,
+          filter: {
+            status: [
+              BidStatus.New
+            ]
+          }
+        })
+        setBids(_bids)
+      } catch (error) {
+        setBids(undefined)
+      }
     }
 
     return errors
@@ -276,12 +304,12 @@ export const useAssetHook = (asset: GenericAssetDto) => {
   } as const
 }
 
-export const getValidAsk = (asks: AskV2[]): Ask => {
+export const getValidAsk = (asks: Ask[]): Ask => {
   if (!asks) {
     return null
   }
 
-  const validAsks = asks.filter((v) => v.status === Status.New)
+  const validAsks = asks.filter((v) => v.status === AskStatus.New)
   if (validAsks.length > 0) {
     return validAsks[0];
   } else {
