@@ -31,7 +31,7 @@ function AskActions(props: Props) {
 
     return (
         <div>
-            {account === ask.seller ?
+            {account.toLowerCase() === ask.seller ?
                 <Button onClick={onCancelAsk}>Cancel Ask</Button>
                 :
                 <Button onClick={onBuy}>Buy</Button>

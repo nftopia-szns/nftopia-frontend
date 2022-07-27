@@ -1,9 +1,7 @@
 import { useWeb3React } from '@web3-react/core'
 import { Button } from 'antd'
 import { Bid } from 'nftopia-shared/dist/shared'
-import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset'
 import React from 'react'
-import { acceptBidRequest, cancelBidRequest } from '../../../../../services/bid/bid-slice'
 import { useAppDispatch, useAppSelector } from '../../../../../services/hook'
 
 type Props = {
@@ -12,9 +10,13 @@ type Props = {
 
 function BidActions(props: Props) {
     const { bid } = props
+    console.log(bid);
+    
     const dispatch = useAppDispatch()
     const asset = useAppSelector((state) => state.asset.assetDetail)
     const { account, provider } = useWeb3React()
+    console.log(account);
+    
 
     const onCancelBid = () => {
         // dispatch(cancelBidRequest({
@@ -34,10 +36,10 @@ function BidActions(props: Props) {
 
     return (
         <div>
-            {account === bid.bidder &&
+            {account.toLowerCase() === bid.bidder &&
                 <Button onClick={onCancelBid}>Cancel Bid</Button>
             }
-            {account === asset.owner &&
+            {account.toLowerCase() === asset.owner &&
                 <Button onClick={onAcceptBid}>Accept Bid</Button>
             }
         </div>
