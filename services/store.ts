@@ -24,6 +24,7 @@ export const store = configureStore({
                 ignoredActions: [
                     'wallet/setEthWallet',
                     'bid/bidRequest',
+                    'bid/createBid',
                     'bid/cancelBidRequest',
                     'bid/acceptBidRequest',
                     'sale/buyRequest',
