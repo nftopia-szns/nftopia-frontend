@@ -6,7 +6,7 @@ import { ContractData, getContract, ContractName } from 'decentraland-transactio
 import { BigNumber } from 'ethers'
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
-import BidList from '../../asset/BidList/BidList'
+import BidList from '../../asset/AssetDetail/Trading/BidList/BidList'
 import { BN_ZERO } from '../../../constants/eth'
 import { ERC20__factory } from '../../../contracts/land-contract/typechain'
 import { useDecentralandAssetHook } from '../../../services/asset/asset-hook'

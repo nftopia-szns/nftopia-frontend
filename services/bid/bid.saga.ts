@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit"
-import { BSCChainId, EthereumChainId, Network, toCanonicalBSCChainId, toCanonicalEthereumChainId } from "nftopia-shared/dist/shared/network";
+import { BSCChainId, EthereumChainId, Network, PolygonChainId, toCanonicalBSCChainId, toCanonicalEthereumChainId, toCanonicalPolygonChainId } from "nftopia-shared/dist/shared/network";
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform";
 import { put, select, takeLatest } from 'redux-saga/effects';
 import { AssetState } from "../asset/asset-slice";
@@ -17,6 +17,8 @@ import {
     bidRequest,
     CancelBidPayload,
     cancelBidRequest,
+    createBid,
+    CreateBidPayload,
     setAssetForBid,
     setBidModalRequired
 } from "./bid-slice";
@@ -47,8 +49,19 @@ export function* handleSetBidModalRequired(action: PayloadAction<boolean>) {
             }
 
             yield (put(requireEthChainIdMatched()))
-
             break;
+
+        case MetaversePlatform.TestPlatform:
+            yield (put(requireEthWalletConnected()))
+
+            // determine chain id
+            if (asset.network === Network.Polygon) {
+                yield put(setEthRequiredChainId(toCanonicalPolygonChainId(asset.chain_id as PolygonChainId)))
+            }
+
+            yield (put(requireEthChainIdMatched()))
+            break;
+
         default:
             console.error(`Bid isn't support for platform: ${asset.platform}`);
             yield put(setBidModalRequired(false))
@@ -56,19 +69,16 @@ export function* handleSetBidModalRequired(action: PayloadAction<boolean>) {
     }
 }
 
-export function* handleBidRequest(action: PayloadAction<BidPayload>) {
+export function* handleCreateBid(action: PayloadAction<CreateBidPayload>) {
     try {
         const payload = action.payload
         const state: WalletState = yield select((state) => state.wallet as WalletState)
 
         const bidService = new BidService()
-        yield bidService.place(
-            state.ethWallet.provider,
-            payload.caller,
-            payload.asset,
-            payload.price,
-            payload.duration,
-            payload.fingerprint);
+        yield bidService.createBid(
+            state,
+            payload,
+        );
 
         //     // dispatch action from saga
         //     yield put(fetchSuccess(_searchResults))
@@ -114,7 +124,7 @@ export function* handleCancelBidRequest(action: PayloadAction<CancelBidPayload>)
 export default function* fetchSaga() {
     // only the take the latest fetch result
     yield takeLatest(setBidModalRequired().type, handleSetBidModalRequired)
-    yield takeLatest(bidRequest().type, handleBidRequest)
+    yield takeLatest(createBid().type, handleCreateBid)
     yield takeLatest(acceptBidRequest().type, handleAcceptBidRequest)
     yield takeLatest(cancelBidRequest().type, handleCancelBidRequest)
 }

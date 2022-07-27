@@ -18,6 +18,14 @@ export interface BidPayload {
     duration: number,
     fingerprint?: string
 }
+
+export interface CreateBidPayload {
+    asset: GenericAssetDto,
+    quoteToken: string,
+    price: BigNumber,
+    fingerprint: string
+}
+
 export interface AcceptBidPayload {
     sender: string,
     recipient: string,
@@ -46,6 +54,7 @@ export const bidSlice = createSlice({
         setBidModalRequired(state, action: PayloadAction<boolean>) {
             state.bidModalRequired = action.payload
         },
+        // TODO: remove this
         bidRequest(state, action: PayloadAction<BidPayload>) {
             state.isLoading = true
         },
@@ -55,6 +64,12 @@ export const bidSlice = createSlice({
         bidFailure(state, action: PayloadAction<{}>) {
             state.isLoading = false
         },
+
+        createBid(state, action: PayloadAction<CreateBidPayload>) {
+            state.isLoading = true
+        },
+
+
         cancelBidRequest(state, action: PayloadAction<CancelBidPayload>) {
             state.isLoading = true
         },
@@ -80,6 +95,7 @@ export const {
     setBidModalRequired,
     setAssetForBid,
     bidRequest,
+    createBid,
     bidSuccess,
     bidFailure,
     cancelBidRequest,

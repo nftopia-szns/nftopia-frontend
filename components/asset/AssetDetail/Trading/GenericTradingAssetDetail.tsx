@@ -1,11 +1,10 @@
 import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types'
-import { formatEther } from '@ethersproject/units'
 import { useWeb3React } from '@web3-react/core'
-import { Button, Row, Typography, Collapse } from 'antd'
+import { Button, Row, Collapse } from 'antd'
 import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
 import React, { useEffect } from 'react'
 const { Panel } = Collapse;
-import { getValidAsk, isValidAsk, useAssetHook, useDecentralandAssetHook } from '../../../../services/asset/asset-hook'
+import { getValidAsk, useAssetHook } from '../../../../services/asset/asset-hook'
 import {
     setAssetForBid,
     setBidModalRequired,
@@ -24,11 +23,11 @@ import {
     walletSelectorEthIsWalletConnected
 } from '../../../../services/wallet/wallet-selectors'
 import { setEthRequiredChainId } from '../../../../services/wallet/wallet-slice'
-import { isValidOrder } from '../../../../utils'
 import BidModal from '../../../trading/Bid/BidModal'
 import BuyModal from '../../../trading/Buy/BuyModal'
 import SellModal from '../../../trading/Sell/SellModal'
-import BidList from '../../BidList/BidList'
+import BidList from './BidList/BidList'
+import AskList from './AskList/AskList'
 type Props = {
     asset: GenericAssetDto,
 }
@@ -54,21 +53,6 @@ const GenericTradingAssetDetail = (props: Props) => {
             )
         )
     }, [])
-
-    // const isWalletReady = (): boolean => {
-    //     if (account === undefined) {
-    //         dispatch(setEthRequiredWalletConnect(true))
-    //         return false
-    //     }
-
-    //     const assetChainId = toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)
-    //     if (chainId !== assetChainId) {
-    //         dispatch(setEthRequiredChainId(assetChainId))
-    //         return false
-    //     }
-
-    //     return true
-    // }
 
     const onBidClicked = () => {
         dispatch(setAssetForBid(asset))
@@ -137,7 +121,8 @@ const GenericTradingAssetDetail = (props: Props) => {
             </Row>
             <Row>
                 <Collapse defaultActiveKey={['1']}>
-                    <Panel header="Listing history" key="1" style={{ width: "100%" }}>
+                    <Panel header="Listings" key="1" style={{ width: "100%" }}>
+                        <AskList asks={asks} />
                     </Panel>
                     <Panel header="Bid history" key="2" style={{ width: "100%" }}>
                         <BidList bids={bids} />

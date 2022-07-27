@@ -28,7 +28,7 @@ import { isValidOrder } from '../../../../utils'
 import BidModal from '../../../trading/Bid/BidModal'
 import BuyModal from '../../../trading/Buy/BuyModal'
 import SellModal from '../../../trading/Sell/SellModal'
-import BidList from '../../BidList/BidList'
+import BidList from './BidList/BidList'
 
 type Props = {
     asset: DecentralandAssetDto,

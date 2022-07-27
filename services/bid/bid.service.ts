@@ -8,9 +8,13 @@ import {
 import type { ContractTransaction } from "ethers";
 import { BN_ZERO } from "../../constants/eth";
 import { ERC20__factory, ERC721Bid__factory, ERC721__factory } from "../../contracts/land-contract/typechain";
-import { EthereumChainId, Network, toCanonicalEthereumChainId } from "nftopia-shared/dist/shared/network";
+import { EthereumChainId, Network, PolygonChainId, toCanonicalEthereumChainId } from "nftopia-shared/dist/shared/network";
 import { GenericAssetDto } from "nftopia-shared/dist/shared/asset/types";
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform";
+import { ContractInfo, ContractType } from "nftopia-shared/dist/shared/contract"
+import { CreateBidPayload } from "./bid-slice";
+import { ERC721NFTMarket__factory, IERC20__factory } from "../../contracts/nftopia-mpsc/typechain-types";
+import { WalletState } from "../wallet/wallet-slice";
 
 export class BidService {
     async place(
@@ -112,6 +116,80 @@ export class BidService {
         }
     }
 
+    async createBid(
+        state: WalletState,
+        payload: CreateBidPayload
+    ) {
+        let tx: ContractTransaction;
+
+        const { asset,  } = payload
+
+        switch (asset.network) {
+            case Network.Polygon:
+                switch (asset.chain_id) {
+                    case PolygonChainId.Mumbai:
+                        const mpAddr = ContractInfo[ContractType.Marketplace][Network.Polygon][PolygonChainId.Mumbai];
+                        const mpContract = ERC721NFTMarket__factory.connect(
+                            mpAddr,
+                            state.ethWallet.provider.getSigner()
+                        )
+
+                        const quoteTokenAddr = payload.quoteToken
+                        const quoteToken = IERC20__factory.connect(
+                            quoteTokenAddr,
+                            state.ethWallet.provider.getSigner()
+                        )
+                        
+                        const allowance = await quoteToken.allowance(state.ethWallet.account, mpAddr)
+                        if (allowance.lt(payload.price)) {
+                            // reset approve allowance to zero
+                            if (allowance.gt(0)) {
+                                let tx = await quoteToken.approve(
+                                    mpAddr,
+                                    BN_ZERO,
+                                    {
+                                        gasLimit: 300000
+                                    }
+                                )
+                                await tx.wait()
+                            }
+
+                            // approve the price
+                            tx = await quoteToken.approve(
+                                mpAddr,
+                                payload.price,
+                                {
+                                    gasLimit: 300000
+                                }
+                            )
+                            await tx.wait()
+                        }
+
+                        tx = await mpContract.createBid(
+                            asset.contract_address,
+                            asset.id,
+                            quoteTokenAddr,
+                            payload.price,
+                            "0x0000000000000000000000000000000000000000000000000000000000000000",
+                            {
+                                gasLimit: 300000
+                            }
+                        )
+                        await tx.wait()
+                        break;
+
+                    default:
+                        console.error(`Bid service isn't support for network ${asset.network}, chainid ${asset.chain_id}`)
+                        break;
+                }
+                break;
+
+            default:
+                console.error(`Bid service isn't support for network ${asset.network}`)
+                break;
+        }
+    }
+
     // TODO: add more bid functions: https://github.com/decentraland/bid-contract
     async cancel(
         provider: Web3Provider,
@@ -152,6 +230,9 @@ export class BidService {
                         console.error(`Bid service, cancel() does not support for ${asset.network}`)
                         return
                 }
+
+                break;
+
             default:
                 console.error(`Bid service isn't support for platform ${asset.platform}`)
                 break;

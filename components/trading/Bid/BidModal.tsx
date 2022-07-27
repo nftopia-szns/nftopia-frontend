@@ -1,9 +1,9 @@
 import { Modal } from 'antd'
+import { Network, PolygonChainId } from 'nftopia-shared/dist/shared'
 import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types'
-import { MetaversePlatform } from 'nftopia-shared/dist/shared/platform'
 import React from 'react'
 import { useAppSelector } from '../../../services/hook'
-import DecentralandBidModalContent from './DecentralandBidModalContent'
+import GenericBidModalContent from './GenericBidModalContent'
 
 type Props = {
     visible?: boolean;
@@ -16,11 +16,18 @@ const BidModal = (props: Props) => {
     const asset = useAppSelector((state) => state.asset.assetDetail as GenericAssetDto)
 
     const getBidModalContent = () => {
-        switch (asset.platform) {
-            case MetaversePlatform.Decentraland:
-                return <DecentralandBidModalContent />
+        switch (asset.network) {
+            case Network.Polygon:
+                switch (asset.chain_id) {
+                    case PolygonChainId.Mumbai:
+                        return <GenericBidModalContent />
+
+                    default:
+                        return <p>Bid isn't implemented for network {asset.network}, chainid ${asset.chain_id}</p>
+                }
+
             default:
-                return <p>Bid isn't implemented for {asset.platform}</p>
+                return <p>Bid isn't implemented for network {asset.network}, chainid ${asset.chain_id}</p>
         }
     }
 

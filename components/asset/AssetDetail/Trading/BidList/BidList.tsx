@@ -1,8 +1,8 @@
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
+import { Bid } from 'nftopia-shared/dist/shared'
 import React from 'react'
-import { Bid } from '../../../utils/subgraph'
-import BidAction from '../BidAction/BidAction'
+import BidActions from './BidActions'
 
 type Props = {
     bids: Bid[]
@@ -24,11 +24,11 @@ const columns: ColumnsType<Bid> = [
         dataIndex: 'status',
         key: 'status'
     },
-    // {
-    //     title: 'Action',
-    //     key: 'action',
-    //     render: (_, bid) => <BidAction bid={bid} />,
-    // },
+    {
+        title: 'Action',
+        key: 'action',
+        render: (_, bid) => <BidActions bid={bid} />,
+    },
 ];
 
 const BidList = (props: Props) => {
