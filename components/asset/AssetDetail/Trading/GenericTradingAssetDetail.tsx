@@ -47,11 +47,6 @@ const GenericTradingAssetDetail = (props: Props) => {
 
     useEffect(() => {
         connector.connectEagerly()
-        dispatch(
-            setEthRequiredChainId(
-                toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)
-            )
-        )
     }, [])
 
     const onBidClicked = () => {

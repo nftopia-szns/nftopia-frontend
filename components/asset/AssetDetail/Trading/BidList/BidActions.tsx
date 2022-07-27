@@ -32,10 +32,10 @@ function BidActions(props: Props) {
 
     return (
         <div>
-            {account.toLowerCase() === bid.bidder &&
+            {account?.toLowerCase() === bid.bidder &&
                 <Button onClick={onCancelBid}>Cancel Bid</Button>
             }
-            {account.toLowerCase() === asset.owner &&
+            {account?.toLowerCase() === asset.owner &&
                 <Button onClick={onAcceptBid}>Accept Bid</Button>
             }
         </div>
