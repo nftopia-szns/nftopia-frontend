@@ -3347,7 +3347,7 @@ next@12.1.6:
 
 "nftopia-shared@github:nftopia-szns/nftopia-shared":
   version "1.0.0"
-  resolved "https://codeload.github.com/nftopia-szns/nftopia-shared/tar.gz/453610f20294d9d2a04a1022694c72ae4f52cf47"
+  resolved "https://codeload.github.com/nftopia-szns/nftopia-shared/tar.gz/c3c16e0fa3ca9a8f9e6180e3a49300bd766dd724"
   dependencies:
     "@ethersproject/bignumber" "^5.6.2"
     graphql "^16.5.0"
