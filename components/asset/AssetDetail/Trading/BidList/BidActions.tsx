@@ -10,13 +10,9 @@ type Props = {
 
 function BidActions(props: Props) {
     const { bid } = props
-    console.log(bid);
-    
     const dispatch = useAppDispatch()
     const asset = useAppSelector((state) => state.asset.assetDetail)
     const { account, provider } = useWeb3React()
-    console.log(account);
-    
 
     const onCancelBid = () => {
         // dispatch(cancelBidRequest({
