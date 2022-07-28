@@ -122,8 +122,12 @@ export class SaleService {
                             asset.contract_address,
                             wallet.ethWallet.provider.getSigner()
                         )
-                        tx = await nftContract.approve(mpAddr, asset.id)
-                        await tx.wait()
+
+                        const nftSpender = await nftContract.getApproved(asset.id);
+                        if (mpAddr !== nftSpender) {
+                            tx = await nftContract.approve(mpAddr, asset.id)
+                            await tx.wait()
+                        }
 
                         const quoteTokenAddr = payload.quoteToken
 
