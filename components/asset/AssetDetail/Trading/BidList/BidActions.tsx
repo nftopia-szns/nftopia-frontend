@@ -1,7 +1,8 @@
 import { useWeb3React } from '@web3-react/core'
 import { Button } from 'antd'
 import { Bid } from 'nftopia-shared/dist/shared'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { acceptBid, cancelBid, setAssetForBid } from '../../../../../services/bid/bid-slice'
 import { useAppDispatch, useAppSelector } from '../../../../../services/hook'
 
 type Props = {
@@ -12,22 +13,24 @@ function BidActions(props: Props) {
     const { bid } = props
     const dispatch = useAppDispatch()
     const asset = useAppSelector((state) => state.asset.assetDetail)
-    const { account, provider } = useWeb3React()
+    const { account } = useWeb3React()
+
+    useEffect(() => {
+        if (asset) {
+            dispatch(setAssetForBid(asset))
+        }
+    }, [asset])
 
     const onCancelBid = () => {
-        // dispatch(cancelBidRequest({
-        //     provider,
-        //     asset,
-        // }))
+        dispatch(cancelBid({
+            bid: bid
+        }))
     }
 
     const onAcceptBid = () => {
-        // dispatch(acceptBidRequest({
-        //     sender: account,
-        //     recipient: bid.bidder,
-        //     provider,
-        //     asset,
-        // }))
+        dispatch(acceptBid({
+            bid: bid
+        }))
     }
 
     return (

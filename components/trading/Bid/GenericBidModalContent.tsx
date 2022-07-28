@@ -62,14 +62,11 @@ const GenericBidModalContent = (props: Props) => {
     setValidBidAmount(balance >= BigNumber.from(bidPrice).mul(BigNumber.from(10).pow(18)))
   }, [balance, bidPrice])
 
-
   const onCreateBid = async () => {
     dispatch(createBid({
-      asset,
       quoteToken,
       price: BigNumber.from(bidPrice).mul(BigNumber.from(10).pow(18)),
-      // TODO: remove hardcode
-      fingerprint: "0x0000000000000000000000000000000000000000000000000000000000000000"
+      // TODO: set fingerprint if this asset has fingerprint registry
     }))
   }
 

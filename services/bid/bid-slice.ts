@@ -1,6 +1,6 @@
-import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { BigNumber } from 'ethers';
+import { Bid } from 'nftopia-shared/dist/shared';
 import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types';
 
 interface BidState {
@@ -10,31 +10,18 @@ interface BidState {
     asset: GenericAssetDto,
 }
 
-export interface BidPayload {
-    caller: string,
-    provider: Web3Provider,
-    asset: GenericAssetDto,
+export interface CreateBidPayload {
+    quoteToken: string,
     price: BigNumber,
-    duration: number,
     fingerprint?: string
 }
 
-export interface CreateBidPayload {
-    asset: GenericAssetDto,
-    quoteToken: string,
-    price: BigNumber,
-    fingerprint: string
+export interface AcceptBidPayload {
+    bid: Bid,
 }
 
-export interface AcceptBidPayload {
-    sender: string,
-    recipient: string,
-    provider: Web3Provider,
-    asset: GenericAssetDto,
-}
 export interface CancelBidPayload {
-    provider: Web3Provider,
-    asset: GenericAssetDto,
+    bid: Bid,
 }
 
 const bidInitialState: BidState = {
@@ -54,39 +41,14 @@ export const bidSlice = createSlice({
         setBidModalRequired(state, action: PayloadAction<boolean>) {
             state.bidModalRequired = action.payload
         },
-        // TODO: remove this
-        bidRequest(state, action: PayloadAction<BidPayload>) {
-            state.isLoading = true
-        },
-        bidSuccess(state, action: PayloadAction<{}>) {
-            state.isLoading = false
-        },
-        bidFailure(state, action: PayloadAction<{}>) {
-            state.isLoading = false
-        },
-
         createBid(state, action: PayloadAction<CreateBidPayload>) {
             state.isLoading = true
         },
-
-
-        cancelBidRequest(state, action: PayloadAction<CancelBidPayload>) {
+        cancelBid(state, action: PayloadAction<CancelBidPayload>) {
             state.isLoading = true
         },
-        cancelBidSuccess(state, action: PayloadAction<{}>) {
-            state.isLoading = false
-        },
-        cancelBidFailure(state, action: PayloadAction<{}>) {
-            state.isLoading = false
-        },
-        acceptBidRequest(state, action: PayloadAction<AcceptBidPayload>) {
+        acceptBid(state, action: PayloadAction<AcceptBidPayload>) {
             state.isLoading = true
-        },
-        acceptBidSuccess(state, action: PayloadAction<{}>) {
-            state.isLoading = false
-        },
-        acceptBidFailure(state, action: PayloadAction<{}>) {
-            state.isLoading = false
         },
     },
 });
@@ -94,16 +56,9 @@ export const bidSlice = createSlice({
 export const {
     setBidModalRequired,
     setAssetForBid,
-    bidRequest,
     createBid,
-    bidSuccess,
-    bidFailure,
-    cancelBidRequest,
-    cancelBidSuccess,
-    cancelBidFailure,
-    acceptBidRequest,
-    acceptBidSuccess,
-    acceptBidFailure,
+    cancelBid,
+    acceptBid,
 } = bidSlice.actions;
 const bidReducer = bidSlice.reducer;
 export default bidReducer;

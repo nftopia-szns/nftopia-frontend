@@ -5,20 +5,26 @@ import { AssetState } from "../asset/asset-slice";
 import { RootState } from "../store";
 import {
     requireEthWalletConnected,
-    setEthRequiredChainId,
-    WalletState
-} from "../wallet/wallet-slice";
+    setEthRequiredChainId} from "../wallet/wallet-slice";
 import {
     AcceptBidPayload,
-    acceptBidRequest,
     CancelBidPayload,
-    cancelBidRequest,
-    createBid,
     CreateBidPayload,
+    createBid,
+    cancelBid,
+    acceptBid,
     setAssetForBid,
-    setBidModalRequired
+    setBidModalRequired,
 } from "./bid-slice";
 import { BidService } from "./bid.service";
+
+export default function* fetchSaga() {
+    // only the take the latest fetch result
+    yield takeLatest(setBidModalRequired().type, handleSetBidModalRequired)
+    yield takeLatest(createBid().type, handleCreateBid)
+    yield takeLatest(acceptBid().type, handleAcceptBid)
+    yield takeLatest(cancelBid().type, handleCancelBid)
+}
 
 export function* handleSetBidModalRequired(action: PayloadAction<boolean>) {
     // do nothing when bid modal is deactivated
@@ -46,10 +52,28 @@ export function* handleSetBidModalRequired(action: PayloadAction<boolean>) {
 export function* handleCreateBid(action: PayloadAction<CreateBidPayload>) {
     try {
         const payload = action.payload
-        const state: WalletState = yield select((state) => state.wallet as WalletState)
+        const state: RootState = yield select((state: RootState) => state)
 
         const bidService = new BidService()
         yield bidService.createBid(
+            state,
+            payload,
+        );
+
+        //     dispatch action from saga
+        //     yield put(fetchSuccess(_searchResults))
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export function* handleAcceptBid(action: PayloadAction<AcceptBidPayload>) {
+    try {
+        const payload = action.payload
+        const state: RootState = yield select((state: RootState) => state)
+
+        const bidService = new BidService()
+        yield bidService.acceptBid(
             state,
             payload,
         );
@@ -61,44 +85,20 @@ export function* handleCreateBid(action: PayloadAction<CreateBidPayload>) {
     }
 }
 
-export function* handleAcceptBidRequest(action: PayloadAction<AcceptBidPayload>) {
+export function* handleCancelBid(action: PayloadAction<CancelBidPayload>) {
     try {
         const payload = action.payload
-        const state: WalletState = yield select((state) => state.wallet as WalletState)
+        const state: RootState = yield select((state: RootState) => state)
 
         const bidService = new BidService()
-        yield bidService.accept(
-            state.ethWallet.provider,
-            state.ethWallet.account,
-            payload.recipient,
-            payload.asset);
-        //     // dispatch action from saga
+        yield bidService.cancelBid(
+            state,
+            payload,
+        );
+
+        //     dispatch action from saga
         //     yield put(fetchSuccess(_searchResults))
     } catch (e) {
         console.error(e)
     }
-}
-
-export function* handleCancelBidRequest(action: PayloadAction<CancelBidPayload>) {
-    try {
-        const payload = action.payload
-
-        const bidService = new BidService()
-        yield bidService.cancel(
-            payload.provider,
-            payload.asset);
-
-        //     // dispatch action from saga
-        //     yield put(fetchSuccess(_searchResults))
-    } catch (e) {
-        console.error(e)
-    }
-}
-
-export default function* fetchSaga() {
-    // only the take the latest fetch result
-    yield takeLatest(setBidModalRequired().type, handleSetBidModalRequired)
-    yield takeLatest(createBid().type, handleCreateBid)
-    yield takeLatest(acceptBidRequest().type, handleAcceptBidRequest)
-    yield takeLatest(cancelBidRequest().type, handleCancelBidRequest)
 }
