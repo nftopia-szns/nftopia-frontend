@@ -1,8 +1,9 @@
 import { useWeb3React } from '@web3-react/core'
 import { Button } from 'antd'
 import { Ask } from 'nftopia-shared/dist/shared'
-import React from 'react'
-import { useAppDispatch } from '../../../../../services/hook'
+import React, { useEffect } from 'react'
+import { useAppDispatch, useAppSelector } from '../../../../../services/hook'
+import { cancelSellingRequest, setAssetForSale, setBuyModalRequired } from '../../../../../services/sale/sale-slice'
 
 type Props = {
     ask: Ask
@@ -11,22 +12,23 @@ type Props = {
 function AskActions(props: Props) {
     const { ask } = props
     const dispatch = useAppDispatch()
+    const asset = useAppSelector((state) => state.asset.assetDetail)
     const { account } = useWeb3React()
 
+    useEffect(() => {
+        if (asset) {
+            dispatch(setAssetForSale(asset))
+        }
+    }, [asset])
+
     const onCancelAsk = () => {
-        // dispatch(cancelBidRequest({
-        //     provider,
-        //     asset,
-        // }))
+        dispatch(cancelSellingRequest({
+            ask: ask,
+        }))
     }
 
     const onBuy = () => {
-        // dispatch(acceptBidRequest({
-        //     sender: account,
-        //     recipient: bid.bidder,
-        //     provider,
-        //     asset,
-        // }))
+        dispatch(setBuyModalRequired(true))
     }
 
     return (

@@ -307,7 +307,7 @@ export const getValidAsk = (asks: Ask[]): Ask => {
   if (!asks) {
     return null
   }
-
+  
   const validAsks = asks.filter((v) => v.status === AskStatus.New)
   if (validAsks.length > 0) {
     return validAsks[0];

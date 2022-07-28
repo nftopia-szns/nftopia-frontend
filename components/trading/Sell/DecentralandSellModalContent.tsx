@@ -9,7 +9,7 @@ import { useDecentralandAssetHook } from '../../../services/asset/asset-hook';
 import { assetSelectorIsLoading } from '../../../services/asset/asset-selectors';
 import { fetchAsset } from '../../../services/asset/asset-slice';
 import { useAppDispatch, useAppSelector } from '../../../services/hook';
-import { sellRequest, stopSellingRequest } from '../../../services/sale/sale-slice';
+import { sellRequest, cancelSellingRequest } from '../../../services/sale/sale-slice';
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform"
 import { isValidOrder } from '../../../utils';
 import { DecentralandAssetDto } from 'nftopia-shared/dist/shared/asset';
@@ -74,7 +74,7 @@ const DecentralandSellModalContent = (props: Props) => {
   }
 
   const onStopSelling = async () => {
-    dispatch(stopSellingRequest({
+    dispatch(cancelSellingRequest({
       caller: account,
       provider,
       asset: assetDetail,

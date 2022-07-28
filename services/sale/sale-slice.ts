@@ -1,6 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { BigNumber } from 'ethers';
+import { Ask } from 'nftopia-shared/dist/shared';
 import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types';
 
 interface SaleState {
@@ -12,26 +13,19 @@ interface SaleState {
     asset: GenericAssetDto,
 }
 
-export interface BuyPayload {
-    caller: string,
-    provider: Web3Provider,
-    asset: GenericAssetDto,
+export interface SellPayload {
+    quoteToken: string,
     price: BigNumber,
     fingerprint?: string
 }
 
-export interface SellPayload {
-    caller: string,
-    provider: Web3Provider,
-    asset: GenericAssetDto,
-    price: BigNumber,
-    expiresAt: number,
+export interface BuyPayload {
+    ask: Ask,
+    fingerprint?: string,
 }
 
-export interface StopSellingPayload {
-    caller: string,
-    provider: Web3Provider,
-    asset: GenericAssetDto,
+export interface CancelSellingPayload {
+    ask: Ask,
 }
 
 export const saleInitialState: SaleState = {
@@ -78,7 +72,7 @@ export const saleSlice = createSlice({
         sellFailure(state, action: PayloadAction<{}>) {
             state.isLoading = false
         },
-        stopSellingRequest(state, action: PayloadAction<StopSellingPayload>) {
+        cancelSellingRequest(state, action: PayloadAction<CancelSellingPayload>) {
             state.isLoading = true
         },
         stopSellingSuccess(state, action: PayloadAction<{}>) {
@@ -101,7 +95,7 @@ export const {
     sellRequest,
     sellSuccess,
     sellFailure,
-    stopSellingRequest,
+    cancelSellingRequest,
     stopSellingSuccess,
     stopSellingFailure,
 } = saleSlice.actions;

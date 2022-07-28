@@ -1,7 +1,6 @@
 import { GenericAssetDto } from 'nftopia-shared/dist/shared/asset/types'
 import { useWeb3React } from '@web3-react/core'
 import { Button, Row, Collapse } from 'antd'
-import { EthereumChainId, toCanonicalEthereumChainId } from 'nftopia-shared/dist/shared/network'
 import React, { useEffect } from 'react'
 const { Panel } = Collapse;
 import { getValidAsk, useAssetHook } from '../../../../services/asset/asset-hook'
@@ -22,7 +21,6 @@ import {
     walletSelectorEthIsChainIdMatched,
     walletSelectorEthIsWalletConnected
 } from '../../../../services/wallet/wallet-selectors'
-import { setEthRequiredChainId } from '../../../../services/wallet/wallet-slice'
 import BidModal from '../../../trading/Bid/BidModal'
 import BuyModal from '../../../trading/Buy/BuyModal'
 import SellModal from '../../../trading/Sell/SellModal'
@@ -76,7 +74,7 @@ const GenericTradingAssetDetail = (props: Props) => {
             </Row> */}
             <Row></Row>
             <Row>
-                {account === owner ?
+                {account?.toLowerCase() === owner ?
                     <>
                         <Button onClick={onSellClicked}>Sell</Button>
                         <SellModal

@@ -40,20 +40,16 @@ const GenericBidModalContent = (props: Props) => {
   }, [])
 
   useEffect(() => {
-    console.log(account, currency);
-    if (account && asset && currency) {
+    if (account && asset && provider && currency) {
       const _quoteTokenAddr = ContractInfo[currency][asset.network][asset.chain_id]
       setQuoteToken(_quoteTokenAddr)
       const _quoteToken = IERC20__factory.connect(
         _quoteTokenAddr,
         provider,
       )
-      
-      console.log("quoteToken", _quoteTokenAddr);
-      
+
       _quoteToken.balanceOf(account).then((v) => {
         setBalance(v)
-        console.log(formatEther(v));
       })
     }
   }, [asset, account, provider, currency])
@@ -91,7 +87,7 @@ const GenericBidModalContent = (props: Props) => {
                 <Typography>Set a price and expiration date for your bid on <b>{asset?.name}</b>.</Typography>
               </Row>
               <Row>
-                <Typography>!!Token selection!!</Typography>
+                <Typography>!!TODO: Token selection!!</Typography>
               </Row>
               <Row>
                 <InputNumber

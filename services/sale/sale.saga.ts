@@ -3,8 +3,10 @@ import {
     BSCChainId,
     EthereumChainId,
     Network,
+    PolygonChainId,
     toCanonicalBSCChainId,
-    toCanonicalEthereumChainId
+    toCanonicalEthereumChainId,
+    toCanonicalPolygonChainId
 } from "nftopia-shared/dist/shared/network";
 import { MetaversePlatform } from "nftopia-shared/dist/shared/platform";
 import { put, select, takeLatest } from 'redux-saga/effects';
@@ -23,10 +25,17 @@ import {
     sellRequest,
     setAssetForSale,
     setBuyModalRequired,
-    StopSellingPayload,
-    stopSellingRequest
+    CancelSellingPayload,
+    cancelSellingRequest
 } from "./sale-slice";
 import { SaleService } from "./sale.service";
+
+export default function* saleSaga() {
+    // only the take the latest fetch result
+    yield takeLatest(buyRequest().type, handleBuyRequest)
+    yield takeLatest(sellRequest().type, handleSellRequest)
+    yield takeLatest(cancelSellingRequest().type, handleStopSellingRequest)
+}
 
 export function* handleSetBuyModalRequired(action: PayloadAction<boolean>) {
     // do nothing if modal is deactivated
@@ -37,21 +46,14 @@ export function* handleSetBuyModalRequired(action: PayloadAction<boolean>) {
 
     yield put(setAssetForSale(asset))
 
-    switch (asset.platform) {
-        case MetaversePlatform.Decentraland:
-            yield (put(requireEthWalletConnected()))
-
-            if (asset.network === Network.Ethereum) {
-                yield put(setEthRequiredChainId(toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)))
-            }
-            if (asset.network === Network.BSC) {
-                yield put(setEthRequiredChainId(toCanonicalBSCChainId(asset.chain_id as BSCChainId)))
-            }
-            yield (put(requireEthChainIdMatched()))
-
+    switch (asset.network) {
+        case Network.Polygon:
+            yield put(requireEthWalletConnected())
+            yield put(setEthRequiredChainId(toCanonicalPolygonChainId(asset.chain_id as PolygonChainId)))
             break;
+
         default:
-            console.error(`Buy isn't support for platform: ${asset.platform}`);
+            console.error(`Bid isn't support for network: ${asset.network}, chainid ${asset.chain_id}`);
             yield put(setBuyModalRequired(false))
             break;
     }
@@ -60,21 +62,12 @@ export function* handleSetBuyModalRequired(action: PayloadAction<boolean>) {
 export function* handleBuyRequest(action: PayloadAction<BuyPayload>) {
     try {
         const payload = action.payload
-        const walletState: WalletState = yield select((state) => state.wallet as WalletState)
+        const state: RootState = yield select((state: RootState) => state)
 
-        try {
-            const saleService = new SaleService()
-            yield saleService.executeOrder(
-                walletState.ethWallet.account,
-                walletState.ethWallet.provider,
-                payload.asset,
-                payload.price,
-                payload.fingerprint);
-        } catch (e) {
-            console.error(e)
-            // dispatch error
-        }
-        //     // dispatch action from saga
+        const saleService = new SaleService()
+        yield saleService.buy(state, payload);
+
+        //     dispatch action from saga
         //     yield put(fetchSuccess(_searchResults))
     } catch (e) {
         console.error(e)
@@ -84,50 +77,29 @@ export function* handleBuyRequest(action: PayloadAction<BuyPayload>) {
 export function* handleSellRequest(action: PayloadAction<SellPayload>) {
     try {
         const payload = action.payload
-        const walletState: WalletState = yield select((state) => state.wallet as WalletState)
+        const state: RootState = yield select((state: RootState) => state)
 
-        try {
-            const saleService = new SaleService()
-            yield saleService.createOrder(
-                walletState.ethWallet.provider,
-                payload.asset,
-                payload.price,
-                payload.expiresAt);
-        } catch (e) {
-            console.error(e)
-            // dispatch error
-        }
-        //     // dispatch action from saga
+        const saleService = new SaleService()
+        yield saleService.createAsk(state, payload);
+
+        //     dispatch action from saga
         //     yield put(fetchSuccess(_searchResults))
     } catch (e) {
         console.error(e)
     }
 }
 
-export function* handleStopSellingRequest(action: PayloadAction<StopSellingPayload>) {
+export function* handleStopSellingRequest(action: PayloadAction<CancelSellingPayload>) {
     try {
         const payload = action.payload
-        const walletState: WalletState = yield select((state) => state.wallet as WalletState)
+        const state: RootState = yield select((state: RootState) => state)
 
-        try {
-            const saleService = new SaleService()
-            yield saleService.cancelOrder(
-                walletState.ethWallet.provider,
-                payload.asset);
-        } catch (e) {
-            console.error(e)
-            // dispatch error
-        }
-        //     // dispatch action from saga
+        const saleService = new SaleService()
+        yield saleService.cancelAsk(state, payload);
+
+        //     dispatch action from saga
         //     yield put(fetchSuccess(_searchResults))
     } catch (e) {
         console.error(e)
     }
-}
-
-export default function* saleSaga() {
-    // only the take the latest fetch result
-    yield takeLatest(buyRequest().type, handleBuyRequest)
-    yield takeLatest(sellRequest().type, handleSellRequest)
-    yield takeLatest(stopSellingRequest().type, handleStopSellingRequest)
 }
