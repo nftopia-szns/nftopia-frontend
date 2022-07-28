@@ -5,6 +5,7 @@ import { RootState } from "../store";
 import { ContractInfo, ContractType } from "nftopia-shared/dist/shared/contract";
 import { ERC20__factory, ERC721NFTMarket__factory } from "../../contracts/nftopia-mpsc/typechain-types";
 import { ERC721__factory } from "../../contracts/land-contract/typechain";
+import { BN_ZERO } from "../../constants/eth";
 
 export class SaleService {
     async buy(
@@ -25,12 +26,35 @@ export class SaleService {
                             wallet.ethWallet.provider.getSigner()
                         )
 
-                        const quoteTokenContract = ERC20__factory.connect(
+                        const quoteToken = ERC20__factory.connect(
                             payload.ask.quoteToken,
                             wallet.ethWallet.provider.getSigner()
                         )
-                        tx = await quoteTokenContract.approve(mpAddr, payload.ask.price)
-                        await tx.wait()
+
+                        const allowance = await quoteToken.allowance(wallet.ethWallet.account, mpAddr)
+                        if (allowance.lt(payload.ask.price)) {
+                            // reset approve allowance to zero
+                            if (allowance.gt(0)) {
+                                let tx = await quoteToken.approve(
+                                    mpAddr,
+                                    BN_ZERO,
+                                    {
+                                        gasLimit: 300000
+                                    }
+                                )
+                                await tx.wait()
+                            }
+
+                            // approve the price
+                            tx = await quoteToken.approve(
+                                mpAddr,
+                                payload.ask.price,
+                                {
+                                    gasLimit: 300000
+                                }
+                            )
+                            await tx.wait()
+                        }
 
                         const _fingerprint =
                             payload.fingerprint ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
