@@ -32,7 +32,7 @@ export function* handleSetBidModalRequired(action: PayloadAction<boolean>) {
 
     switch (asset.network) {
         case Network.Polygon:
-            yield (put(requireEthWalletConnected()))
+            yield put(requireEthWalletConnected())
             yield put(setEthRequiredChainId(toCanonicalPolygonChainId(asset.chain_id as PolygonChainId)))
             break;
 

@@ -221,7 +221,6 @@ export const useAssetHook = (asset: GenericAssetDto) => {
           address: asset.contract_address,
           tokenId: asset.id,
         })
-        console.log(token.owner);
 
         setOwner(token.owner)
       } catch (error) {

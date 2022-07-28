@@ -19,13 +19,18 @@ export function* handleSetEthWallet(action: PayloadAction) {
 export function* handleRequireEthChainIdMatched(action: PayloadAction) {
     const isWalletConnected = yield select(walletSelectorEthIsWalletConnected)
 
-    yield put(setEthShowWalletConnectPopup(!isWalletConnected))
+    if (!isWalletConnected) {
+        yield put(setEthShowWalletConnectPopup(true))
+    } else {
+        const isChainIdMatched = yield select(walletSelectorEthIsChainIdMatched)
+        yield put(setEthShowSwitchChainIdPopup(!isChainIdMatched))
+    }
 }
 
 export function* handleRequireEthWalletConnected(action: PayloadAction) {
-    const isChainIdMatched = yield select(walletSelectorEthIsChainIdMatched)
-    
-    yield put(setEthShowSwitchChainIdPopup(!isChainIdMatched))
+    const isWalletConnected = yield select(walletSelectorEthIsWalletConnected)
+
+    yield put(setEthShowWalletConnectPopup(!isWalletConnected))
 }
 
 export default function* walletSaga() {
