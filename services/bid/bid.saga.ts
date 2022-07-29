@@ -1,11 +1,20 @@
 import { PayloadAction } from "@reduxjs/toolkit"
-import { Network, PolygonChainId, toCanonicalPolygonChainId } from "nftopia-shared/dist/shared/network";
+import {
+    BSCChainId,
+    EthereumChainId,
+    Network,
+    PolygonChainId,
+    toCanonicalBSCChainId,
+    toCanonicalEthereumChainId,
+    toCanonicalPolygonChainId
+} from "nftopia-shared/dist/shared/network";
 import { put, select, takeLatest } from 'redux-saga/effects';
 import { AssetState } from "../asset/asset-slice";
 import { RootState } from "../store";
 import {
     requireEthWalletConnected,
-    setEthRequiredChainId} from "../wallet/wallet-slice";
+    setEthRequiredChainId
+} from "../wallet/wallet-slice";
 import {
     AcceptBidPayload,
     CancelBidPayload,
@@ -37,6 +46,16 @@ export function* handleSetBidModalRequired(action: PayloadAction<boolean>) {
     yield put(setAssetForBid(asset))
 
     switch (asset.network) {
+        case Network.Ethereum:
+            yield put(requireEthWalletConnected())
+            yield put(setEthRequiredChainId(toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)))
+            break;
+
+        case Network.BSC:
+            yield put(requireEthWalletConnected())
+            yield put(setEthRequiredChainId(toCanonicalBSCChainId(asset.chain_id as BSCChainId)))
+            break;
+
         case Network.Polygon:
             yield put(requireEthWalletConnected())
             yield put(setEthRequiredChainId(toCanonicalPolygonChainId(asset.chain_id as PolygonChainId)))
