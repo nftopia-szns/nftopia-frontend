@@ -41,7 +41,7 @@ const GenericTradingAssetDetail = (props: Props) => {
         buyModalRequired
     } = useAppSelector((state) => state.sale)
     const { account, connector } = useWeb3React()
-    const { owner, asks, bids } = useAssetHook(asset)
+    const { owner, ask, bids } = useAssetHook(asset)
 
     useEffect(() => {
         connector.connectEagerly()
@@ -74,9 +74,12 @@ const GenericTradingAssetDetail = (props: Props) => {
             </Row> */}
             <Row></Row>
             <Row>
-                {account?.toLowerCase() === owner ?
+                {/* Manage selling: owner or seller */}
+                {(
+                    account?.toLowerCase() === owner ||
+                    account?.toLowerCase() === ask?.seller) &&
                     <>
-                        <Button onClick={onSellClicked}>Sell</Button>
+                        <Button onClick={onSellClicked}>Manage selling</Button>
                         <SellModal
                             visible={
                                 sellModalRequired &&
@@ -85,37 +88,40 @@ const GenericTradingAssetDetail = (props: Props) => {
                             }
                             onCancel={() => dispatch(setSellModalRequired(false))} />
                     </>
-                    :
+                }
+                {/* A can buy an order: not the seller */}
+                {account?.toLowerCase() !== ask?.seller &&
                     <>
-                        {getValidAsk(asks) &&
-                            <>
-                                <Button onClick={onBuyClicked}>Buy</Button>
-                                <BuyModal
-                                    visible={
-                                        buyModalRequired &&
-                                        isWalletConnected &&
-                                        isChainIdMatched
-                                    }
-                                    onCancel={() => dispatch(setBuyModalRequired(false))} />
-                            </>
-                        }
-                        <>
-                            <Button onClick={onBidClicked}>Bid</Button>
-                            <BidModal
-                                visible={
-                                    bidModalRequired &&
-                                    isWalletConnected &&
-                                    isChainIdMatched
-                                }
-                                onCancel={() => dispatch(setBidModalRequired(false))} />
-                        </>
+                        <Button onClick={onBuyClicked}>Buy</Button>
+                        <BuyModal
+                            visible={
+                                buyModalRequired &&
+                                isWalletConnected &&
+                                isChainIdMatched
+                            }
+                            onCancel={() => dispatch(setBuyModalRequired(false))} />
+                    </>
+                }
+                {/* A user can bid an item as long as: neither owner or seller */}
+                {
+                    account?.toLowerCase() !== owner &&
+                    account?.toLowerCase() !== ask?.seller &&
+                    <>
+                        <Button onClick={onBidClicked}>Bid</Button>
+                        <BidModal
+                            visible={
+                                bidModalRequired &&
+                                isWalletConnected &&
+                                isChainIdMatched
+                            }
+                            onCancel={() => dispatch(setBidModalRequired(false))} />
                     </>
                 }
             </Row>
             <Row>
                 <Collapse defaultActiveKey={['1']}>
                     <Panel header="Listings" key="1" style={{ width: "100%" }}>
-                        <AskList asks={asks} />
+                        <AskList asks={ask ? [ask] : []} />
                     </Panel>
                     <Panel header="Bids" key="2" style={{ width: "100%" }}>
                         <BidList bids={bids} />

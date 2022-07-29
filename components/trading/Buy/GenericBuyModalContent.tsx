@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 import { Row, Col, Spin, Image, Typography, Alert, Button } from 'antd'
 import Title from "antd/lib/typography/Title"
 import React, { useEffect, useState } from 'react'
-import { getValidAsk, useAssetHook } from '../../../services/asset/asset-hook'
+import { useAssetHook } from '../../../services/asset/asset-hook'
 import { assetSelectorIsLoading } from '../../../services/asset/asset-selectors'
 import { buyRequest } from '../../../services/sale/sale-slice'
 import { useAppDispatch, useAppSelector } from '../../../services/hook'
@@ -23,10 +23,9 @@ const GenericBuyModalContent = (props: Props) => {
     const isBuyLoading = useAppSelector((state) => state.sale.isLoading)
     const {
         owner,
-        asks,
+        ask,
         isLoading
     } = useAssetHook(asset)
-    const ask = getValidAsk(asks)
 
     const [balance, setBalance] = useState<BigNumber>(BN_ZERO)
     const [isEnoughBalance, setIsEnoughBalance] = useState<boolean>(true)

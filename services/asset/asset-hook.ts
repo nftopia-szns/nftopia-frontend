@@ -182,7 +182,7 @@ export const useAssetHook = (asset: GenericAssetDto) => {
   const { account, provider } = useWeb3React()
   const [isLoading, setIsLoading] = useState(false)
   const [owner, setOwner] = useState<string>(undefined)
-  const [asks, setAsks] = useState<Ask[]>(undefined)
+  const [ask, setAsk] = useState<Ask>(undefined)
   const [bids, setBids] = useState<BidV2[]>([])
   const [errors, setErrors] = useState<Set<ASSET_ERRORS>>(new Set())
 
@@ -253,9 +253,13 @@ export const useAssetHook = (asset: GenericAssetDto) => {
             ]
           }
         })
-        setAsks(_asks)
+
+        // there's at most one ask for an asset.
+        const ask = _asks.length > 0 ? _asks[0] : null
+        setAsk(ask)
+
       } catch (error) {
-        setAsks(undefined)
+        setAsk(null)
         // if order doesn't exist, consider it is expired
         errors.add(ASSET_ERRORS.ORDER)
       }
@@ -295,7 +299,7 @@ export const useAssetHook = (asset: GenericAssetDto) => {
   return {
     // fingerprint,
     owner,
-    asks,
+    ask,
     bids,
     // buyable,
     errors,

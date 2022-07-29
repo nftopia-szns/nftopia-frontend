@@ -12,6 +12,7 @@ import { put, select, takeLatest } from 'redux-saga/effects';
 import { AssetState } from "../asset/asset-slice";
 import { RootState } from "../store";
 import {
+    requireEthChainIdMatched,
     requireEthWalletConnected,
     setEthRequiredChainId
 } from "../wallet/wallet-slice";
@@ -48,18 +49,21 @@ export function* handleSetBuyModalRequired(action: PayloadAction<boolean>) {
 
     switch (asset.network) {
         case Network.Ethereum:
-            yield put(requireEthWalletConnected())
             yield put(setEthRequiredChainId(toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)))
+            yield put(requireEthWalletConnected())
+            yield put(requireEthChainIdMatched())
             break;
 
         case Network.BSC:
-            yield put(requireEthWalletConnected())
             yield put(setEthRequiredChainId(toCanonicalBSCChainId(asset.chain_id as BSCChainId)))
+            yield put(requireEthWalletConnected())
+            yield put(requireEthChainIdMatched())
             break;
 
         case Network.Polygon:
-            yield put(requireEthWalletConnected())
             yield put(setEthRequiredChainId(toCanonicalPolygonChainId(asset.chain_id as PolygonChainId)))
+            yield put(requireEthWalletConnected())
+            yield put(requireEthChainIdMatched())
             break;
 
         default:
@@ -80,18 +84,21 @@ export function* handleSetSellModalRequired(action: PayloadAction<boolean>) {
 
     switch (asset.network) {
         case Network.Ethereum:
-            yield put(requireEthWalletConnected())
             yield put(setEthRequiredChainId(toCanonicalEthereumChainId(asset.chain_id as EthereumChainId)))
+            yield put(requireEthWalletConnected())
+            yield put(requireEthChainIdMatched())
             break;
 
         case Network.BSC:
-            yield put(requireEthWalletConnected())
             yield put(setEthRequiredChainId(toCanonicalBSCChainId(asset.chain_id as BSCChainId)))
+            yield put(requireEthWalletConnected())
+            yield put(requireEthChainIdMatched())
             break;
 
         case Network.Polygon:
-            yield put(requireEthWalletConnected())
             yield put(setEthRequiredChainId(toCanonicalPolygonChainId(asset.chain_id as PolygonChainId)))
+            yield put(requireEthWalletConnected())
+            yield put(requireEthChainIdMatched())
             break;
 
         case Network.Solana:

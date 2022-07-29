@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Spin, Row, Col, Image, Typography, InputNumber, Button, Alert } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import React, { useEffect, useState } from 'react'
-import { getValidAsk, useAssetHook } from '../../../services/asset/asset-hook';
+import { useAssetHook } from '../../../services/asset/asset-hook';
 import { assetSelectorIsLoading } from '../../../services/asset/asset-selectors';
 import { useAppDispatch, useAppSelector } from '../../../services/hook';
 import { sellRequest, cancelSellingRequest } from '../../../services/sale/sale-slice';
@@ -21,10 +21,9 @@ const GenericSellModalContent = (props: Props) => {
   const asset = useAppSelector((state) => state.asset.assetDetail as GenericAssetDto)
 
   const {
-    asks,
+    ask,
     isLoading
   } = useAssetHook(asset)
-  const ask = getValidAsk(asks)
 
   const [price, setPrice] = useState<number>(1000)
   const [isValidPrice, setIsValidPrice] = useState<boolean>(true)
