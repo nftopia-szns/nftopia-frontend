@@ -5,6 +5,11 @@ import { SearchDto } from "../../pages/api/search/search.types";
 import { enhancedSearch } from "../../pages/api/search";
 import { GenericAssetDto } from "nftopia-shared/dist/shared/asset/types";
 
+export default function* searchSaga() {
+    // only the take the latest search result
+    yield takeLatest(searchStart().type, search)
+}
+
 export function* search(action: PayloadAction<SearchDto>) {
     try {
         const searchDto = action.payload
@@ -15,9 +20,4 @@ export function* search(action: PayloadAction<SearchDto>) {
     } catch (e) {
         console.error(e)
     }
-}
-
-export default function* searchSaga() {
-    // only the take the latest search result
-    yield takeLatest(searchStart().type, search)
 }

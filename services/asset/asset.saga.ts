@@ -7,6 +7,12 @@ import { SearchDto, SearchResultDto } from "../../pages/api/search/search.types"
 import { buildSearchNearbyAssets } from "./asset.utils";
 import { GenericAssetDto } from "nftopia-shared/dist/shared/asset/types";
 
+export default function* fetchSaga() {
+    // only the take the latest fetch result
+    yield takeLatest(fetchAsset().type, handleFetchAsset)
+    yield takeLatest(fetchNearbyAssets().type, handleFetchNearbyAssets)
+}
+
 export function* handleFetchAsset(action: PayloadAction<AssetBriefInfo>) {
     try {
         const query = new QueryBuilder().matchQuery([{ field: "id", query: action.payload.id }])
@@ -37,10 +43,4 @@ export function* handleFetchNearbyAssets(action: PayloadAction) {
     } catch (e) {
         console.error(e)
     }
-}
-
-export default function* fetchSaga() {
-    // only the take the latest fetch result
-    yield takeLatest(fetchAsset().type, handleFetchAsset)
-    yield takeLatest(fetchNearbyAssets().type, handleFetchNearbyAssets)
 }
