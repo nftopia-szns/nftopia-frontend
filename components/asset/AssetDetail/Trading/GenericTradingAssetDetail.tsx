@@ -117,7 +117,7 @@ const GenericTradingAssetDetail = (props: Props) => {
                     <Panel header="Listings" key="1" style={{ width: "100%" }}>
                         <AskList asks={asks} />
                     </Panel>
-                    <Panel header="Bid history" key="2" style={{ width: "100%" }}>
+                    <Panel header="Bids" key="2" style={{ width: "100%" }}>
                         <BidList bids={bids} />
                     </Panel>
                 </Collapse>
